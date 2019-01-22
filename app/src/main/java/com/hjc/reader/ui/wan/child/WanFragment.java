@@ -1,9 +1,12 @@
 package com.hjc.reader.ui.wan.child;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
@@ -12,8 +15,9 @@ import com.hjc.reader.model.response.WanBannerBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.wan.adapter.WanListAdapter;
 import com.hjc.reader.utils.image.GlideImageLoader;
-import com.hjc.reader.widget.helper.NoScrollLinearManager;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -34,14 +38,14 @@ public class WanFragment extends BaseLazyFragment {
 
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.banner)
-    Banner banner;
     @BindView(R.id.rv_list)
     RecyclerView rvList;
+    private Banner banner;
 
     private List<WanBannerBean.DataBean> mBannerList;
-
     private WanListAdapter mAdapter;
+
+    //页码
     private int page = 0;
 
     public static WanFragment newInstance() {
@@ -56,29 +60,33 @@ public class WanFragment extends BaseLazyFragment {
 
     @Override
     public void initView() {
+        View headerView = View.inflate(mContext, R.layout.layout_wan_header, null);
+        banner = headerView.findViewById(R.id.banner);
 
-    }
-
-    @Override
-    public void initData() {
-        NoScrollLinearManager manager = new NoScrollLinearManager(mContext);
-        manager.setScrollEnabled(false);
+        LinearLayoutManager manager = new LinearLayoutManager(mContext);
         rvList.setLayoutManager(manager);
 
         mAdapter = new WanListAdapter(null);
         rvList.setAdapter(mAdapter);
 
-        getBannerData();
-        getListData(0);
+        mAdapter.addHeaderView(headerView);
+
+        //添加列表动画
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
     }
 
+    @Override
+    public void initData() {
+        getBannerData();
+        smartRefreshLayout.autoRefresh();
+    }
 
     /**
      * 获取Banner数据
      */
     private void getBannerData() {
         RetrofitHelper.getInstance().getWanAndroidService()
-                .getWanAndroidBanner()
+                .getWanBannerList()
                 .compose(RxHelper.bind(this))
                 .subscribe(new DefaultObserver<WanBannerBean>() {
                     @Override
@@ -132,7 +140,7 @@ public class WanFragment extends BaseLazyFragment {
     /**
      * 获取文章列表数据
      */
-    private void getListData(int page) {
+    private void getListData() {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getWanList(page, null)
                 .compose(RxHelper.bind(this))
@@ -162,17 +170,20 @@ public class WanFragment extends BaseLazyFragment {
 
     /**
      * 解析文章列表数据
-     * @param wanListBean 列表对应的bean
+     * @param wanListBean 文章列表对应的bean
      */
     private void parseListData(WanListBean wanListBean){
         WanListBean.DataBean dataBean = wanListBean.getData();
         if (dataBean != null ){
             List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
+
             if (dataList != null && dataList.size() > 0){
                 if (page == 0){
                     mAdapter.setNewData(dataList);
+                    smartRefreshLayout.finishRefresh(1000);
                 }else{
                     mAdapter.addData(dataList);
+                    smartRefreshLayout.finishLoadMore(1000);
                 }
             }
         }
@@ -185,6 +196,20 @@ public class WanFragment extends BaseLazyFragment {
             @Override
             public void OnBannerClick(int position) {
                 ToastUtils.showShort("position---" + mBannerList.get(position).getUrl());
+            }
+        });
+
+        smartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                page++;
+                getListData();
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                page = 0;
+                getListData();
             }
         });
     }

@@ -157,4 +157,7 @@ dependencies {
     //刷新
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-18'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-18'
+
+    //流式布局
+    implementation 'com.nex3z:flow-layout:1.2.4'
 }

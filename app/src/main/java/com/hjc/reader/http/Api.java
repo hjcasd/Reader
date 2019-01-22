@@ -7,6 +7,8 @@ import com.hjc.reader.model.request.UpdateRequest;
 import com.hjc.reader.model.response.WanBannerBean;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.model.response.WanListBean;
+import com.hjc.reader.model.response.WanNavigationBean;
+import com.hjc.reader.model.response.WanTreeBean;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -31,7 +33,7 @@ public interface Api {
      * 轮播图
      */
     @GET("banner/json")
-    Observable<WanBannerBean> getWanAndroidBanner();
+    Observable<WanBannerBean> getWanBannerList();
 
 
     /**
@@ -44,10 +46,18 @@ public interface Api {
     Observable<WanListBean> getWanList(@Path("page") int page, @Query("cid") Integer cid);
 
 
+    /**
+     * 知识体系数据
+     */
+    @GET("tree/json")
+    Observable<WanTreeBean> getTreeList();
 
 
-
-
+    /**
+     * 导航数据
+     */
+    @GET("navi/json")
+    Observable<WanNavigationBean> getNavigationList();
 
 
 
