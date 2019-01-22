@@ -6,8 +6,12 @@ import android.view.View;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.hjc.reader.R;
 import com.hjc.reader.base.dialog.BaseDialog;
+import com.hjc.reader.http.helper.RxSchedulers;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
 
 /**
  * @Author: HJC
@@ -36,13 +40,19 @@ public class LoadingDialog extends BaseDialog {
     @Override
     public void initData(Bundle savedInstanceState) {
         //去掉遮盖层
-//        getDialog().getWindow().setDimAmount(0f);
+        getDialog().getWindow().setDimAmount(0f);
         setCancelable(false);
     }
 
     @Override
     public void addListeners() {
 
+    }
+
+    public void dismissDialog(){
+        Observable.timer(500, TimeUnit.MILLISECONDS)
+                .compose(RxSchedulers.ioToMain())
+                .subscribe(aLong -> dismiss());
     }
 
     @Override

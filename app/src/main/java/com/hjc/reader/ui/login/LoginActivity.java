@@ -162,7 +162,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.View, LoginPres
 
     @Override
     public void showLoading() {
-        loadingDialog.show(getSupportFragmentManager());
+        loadingDialog.showDialog(getSupportFragmentManager());
     }
 
     @Override

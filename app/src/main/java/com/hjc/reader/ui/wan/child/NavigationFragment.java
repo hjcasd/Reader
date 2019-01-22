@@ -13,6 +13,7 @@ import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.WanNavigationBean;
 import com.hjc.reader.ui.wan.adapter.NavigationAdapter;
 import com.hjc.reader.ui.wan.adapter.NavigationContentAdapter;
+import com.hjc.reader.widget.dialog.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class NavigationFragment extends BaseLazyFragment {
     private LinearLayoutManager contentManager;
 
     private int oldPosition = 0;
+    private LoadingDialog loadingDialog;
 
     public static NavigationFragment newInstance() {
         NavigationFragment fragment = new NavigationFragment();
@@ -60,10 +62,13 @@ public class NavigationFragment extends BaseLazyFragment {
         rvNavigationContent.setLayoutManager(contentManager);
         mNavigationContentAdapter = new NavigationContentAdapter(null);
         rvNavigationContent.setAdapter(mNavigationContentAdapter);
+
+        loadingDialog = LoadingDialog.newInstance();
     }
 
     @Override
     public void initData() {
+        loadingDialog.showDialog(getChildFragmentManager());
         getListData();
     }
 
@@ -113,6 +118,7 @@ public class NavigationFragment extends BaseLazyFragment {
             mNavigationAdapter.setNewData(chapterList);
             mNavigationAdapter.setSelection(0);
             mNavigationContentAdapter.setNewData(dataList);
+            loadingDialog.dismissDialog();
         }
     }
 
