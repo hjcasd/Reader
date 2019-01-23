@@ -9,6 +9,6 @@ import android.widget.ImageView;
 public class GlideImageLoader extends com.youth.banner.loader.ImageLoader{
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {
-        ImageLoader.loadImage(context.getApplicationContext(), (String) path, imageView);
+        ImageLoader.loadImage(imageView, (String) path, 0);
     }
 }

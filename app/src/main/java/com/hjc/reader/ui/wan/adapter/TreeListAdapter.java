@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TreeListAdapter extends BaseQuickAdapter<WanTreeBean.DataBean, BaseViewHolder> {
     public TreeListAdapter(@Nullable List<WanTreeBean.DataBean> data) {
-        super(R.layout.item_tree_list, data);
+        super(R.layout.item_rv_tree, data);
     }
 
     @Override

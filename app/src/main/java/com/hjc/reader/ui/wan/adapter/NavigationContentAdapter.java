@@ -15,7 +15,7 @@ import java.util.List;
 
 public class NavigationContentAdapter extends BaseQuickAdapter<WanNavigationBean.DataBean, BaseViewHolder> {
     public NavigationContentAdapter(@Nullable List<WanNavigationBean.DataBean> data) {
-        super(R.layout.item_navigation_content, data);
+        super(R.layout.item_rv_navigation_content, data);
     }
 
     @Override

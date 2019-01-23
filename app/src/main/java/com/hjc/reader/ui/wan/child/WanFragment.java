@@ -60,7 +60,7 @@ public class WanFragment extends BaseLazyFragment {
 
     @Override
     public void initView() {
-        View headerView = View.inflate(mContext, R.layout.layout_wan_header, null);
+        View headerView = View.inflate(mContext, R.layout.layout_header_banner, null);
         banner = headerView.findViewById(R.id.banner);
 
         LinearLayoutManager manager = new LinearLayoutManager(mContext);

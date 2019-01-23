@@ -11,6 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.hjc.reader.R;
 
 import java.io.File;
 
@@ -25,21 +26,42 @@ public class ImageLoader {
     /**
      * 默认加载方式
      *
-     * @param context
-     * @param url
-     * @param imageView
+     * @param imageView  控件id
+     * @param url 图片地址
+     * @param type 默认图片类型
      */
-    public static void loadImage(Context context, String url, ImageView imageView) {
+    public static void loadImage(ImageView imageView , String url, int type) {
         RequestOptions requestOptions = new RequestOptions()
-                .priority(Priority.HIGH)
+                .placeholder(getDefaultPic(type))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate();
+                .error(getDefaultPic(type));
 
-        Glide.with(context)
+        Glide.with(imageView.getContext())
                 .load(url)
                 .apply(requestOptions)
-                .transition(DrawableTransitionOptions.withCrossFade())
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(imageView);
+    }
+
+    /**
+     * 设置默认图片
+     * @param type 图片类型
+     * @return
+     */
+    private static int getDefaultPic(int type) {
+        switch (type) {
+            case 0:
+                return R.mipmap.ic_launcher;
+            case 1:// 妹子
+                return R.mipmap.img_default_meizi;
+            case 2:// 书籍
+                return R.mipmap.img_default_book;
+            case 3:// 电影
+                return R.mipmap.img_default_movie;
+            default:
+                break;
+        }
+        return R.mipmap.ic_launcher;
     }
 
     /**

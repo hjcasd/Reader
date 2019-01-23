@@ -11,7 +11,7 @@ import java.util.List;
 
 public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
     public WanListAdapter(@Nullable List<WanListBean.DataBean.DatasBean> data) {
-        super(R.layout.item_wan_list, data);
+        super(R.layout.item_rv_wan, data);
     }
 
     @Override

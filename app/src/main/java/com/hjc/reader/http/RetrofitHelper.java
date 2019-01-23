@@ -54,10 +54,6 @@ public class RetrofitHelper {
                 baseUrl = HttpConfig.URL_WAN_ANDROID;
                 break;
 
-            case HttpConfig.URL_TING:
-                baseUrl = HttpConfig.URL_TING;
-                break;
-
             default:
                 baseUrl = HttpConfig.URL_DOUBAN;
                 break;
@@ -75,10 +71,6 @@ public class RetrofitHelper {
 
     public Api getDouBanService() {
         return create(HttpConfig.URL_DOUBAN);
-    }
-
-    public Api getTingService() {
-        return create(HttpConfig.URL_TING);
     }
 
     public Api getGankIOService() {

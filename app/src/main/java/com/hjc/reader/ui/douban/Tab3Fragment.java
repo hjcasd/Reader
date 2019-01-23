@@ -9,10 +9,10 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
-import com.hjc.reader.ui.gank.child.RecommendFragment;
-import com.hjc.reader.ui.gank.child.WelfareFragment;
+import com.hjc.reader.base.fragment.BaseFragment;
+import com.hjc.reader.ui.douban.child.BookFragment;
+import com.hjc.reader.ui.douban.child.MovieFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +52,11 @@ public class Tab3Fragment extends BaseFragment {
     public void initData(@Nullable Bundle savedInstanceState) {
         List<Fragment> fragments = new ArrayList<>();
 
-        RecommendFragment recommendFragment = RecommendFragment.newInstance();
-        WelfareFragment welfareFragment = WelfareFragment.newInstance();
+        MovieFragment movieFragment = MovieFragment.newInstance();
+        BookFragment bookFragment = BookFragment.newInstance();
 
-        fragments.add(recommendFragment);
-        fragments.add(welfareFragment);
+        fragments.add(movieFragment);
+        fragments.add(bookFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);
         viewPager.setAdapter(adapter);

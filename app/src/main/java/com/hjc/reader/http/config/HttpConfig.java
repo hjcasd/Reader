@@ -14,7 +14,6 @@ public class HttpConfig {
 
     public final static String URL_GANKIO = "https://gank.io/api/";
     public final static String URL_DOUBAN = "Https://api.douban.com/";
-    public final static String URL_TING = "https://tingapi.ting.baidu.com/v1/restserver/";
     public final static String URL_FIR = "http://api.fir.im/apps/";
     public final static String URL_WAN_ANDROID = "http://www.wanandroid.com/";
     public final static String URL_QSBK = "http://m2.qiushibaike.com/";

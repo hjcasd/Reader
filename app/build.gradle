@@ -160,4 +160,7 @@ dependencies {
 
     //流式布局
     implementation 'com.nex3z:flow-layout:1.2.4'
+
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
+
 }

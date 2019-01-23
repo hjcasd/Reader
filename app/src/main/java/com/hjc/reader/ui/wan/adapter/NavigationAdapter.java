@@ -15,7 +15,7 @@ public class NavigationAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
     private int selectedPosition = -1;
 
     public NavigationAdapter(@Nullable List<String> data) {
-        super(R.layout.item_navigation_list, data);
+        super(R.layout.item_rv_navigation, data);
     }
 
     @Override
