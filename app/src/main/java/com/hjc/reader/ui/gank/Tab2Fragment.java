@@ -10,7 +10,7 @@ import android.view.View;
 import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
-import com.hjc.reader.ui.gank.child.AndroidFragment;
+import com.hjc.reader.ui.gank.child.RecommendFragment;
 import com.hjc.reader.ui.gank.child.GankFragment;
 import com.hjc.reader.ui.gank.child.WelfareFragment;
 
@@ -31,7 +31,7 @@ public class Tab2Fragment extends BaseFragment {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    private String titles[] = new String[]{"福利", "干货定制", "大安卓"};
+    private String titles[] = new String[]{"推荐", "福利", "干货"};
 
     public static Tab2Fragment newInstance() {
         Tab2Fragment fragment = new Tab2Fragment();
@@ -52,13 +52,13 @@ public class Tab2Fragment extends BaseFragment {
     public void initData(@Nullable Bundle savedInstanceState) {
         List<Fragment> fragments = new ArrayList<>();
 
+        RecommendFragment recommendFragment = RecommendFragment.newInstance();
         WelfareFragment welfareFragment = WelfareFragment.newInstance();
         GankFragment gankFragment = GankFragment.newInstance();
-        AndroidFragment androidFragment = AndroidFragment.newInstance();
 
+        fragments.add(recommendFragment);
         fragments.add(welfareFragment);
         fragments.add(gankFragment);
-        fragments.add(androidFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);
         viewPager.setAdapter(adapter);

@@ -8,18 +8,18 @@ import com.hjc.reader.base.fragment.BaseLazyFragment;
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
- * @Description: 干货定制页面
+ * @Description: 推荐页面
  */
-public class AndroidFragment extends BaseLazyFragment {
+public class RecommendFragment extends BaseLazyFragment {
 
-    public static AndroidFragment newInstance() {
-        AndroidFragment fragment = new AndroidFragment();
+    public static RecommendFragment newInstance() {
+        RecommendFragment fragment = new RecommendFragment();
         return fragment;
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_android;
+        return R.layout.fragment_recommend;
     }
 
     @Override

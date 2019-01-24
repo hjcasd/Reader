@@ -67,6 +67,9 @@ public class WelfareFragment extends BaseLazyFragment {
         smartRefreshLayout.autoRefresh();
     }
 
+    /**
+     * 获取福利数据
+     */
     private void getWelfareData() {
         RetrofitHelper.getInstance().getGankIOService()
                 .getGankIoData("福利", 20, page)
@@ -93,6 +96,10 @@ public class WelfareFragment extends BaseLazyFragment {
                 });
     }
 
+    /**
+     * 解析福利数据
+     * @param gankIOBean 福利对应的bean
+     */
     private void parseWelfareData(GankIOBean gankIOBean) {
         List<GankIOBean.ResultsBean> resultList = gankIOBean.getResults();
         if (resultList != null && resultList.size() > 0) {

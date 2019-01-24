@@ -12,6 +12,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="大安卓"/>
+        android:text="推荐"/>
 
 </android.support.constraint.ConstraintLayout>
