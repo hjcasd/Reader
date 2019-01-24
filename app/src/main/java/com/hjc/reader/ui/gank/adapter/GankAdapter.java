@@ -3,6 +3,8 @@ package com.hjc.reader.ui.gank.adapter;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -109,6 +111,14 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
         }
         ImageAdapter adapter = new ImageAdapter(imgList);
         rvPic.setAdapter(adapter);
+
+        //解决嵌套RecyclerView时,当点击item内部的RecyclerView后,外部RecyclerView的点击事件不生效的问题
+        rvPic.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return helper.itemView.onTouchEvent(event);
+            }
+        });
     }
 
     public String getTranslateTime(String time) {

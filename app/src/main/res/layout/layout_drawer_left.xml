@@ -51,6 +51,7 @@
             android:id="@+id/ll_home_page"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -64,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="项目主页"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
 
@@ -72,6 +73,7 @@
             android:id="@+id/ll_scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -85,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="扫码下载"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
 
@@ -94,6 +96,7 @@
             android:id="@+id/ll_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -107,16 +110,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="问题反馈"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
             android:id="@+id/ll_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -130,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="关于云阅"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
 
@@ -139,6 +142,7 @@
             android:id="@+id/ll_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -152,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="账号登录"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
 
@@ -160,6 +164,7 @@
             android:id="@+id/ll_collect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -173,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="我的收藏"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
 
@@ -181,6 +186,7 @@
             android:id="@+id/ll_exit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="10dp">
 
@@ -194,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="退出应用"
-                android:textColor="@color/black_dark"/>
+                android:textColor="@color/black_dark" />
 
         </LinearLayout>
 
