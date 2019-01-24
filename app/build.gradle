@@ -22,22 +22,22 @@ android {
         }
     }
 
-//    //签名信息
-//    signingConfigs {
-//        release {
-//            storeFile file('base.jks')
-//            storePassword '123456'
-//            keyAlias 'base'
-//            keyPassword '123456'
-//        }
-//
-//        debug {
-//            storeFile file("base.jks")
-//            storePassword '123456'
-//            keyAlias 'base'
-//            keyPassword '123456'
-//        }
-//    }
+    //签名信息
+    signingConfigs {
+        release {
+            storeFile file('reader.jks')
+            storePassword 'asd123456789'
+            keyAlias 'reader'
+            keyPassword 'asd123456789'
+        }
+
+        debug {
+            storeFile file('reader.jks')
+            storePassword 'asd123456789'
+            keyAlias 'reader'
+            keyPassword 'asd123456789'
+        }
+    }
 
     buildTypes {
         release {
@@ -48,7 +48,7 @@ android {
             //前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明,后者为自定义混淆文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
 
         debug {
@@ -56,7 +56,7 @@ android {
             zipAlignEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-//            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.debug
         }
     }
 
