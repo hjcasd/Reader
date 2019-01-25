@@ -4,6 +4,7 @@ package com.hjc.reader.http;
 import com.hjc.reader.http.bean.BaseResponse;
 import com.hjc.reader.http.config.URLConfig;
 import com.hjc.reader.model.request.UpdateRequest;
+import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.model.response.GankRecommendBean;
 import com.hjc.reader.model.response.WanBannerBean;
@@ -82,6 +83,23 @@ public interface Api {
     Observable<GankRecommendBean> getRecommendData();
 
 
+    /**     -------------------------------------豆瓣模块------------------------------**/
+
+    /**
+     * 豆瓣热映电影，每日更新
+     */
+    @GET("v2/movie/in_theaters")
+    Observable<DBMovieBean> getMovieList();
+
+
+    /**
+     * 获取豆瓣电影top250
+     *
+     * @param start 从多少开始，如从"0"开始
+     * @param count 一次请求的数目，如"10"条，最多100
+     */
+    @GET("v2/movie/top250")
+    Observable<DBMovieBean> getMovieTop250(@Query("start") int start, @Query("count") int count);
 
 
     //检查版本更新

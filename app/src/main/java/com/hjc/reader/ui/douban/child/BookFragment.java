@@ -8,7 +8,7 @@ import com.hjc.reader.base.fragment.BaseLazyFragment;
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
- * @Description: 干货定制页面
+ * @Description: 书籍页面
  */
 public class BookFragment extends BaseLazyFragment {
 
