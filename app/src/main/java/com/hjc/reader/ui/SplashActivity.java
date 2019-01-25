@@ -11,6 +11,7 @@ import com.hjc.reader.http.helper.RxSchedulers;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 public class SplashActivity extends BaseActivity {
     @Override
@@ -27,8 +28,13 @@ public class SplashActivity extends BaseActivity {
     public void initData(Bundle savedInstanceState) {
         Observable.timer(1, TimeUnit.SECONDS)
                 .compose(RxSchedulers.ioToMain())
-                .subscribe(aLong -> startActivity(new Intent(SplashActivity.this, MainActivity.class)));
-//                .subscribe(aLong -> startActivity(new Intent(SplashActivity.this, LoginActivity.class)));
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        finish();
+                    }
+                });
     }
 
     @Override
