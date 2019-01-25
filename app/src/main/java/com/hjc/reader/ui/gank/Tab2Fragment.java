@@ -31,7 +31,7 @@ public class Tab2Fragment extends BaseFragment {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    private String titles[] = new String[]{"推荐", "福利", "干货"};
+    private String titles[] = new String[]{"每日推荐", "福利社区", "干货定制"};
 
     public static Tab2Fragment newInstance() {
         Tab2Fragment fragment = new Tab2Fragment();

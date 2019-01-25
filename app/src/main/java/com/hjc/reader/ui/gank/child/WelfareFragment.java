@@ -29,7 +29,7 @@ import io.reactivex.observers.DefaultObserver;
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
- * @Description: 福利页面
+ * @Description: 福利社区页面
  */
 public class WelfareFragment extends BaseLazyFragment {
 

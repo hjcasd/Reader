@@ -222,8 +222,8 @@ public class MainActivity extends BaseFragmentActivity {
                 showFragment(mTab3Fragment);
                 break;
             default:
-                isTwo = true;
-                showFragment(mTab2Fragment);
+                isOne = true;
+                showFragment(mTab1Fragment);
                 break;
         }
         ivTab1.setSelected(isOne);

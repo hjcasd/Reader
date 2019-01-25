@@ -5,6 +5,7 @@ import com.hjc.reader.http.bean.BaseResponse;
 import com.hjc.reader.http.config.URLConfig;
 import com.hjc.reader.model.request.UpdateRequest;
 import com.hjc.reader.model.response.GankIOBean;
+import com.hjc.reader.model.response.GankRecommendBean;
 import com.hjc.reader.model.response.WanBannerBean;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.model.response.WanListBean;
@@ -72,6 +73,16 @@ public interface Api {
      */
     @GET("data/{type}/{pre_page}/{page}")
     Observable<GankIOBean> getGankIoData(@Path("type") String type, @Path("pre_page") int prePage, @Path("page") int page);
+
+
+    /**
+     * 获取最新一天的干货数据
+     */
+    @GET("today")
+    Observable<GankRecommendBean> getRecommendData();
+
+
+
 
     //检查版本更新
     @POST(URLConfig.URL_CHECK_VERSION)

@@ -30,7 +30,7 @@ import io.reactivex.observers.DefaultObserver;
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
- * @Description: 干货页面
+ * @Description: 干货定制页面
  */
 public class GankFragment extends BaseLazyFragment {
 

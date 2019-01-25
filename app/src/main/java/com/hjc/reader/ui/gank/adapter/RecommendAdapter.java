@@ -8,12 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.ImageAdapter;
-import com.hjc.reader.model.response.GankIOBean;
+import com.hjc.reader.model.response.GankDayBean;
 import com.hjc.reader.utils.image.ImageLoader;
 
 import java.text.SimpleDateFormat;
@@ -21,36 +22,51 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseViewHolder> {
-    private final int TYPE_TEXT = 1;
-    private final int TYPE_IMAGE_ONE = 2;
-    private final int TYPE_IMAGE_THREE = 3;
+public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHolder> {
+    private final int TYPE_TEXT = 1;  //只有文字
+    private final int TYPE_IMAGE_ONE = 2;  //一张图片加文字
+    private final int TYPE_IMAGE_THREE = 3;  //三张图片加文字
+    private final int TYPE_TITLE = 4;  //标题栏
+    private final int TYPE_IMAGE_ONLY = 5;  //只有一张图片
 
-    public GankAdapter(@Nullable List<GankIOBean.ResultsBean> data) {
+    public RecommendAdapter(@Nullable List<GankDayBean> data) {
         super(data);
 
-        setMultiTypeDelegate(new MultiTypeDelegate<GankIOBean.ResultsBean>() {
+        setMultiTypeDelegate(new MultiTypeDelegate<GankDayBean>() {
             @Override
-            protected int getItemType(GankIOBean.ResultsBean resultsBean) {
-                List<String> images = resultsBean.getImages();
-                if (images == null || images.size() == 0) {
-                    return TYPE_TEXT;
+            protected int getItemType(GankDayBean resultsBean) {
+                String title = resultsBean.getTitle();
+                if (!StringUtils.isEmpty(title)) {
+                    return TYPE_TITLE;
+                } else {
+                    List<String> images = resultsBean.getImages();
+                    if (images == null) {
+                        if (resultsBean.getType().equals("福利")) {
+                            return TYPE_IMAGE_ONLY;
+                        } else {
+                            return TYPE_TEXT;
+                        }
+                    } else {
+                        if (images.size() >= 1 && images.size() < 3) {
+                            return TYPE_IMAGE_ONE;
+                        } else {
+                            return TYPE_IMAGE_THREE;
+                        }
+                    }
                 }
-                if (images.size() >= 1 && images.size() < 3) {
-                    return TYPE_IMAGE_ONE;
-                }
-                return TYPE_IMAGE_THREE;
             }
         });
 
         getMultiTypeDelegate()
                 .registerItemType(TYPE_TEXT, R.layout.item_rv_gank_text)
                 .registerItemType(TYPE_IMAGE_ONE, R.layout.item_rv_gank_image_one)
-                .registerItemType(TYPE_IMAGE_THREE, R.layout.item_rv_gank_image_three);
+                .registerItemType(TYPE_IMAGE_THREE, R.layout.item_rv_gank_image_three)
+                .registerItemType(TYPE_TITLE, R.layout.item_rv_gank_title)
+                .registerItemType(TYPE_IMAGE_ONLY, R.layout.item_rv_gank_image_only);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, GankIOBean.ResultsBean item) {
+    protected void convert(BaseViewHolder helper, GankDayBean item) {
         switch (helper.getItemViewType()) {
             case TYPE_TEXT:
                 initType1(helper, item);
@@ -63,10 +79,18 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
             case TYPE_IMAGE_THREE:
                 initType3(helper, item);
                 break;
+
+            case TYPE_TITLE:
+                initType4(helper, item);
+                break;
+
+            case TYPE_IMAGE_ONLY:
+                initType5(helper, item);
+                break;
         }
     }
 
-    private void initType1(BaseViewHolder helper, GankIOBean.ResultsBean item) {
+    private void initType1(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         TextView tvAuthor = helper.getView(R.id.tv_author);
         TextView tvTime = helper.getView(R.id.tv_time);
@@ -77,7 +101,7 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
         tvTime.setText(translateTime);
     }
 
-    private void initType2(BaseViewHolder helper, GankIOBean.ResultsBean item) {
+    private void initType2(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         TextView tvAuthor = helper.getView(R.id.tv_author);
         TextView tvTime = helper.getView(R.id.tv_time);
@@ -90,7 +114,7 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
         ImageLoader.loadImage(ivPic, item.getImages().get(0), 0);
     }
 
-    private void initType3(BaseViewHolder helper, GankIOBean.ResultsBean item) {
+    private void initType3(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         TextView tvAuthor = helper.getView(R.id.tv_author);
         TextView tvTime = helper.getView(R.id.tv_time);
@@ -106,7 +130,7 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
 
         List<String> imgList = new ArrayList<>();
         //多个取前3个
-        for(int i = 0; i < 3 ; i++){
+        for (int i = 0; i < 3; i++) {
             imgList.add(item.getImages().get(i));
         }
         ImageAdapter adapter = new ImageAdapter(imgList);
@@ -119,6 +143,16 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
                 return helper.itemView.onTouchEvent(event);
             }
         });
+    }
+
+    private void initType4(BaseViewHolder helper, GankDayBean item) {
+        TextView tvTitle = helper.getView(R.id.tv_title);
+        tvTitle.setText(item.getTitle());
+    }
+
+    private void initType5(BaseViewHolder helper, GankDayBean item) {
+        ImageView ivPic = helper.getView(R.id.iv_pic);
+        ImageLoader.loadImage(ivPic, item.getUrl(), 1);
     }
 
     public String getTranslateTime(String time) {
