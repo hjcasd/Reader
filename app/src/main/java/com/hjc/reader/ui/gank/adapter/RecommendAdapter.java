@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.ImageAdapter;
 import com.hjc.reader.model.response.GankDayBean;
+import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.image.ImageLoader;
 
 import java.text.SimpleDateFormat;
@@ -23,11 +24,11 @@ import java.util.Date;
 import java.util.List;
 
 public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHolder> {
-    private final int TYPE_TEXT = 1;  //只有文字
-    private final int TYPE_IMAGE_ONE = 2;  //一张图片加文字
-    private final int TYPE_IMAGE_THREE = 3;  //三张图片加文字
-    private final int TYPE_TITLE = 4;  //标题栏
-    private final int TYPE_IMAGE_ONLY = 5;  //只有一张图片
+    public final int TYPE_TEXT = 1;  //只有文字
+    public final int TYPE_IMAGE_ONE = 2;  //一张图片加文字
+    public final int TYPE_IMAGE_THREE = 3;  //三张图片加文字
+    public final int TYPE_TITLE = 4;  //标题栏
+    public final int TYPE_IMAGE_ONLY = 5;  //只有一张图片
 
     public RecommendAdapter(@Nullable List<GankDayBean> data) {
         super(data);
@@ -153,6 +154,13 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
     private void initType5(BaseViewHolder helper, GankDayBean item) {
         ImageView ivPic = helper.getView(R.id.iv_pic);
         ImageLoader.loadImage(ivPic, item.getUrl(), 1);
+
+        helper.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SchemeUtils.jumpToImage(mContext, item.getUrl());
+            }
+        });
     }
 
     public String getTranslateTime(String time) {

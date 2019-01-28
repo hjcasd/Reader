@@ -23,14 +23,14 @@ import com.hjc.reader.base.adapter.BasePagerAdapter;
 
 import java.util.List;
 
-public class ShowImageAdapter extends BasePagerAdapter<String> {
-    public ShowImageAdapter(Context context, List<String> list) {
+public class GalleyAdapter extends BasePagerAdapter<String> {
+    public GalleyAdapter(Context context, List<String> list) {
         super(context, list);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.item_vp_show_image;
+        return R.layout.item_vp_galley;
     }
 
     @Override

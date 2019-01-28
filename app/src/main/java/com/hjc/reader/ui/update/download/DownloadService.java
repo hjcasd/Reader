@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.hjc.reader.R;
-import com.hjc.reader.ui.update.utils.ApkUtils;
+import com.hjc.reader.utils.AppUtils;
 
 import java.io.File;
 
@@ -62,7 +62,7 @@ public class DownloadService extends IntentService {
         mBuilder.setContentTitle("开始下载")
                 .setContentText("正在连接服务器")
                 .setSmallIcon(R.mipmap.icon_update)
-                .setLargeIcon(ApkUtils.getAppIcon(DownloadService.this))
+                .setLargeIcon(AppUtils.getAppIcon(DownloadService.this))
                 .setOngoing(true)
                 .setAutoCancel(true)
                 .setWhen(System.currentTimeMillis());
@@ -80,7 +80,7 @@ public class DownloadService extends IntentService {
                 SPUtils.getInstance().put("isDownloadedApk", true);
 
                 mNotificationManager.cancel(NOTIFY_ID);
-                ApkUtils.installApp(DownloadService.this, file);
+                AppUtils.installApp(DownloadService.this, file);
                 //下载完自杀
                 stopSelf();
             }
@@ -98,7 +98,7 @@ public class DownloadService extends IntentService {
                 int rate = progress;
                 if (oldRate != rate) {
                     if (mBuilder != null) {
-                        mBuilder.setContentTitle("正在下载：" + ApkUtils.getAppName(DownloadService.this))
+                        mBuilder.setContentTitle("正在下载：" + AppUtils.getAppName(DownloadService.this))
                                 .setContentText(progress + "%")
                                 .setProgress(100, progress, false)
                                 .setWhen(System.currentTimeMillis());

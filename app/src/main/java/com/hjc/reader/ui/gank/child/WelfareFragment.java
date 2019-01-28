@@ -1,7 +1,5 @@
 package com.hjc.reader.ui.gank.child;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -14,8 +12,8 @@ import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.ui.ShowImageActivity;
 import com.hjc.reader.ui.gank.adapter.WelfareAdapter;
+import com.hjc.reader.utils.SchemeUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
@@ -137,13 +135,7 @@ public class WelfareFragment extends BaseLazyFragment {
                 for (GankIOBean.ResultsBean bean: dataList) {
                     imgList.add(bean.getUrl());
                 }
-                Intent intent = new Intent(mContext, ShowImageActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 1);
-                bundle.putInt("position", position);
-                bundle.putStringArrayList("imgList", imgList);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                SchemeUtils.jumpToGalley(mContext, imgList, position);
             }
         });
     }

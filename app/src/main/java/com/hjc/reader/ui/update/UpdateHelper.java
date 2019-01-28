@@ -1,4 +1,4 @@
-package com.hjc.reader.ui.update.utils;
+package com.hjc.reader.ui.update;
 
 import android.os.Bundle;
 
@@ -8,7 +8,7 @@ import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.http.observer.CommonObserver;
 import com.hjc.reader.model.request.UpdateRequest;
 import com.hjc.reader.model.response.VersionBean;
-import com.hjc.reader.ui.update.UpdateDialog;
+import com.hjc.reader.utils.AppUtils;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
@@ -29,8 +29,8 @@ public class UpdateHelper {
                         String newVersion = result.getNewVersion();
                         String lowVersion = result.getLowVersion();
 
-                        int flag1 = ApkUtils.compareVersion(ApkUtils.getVersionName(fragment.getContext()), lowVersion);
-                        int flag2 = ApkUtils.compareVersion(ApkUtils.getVersionName(fragment.getContext()), newVersion);
+                        int flag1 = AppUtils.compareVersion(AppUtils.getVersionName(fragment.getContext()), lowVersion);
+                        int flag2 = AppUtils.compareVersion(AppUtils.getVersionName(fragment.getContext()), newVersion);
 
 //                        //强制更新
 //                        if (flag1 == -1) {
@@ -67,8 +67,8 @@ public class UpdateHelper {
                         String newVersion = result.getNewVersion();
                         String lowVersion = result.getLowVersion();
 
-                        int flag1 = ApkUtils.compareVersion(ApkUtils.getVersionName(activity), lowVersion);
-                        int flag2 = ApkUtils.compareVersion(ApkUtils.getVersionName(activity), newVersion);
+                        int flag1 = AppUtils.compareVersion(AppUtils.getVersionName(activity), lowVersion);
+                        int flag2 = AppUtils.compareVersion(AppUtils.getVersionName(activity), newVersion);
 
                         //强制更新
                         if (flag1 == -1) {
@@ -105,8 +105,8 @@ public class UpdateHelper {
                         String newVersion = result.getNewVersion();
                         String lowVersion = result.getLowVersion();
 
-                        int flag1 = ApkUtils.compareVersion(ApkUtils.getVersionName(activity), lowVersion);
-                        int flag2 = ApkUtils.compareVersion(ApkUtils.getVersionName(activity), newVersion);
+                        int flag1 = AppUtils.compareVersion(AppUtils.getVersionName(activity), lowVersion);
+                        int flag2 = AppUtils.compareVersion(AppUtils.getVersionName(activity), newVersion);
 
                         //强制更新
                         if (flag1 == -1) {

@@ -11,7 +11,7 @@ import com.hjc.reader.base.dialog.BaseDialog;
 import com.hjc.reader.constant.AppConstants;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.ui.update.download.DownloadService;
-import com.hjc.reader.ui.update.utils.ApkUtils;
+import com.hjc.reader.utils.AppUtils;
 import com.hjc.reader.utils.helper.ActivityManager;
 
 import java.io.File;
@@ -70,7 +70,7 @@ public class UpdateDialog extends BaseDialog {
         tvUpdateInfo.setText(updateLog);
 
         //检测是否已下载过APK
-        if (ApkUtils.appIsDownloaded()) {
+        if (AppUtils.appIsDownloaded()) {
             isCompleted = true;
             btnUpdate.setText("安装");
         } else {
@@ -123,6 +123,6 @@ public class UpdateDialog extends BaseDialog {
      */
     private void installApk() {
         File file = new File(AppConstants.DOWNLOAD_APK_PATH);
-        ApkUtils.installApp(mContext, file);
+        AppUtils.installApp(mContext, file);
     }
 }

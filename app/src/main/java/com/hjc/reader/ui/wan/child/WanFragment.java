@@ -14,6 +14,7 @@ import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.WanBannerBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.wan.adapter.WanListAdapter;
+import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.image.GlideImageLoader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -170,18 +171,19 @@ public class WanFragment extends BaseLazyFragment {
 
     /**
      * 解析文章列表数据
+     *
      * @param wanListBean 文章列表对应的bean
      */
-    private void parseListData(WanListBean wanListBean){
+    private void parseListData(WanListBean wanListBean) {
         WanListBean.DataBean dataBean = wanListBean.getData();
-        if (dataBean != null ){
+        if (dataBean != null) {
             List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
 
-            if (dataList != null && dataList.size() > 0){
-                if (page == 0){
+            if (dataList != null && dataList.size() > 0) {
+                if (page == 0) {
                     mAdapter.setNewData(dataList);
                     smartRefreshLayout.finishRefresh(1000);
-                }else{
+                } else {
                     mAdapter.addData(dataList);
                     smartRefreshLayout.finishLoadMore(1000);
                 }
@@ -216,7 +218,11 @@ public class WanFragment extends BaseLazyFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showShort("position---" + position);
+                List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
+                WanListBean.DataBean.DatasBean bean = dataList.get(position);
+                String title = bean.getTitle();
+                String link = bean.getLink();
+                SchemeUtils.jumpToWeb(mContext, link, title);
             }
         });
     }

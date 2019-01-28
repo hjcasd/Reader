@@ -165,13 +165,6 @@ public class RecommendFragment extends BaseLazyFragment {
                 getRecommendData();
             }
         });
-
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showShort("position---" + position);
-            }
-        });
     }
 
     @Override

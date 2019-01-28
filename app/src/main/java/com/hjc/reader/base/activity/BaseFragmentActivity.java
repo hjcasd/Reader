@@ -61,7 +61,7 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity implements
         //使用该属性,必须指定状态栏颜色
         ImmersionBar.with(this)
                 .fitsSystemWindows(true)
-                .statusBarColor(R.color.colorPrimary)
+                .statusBarColor(R.color.app_color)
                 .init();
     }
 

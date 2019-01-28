@@ -10,7 +10,7 @@ import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.adapter.ShowImageAdapter;
+import com.hjc.reader.adapter.GalleyAdapter;
 import com.hjc.reader.widget.FixedViewPager;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import butterknife.BindView;
 /**
  * @Author: HJC
  * @Date: 2019/1/23 14:32
- * @Description: 查看大图片页面
+ * @Description: 查看图片页面(可单张/多张)
  */
-public class ShowImageActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     @BindView(R.id.view_pager)
     FixedViewPager viewPager;
@@ -33,7 +33,6 @@ public class ShowImageActivity extends BaseActivity implements ViewPager.OnPageC
 
     //第几张图片
     private int currentPosition;
-    private int page;
 
     //1.查看多张图片,可滑动 2.查看单张图片
     private int type;
@@ -41,7 +40,7 @@ public class ShowImageActivity extends BaseActivity implements ViewPager.OnPageC
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_show_image;
+        return R.layout.activity_galley;
     }
 
     @Override
@@ -66,10 +65,13 @@ public class ShowImageActivity extends BaseActivity implements ViewPager.OnPageC
             imgList = bundle.getStringArrayList("imgList");
         }
         if (type == 1) {
+            tvPageCount.setVisibility(View.VISIBLE);
             tvPageCount.setText((currentPosition + 1) + " / " + imgList.size());
+        }else{
+            tvPageCount.setVisibility(View.GONE);
         }
 
-        ShowImageAdapter adapter = new ShowImageAdapter(this, imgList);
+        GalleyAdapter adapter = new GalleyAdapter(this, imgList);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(currentPosition);
     }
