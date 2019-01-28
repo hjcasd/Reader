@@ -17,6 +17,7 @@ import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.ui.gank.adapter.FilterAdapter;
 import com.hjc.reader.ui.gank.adapter.GankAdapter;
+import com.hjc.reader.utils.SchemeUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
@@ -109,6 +110,7 @@ public class GankFragment extends BaseLazyFragment {
 
     /**
      * 解析分类数据
+     *
      * @param gankIOBean 分类对应的bean
      */
     private void parseWelfareData(GankIOBean gankIOBean) {
@@ -145,7 +147,9 @@ public class GankFragment extends BaseLazyFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showShort("position---" + position);
+                List<GankIOBean.ResultsBean> dataList = adapter.getData();
+                GankIOBean.ResultsBean bean = dataList.get(position);
+                SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getDesc());
             }
         });
     }
@@ -185,38 +189,38 @@ public class GankFragment extends BaseLazyFragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 bottomSheetDialog.dismiss();
-                switch (position){
-                        case 0:
-                            type = "all";
-                            break;
+                switch (position) {
+                    case 0:
+                        type = "all";
+                        break;
 
-                        case 1:
-                            type = "Android";
-                            break;
+                    case 1:
+                        type = "Android";
+                        break;
 
-                        case 2:
-                            type = "iOS";
-                            break;
+                    case 2:
+                        type = "iOS";
+                        break;
 
-                        case 3:
-                            type = "App";
-                            break;
+                    case 3:
+                        type = "App";
+                        break;
 
-                        case 4:
-                            type = "前端";
-                            break;
+                    case 4:
+                        type = "前端";
+                        break;
 
-                        case 5:
-                            type = "休息视频";
-                            break;
+                    case 5:
+                        type = "休息视频";
+                        break;
 
-                        case 6:
-                            type = "拓展资源";
-                            break;
+                    case 6:
+                        type = "拓展资源";
+                        break;
 
-                        default:
-                            type = "all";
-                            break;
+                    default:
+                        type = "all";
+                        break;
                 }
                 smartRefreshLayout.autoRefresh();
             }

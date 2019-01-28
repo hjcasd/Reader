@@ -91,6 +91,9 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
         }
     }
 
+    /**
+     * 无图片布局
+     */
     private void initType1(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         TextView tvAuthor = helper.getView(R.id.tv_author);
@@ -100,8 +103,18 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
         tvAuthor.setText(item.getWho());
         String translateTime = getTranslateTime(item.getPublishedAt());
         tvTime.setText(translateTime);
+
+        helper.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SchemeUtils.jumpToWeb(mContext, item.getUrl(), item.getDesc());
+            }
+        });
     }
 
+    /**
+     * 一张图片布局
+     */
     private void initType2(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         TextView tvAuthor = helper.getView(R.id.tv_author);
@@ -113,8 +126,18 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
         String translateTime = getTranslateTime(item.getPublishedAt());
         tvTime.setText(translateTime);
         ImageLoader.loadImage(ivPic, item.getImages().get(0), 0);
+
+        helper.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SchemeUtils.jumpToWeb(mContext, item.getUrl(), item.getDesc());
+            }
+        });
     }
 
+    /**
+     * 三张图片布局
+     */
     private void initType3(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         TextView tvAuthor = helper.getView(R.id.tv_author);
@@ -144,13 +167,26 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
                 return helper.itemView.onTouchEvent(event);
             }
         });
+
+        helper.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SchemeUtils.jumpToWeb(mContext, item.getUrl(), item.getDesc());
+            }
+        });
     }
 
+    /**
+     * 标题布局
+     */
     private void initType4(BaseViewHolder helper, GankDayBean item) {
         TextView tvTitle = helper.getView(R.id.tv_title);
         tvTitle.setText(item.getTitle());
     }
 
+    /**
+     * 仅有一张图片布局
+     */
     private void initType5(BaseViewHolder helper, GankDayBean item) {
         ImageView ivPic = helper.getView(R.id.iv_pic);
         ImageLoader.loadImage(ivPic, item.getUrl(), 1);

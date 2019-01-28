@@ -197,7 +197,8 @@ public class WanFragment extends BaseLazyFragment {
         banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(int position) {
-                ToastUtils.showShort("position---" + mBannerList.get(position).getUrl());
+                WanBannerBean.DataBean bean = mBannerList.get(position);
+                SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getTitle());
             }
         });
 
