@@ -38,6 +38,8 @@ public class GankRecommendBean {
         private List<GankDayBean> Android;
         private List<GankDayBean> App;
         private List<GankDayBean> iOS;
+        @SerializedName("前端")
+        private List<GankDayBean> front;
         @SerializedName("休息视频")
         private List<GankDayBean> rest;
         @SerializedName("拓展资源")
@@ -101,6 +103,14 @@ public class GankRecommendBean {
 
         public void setWelfare(List<GankDayBean> welfare) {
             this.welfare = welfare;
+        }
+
+        public List<GankDayBean> getFront() {
+            return front;
+        }
+
+        public void setFront(List<GankDayBean> front) {
+            this.front = front;
         }
     }
 }

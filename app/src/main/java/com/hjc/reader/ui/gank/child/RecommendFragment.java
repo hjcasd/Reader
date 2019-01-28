@@ -127,6 +127,15 @@ public class RecommendFragment extends BaseLazyFragment {
                 dataList.addAll(iosList);
             }
 
+            //Web区
+            List<GankDayBean> webList = resultsBean.getFront();
+            if (iosList != null && webList.size() > 0){
+                GankDayBean bean = new GankDayBean();
+                bean.setTitle("前端");
+                dataList.add(bean);
+                dataList.addAll(webList);
+            }
+
             //休息视频
             List<GankDayBean> restList = resultsBean.getRest();
             if (restList != null && restList.size() > 0){
