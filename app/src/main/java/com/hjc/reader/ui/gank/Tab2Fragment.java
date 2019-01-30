@@ -12,7 +12,7 @@ import com.hjc.reader.adapter.MyViewPagerAdapter;
 import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.ui.gank.child.GankFragment;
 import com.hjc.reader.ui.gank.child.RecommendFragment;
-import com.hjc.reader.ui.test.Welfare2Fragment;
+import com.hjc.reader.ui.gank.child.WelfareFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +53,11 @@ public class Tab2Fragment extends BaseFragment {
         List<Fragment> fragments = new ArrayList<>();
 
         RecommendFragment recommendFragment = RecommendFragment.newInstance();
-//        WelfareFragment welfareFragment = WelfareFragment.newInstance();
-        Welfare2Fragment welfare2Fragment = Welfare2Fragment.newInstance();
+        WelfareFragment welfareFragment = WelfareFragment.newInstance();
         GankFragment gankFragment = GankFragment.newInstance();
 
         fragments.add(recommendFragment);
-//        fragments.add(welfareFragment);
-        fragments.add(welfare2Fragment);
+        fragments.add(welfareFragment);
         fragments.add(gankFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);

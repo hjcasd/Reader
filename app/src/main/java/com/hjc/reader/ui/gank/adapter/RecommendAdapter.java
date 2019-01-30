@@ -1,5 +1,6 @@
 package com.hjc.reader.ui.gank.adapter;
 
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.ImageAdapter;
+import com.hjc.reader.model.ImageViewInfo;
 import com.hjc.reader.model.response.GankDayBean;
+import com.hjc.reader.utils.ViewUtils;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.image.ImageLoader;
 
@@ -194,12 +197,17 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
         helper.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SchemeUtils.jumpToImage(mContext, item.getUrl());
+                ArrayList<ImageViewInfo> list = new ArrayList<>();
+                ImageViewInfo viewInfo = new ImageViewInfo(item.getUrl());
+                list.add(viewInfo);
+                Rect rect = ViewUtils.computeBound(ivPic);
+                list.get(0).setRect(rect);
+                SchemeUtils.jumpToImage(mContext, list);
             }
         });
     }
 
-    public String getTranslateTime(String time) {
+    private String getTranslateTime(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         // 在主页面中设置当天时间
         Date nowTime = new Date();

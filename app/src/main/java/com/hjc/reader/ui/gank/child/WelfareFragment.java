@@ -1,9 +1,11 @@
 package com.hjc.reader.ui.gank.child;
 
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -11,8 +13,10 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.model.ImageViewInfo;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.ui.gank.adapter.WelfareAdapter;
+import com.hjc.reader.utils.ViewUtils;
 import com.hjc.reader.utils.SchemeUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -131,12 +135,24 @@ public class WelfareFragment extends BaseLazyFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                ArrayList<ImageViewInfo> list = new ArrayList<>();
                 List<GankIOBean.ResultsBean> dataList = adapter.getData();
-                ArrayList<String> imgList = new ArrayList<>();
-                for (GankIOBean.ResultsBean bean: dataList) {
-                    imgList.add(bean.getUrl());
+                for (GankIOBean.ResultsBean bean : dataList) {
+                    ImageViewInfo viewInfo = new ImageViewInfo(bean.getUrl());
+                    list.add(viewInfo);
                 }
-                SchemeUtils.jumpToGalley(mContext, imgList, position);
+
+                //获取view位置坐标信息
+                int firstVisibleItemPosition = mGridLayoutManager.findFirstVisibleItemPosition();
+                for (int i = firstVisibleItemPosition; i < list.size(); i++) {
+                    View itemView = mGridLayoutManager.findViewByPosition(i);
+                    if (itemView != null) {
+                        ImageView imageView = itemView.findViewById(R.id.iv_pic);
+                        Rect rect = ViewUtils.computeBound(imageView);
+                        list.get(i).setRect(rect);
+                    }
+                }
+                SchemeUtils.jumpToGalley(mContext, list, position);
             }
         });
     }
