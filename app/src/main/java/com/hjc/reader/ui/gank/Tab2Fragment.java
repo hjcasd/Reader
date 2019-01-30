@@ -8,11 +8,11 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
-import com.hjc.reader.ui.gank.child.RecommendFragment;
+import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.ui.gank.child.GankFragment;
-import com.hjc.reader.ui.gank.child.WelfareFragment;
+import com.hjc.reader.ui.gank.child.RecommendFragment;
+import com.hjc.reader.ui.test.Welfare2Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +53,13 @@ public class Tab2Fragment extends BaseFragment {
         List<Fragment> fragments = new ArrayList<>();
 
         RecommendFragment recommendFragment = RecommendFragment.newInstance();
-        WelfareFragment welfareFragment = WelfareFragment.newInstance();
+//        WelfareFragment welfareFragment = WelfareFragment.newInstance();
+        Welfare2Fragment welfare2Fragment = Welfare2Fragment.newInstance();
         GankFragment gankFragment = GankFragment.newInstance();
 
         fragments.add(recommendFragment);
-        fragments.add(welfareFragment);
+//        fragments.add(welfareFragment);
+        fragments.add(welfare2Fragment);
         fragments.add(gankFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);

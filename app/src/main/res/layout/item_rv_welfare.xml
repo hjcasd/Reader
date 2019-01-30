@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/iv_pic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="240dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/img_default_meizi" />
 

@@ -42,7 +42,7 @@ public class SplashActivity extends BaseActivity {
                     }
                 });
 
-        //倒计时3S
+        //倒计时3s
         Observable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
                 .compose(RxHelper.bind(this))
                 .subscribe(new Consumer<Long>() {
