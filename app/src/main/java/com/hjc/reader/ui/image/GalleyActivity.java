@@ -1,4 +1,4 @@
-package com.hjc.reader.ui;
+package com.hjc.reader.ui.image;
 
 import android.animation.Animator;
 import android.graphics.Color;
@@ -12,20 +12,27 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
-import com.hjc.reader.adapter.GalleyAdapter;
 import com.hjc.reader.base.activity.BaseActivity;
+import com.hjc.reader.base.event.Event;
+import com.hjc.reader.base.event.EventManager;
+import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.model.ImageViewInfo;
+import com.hjc.reader.ui.image.adapter.GalleyAdapter;
 import com.hjc.reader.utils.ViewUtils;
 import com.hjc.reader.widget.FixedViewPager;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
 /**
  * @Author: HJC
  * @Date: 2019/1/23 14:32
- * @Description: 查看图片页面(可单张 / 多张)
+ * @Description: 查看图片页面(多张)
  */
 public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChangeListener, GalleyAdapter.PhotoCallback {
 
@@ -40,10 +47,11 @@ public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChan
 
     //第几张图片
     private int currentPosition;
+    private int lastVisiblePosition;
+    private int firstVisiblePosition;
 
-    //1.查看多张图片,可滑动 2.查看单张图片
-    private int type;
     private ArrayList<ImageViewInfo> viewList;
+    private GalleyAdapter adapter;
 
     @Override
     public int getLayoutId() {
@@ -65,24 +73,22 @@ public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChan
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        EventManager.register(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            type = bundle.getInt("type", 1);
             currentPosition = bundle.getInt("position", 0);
+            firstVisiblePosition = bundle.getInt("firstVisiblePosition", 0);
+            lastVisiblePosition = bundle.getInt("lastVisiblePosition", 0);
             viewList = bundle.getParcelableArrayList("viewList");
-        }
-        if (type == 1) {
-            tvPageCount.setVisibility(View.VISIBLE);
+
             tvPageCount.setText((currentPosition + 1) + " / " + viewList.size());
-        } else {
-            tvPageCount.setVisibility(View.GONE);
+
+            adapter = new GalleyAdapter(this, viewList, this);
+            viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(currentPosition);
+
+            startEnterAnim();
         }
-
-        GalleyAdapter adapter = new GalleyAdapter(this, viewList, this);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(currentPosition);
-
-        startEnterAnim();
     }
 
     @Override
@@ -109,6 +115,22 @@ public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChan
     public void onPageSelected(int position) {
         currentPosition = position;
         tvPageCount.setText((currentPosition + 1) + " / " + viewList.size());
+
+        if (position > lastVisiblePosition){
+            EventManager.sendEvent(new Event<>(EventCode.A, currentPosition));
+        }
+
+        if (position < firstVisiblePosition){
+            EventManager.sendEvent(new Event<>(EventCode.A, currentPosition));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handlerEvent(Event<List<ImageViewInfo>> event) {
+        if (event.getCode() == EventCode.B) {
+            viewList = (ArrayList<ImageViewInfo>) event.getData();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -151,4 +173,11 @@ public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChan
             }
         });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventManager.unregister(this);
+    }
+
 }

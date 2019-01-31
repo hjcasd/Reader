@@ -1,4 +1,4 @@
-package com.hjc.reader.adapter;
+package com.hjc.reader.ui.image.adapter;
 
 import android.app.Activity;
 import android.content.Context;

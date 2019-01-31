@@ -62,8 +62,12 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.GalleyActivity"
+            android:name=".ui.image.GalleyActivity"
             android:theme="@style/TransparentTheme" />
+
+        <activity
+            android:name=".ui.image.ShowImageActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.WebActivity"

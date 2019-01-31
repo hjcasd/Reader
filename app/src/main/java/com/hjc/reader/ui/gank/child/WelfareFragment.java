@@ -10,22 +10,32 @@ import android.widget.ImageView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjc.reader.R;
+import com.hjc.reader.base.event.Event;
+import com.hjc.reader.base.event.EventManager;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
+import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.helper.RxSchedulers;
 import com.hjc.reader.model.ImageViewInfo;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.ui.gank.adapter.WelfareAdapter;
-import com.hjc.reader.utils.ViewUtils;
 import com.hjc.reader.utils.SchemeUtils;
+import com.hjc.reader.utils.ViewUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DefaultObserver;
 
 /**
@@ -43,6 +53,8 @@ public class WelfareFragment extends BaseLazyFragment {
     private WelfareAdapter mAdapter;
     private int page = 1;
     private GridLayoutManager mGridLayoutManager;
+
+    private ArrayList<ImageViewInfo> imageViewInfoList;
 
     public static WelfareFragment newInstance() {
         WelfareFragment fragment = new WelfareFragment();
@@ -67,6 +79,7 @@ public class WelfareFragment extends BaseLazyFragment {
 
     @Override
     public void initData() {
+        EventManager.register(this);
         smartRefreshLayout.autoRefresh();
     }
 
@@ -101,6 +114,7 @@ public class WelfareFragment extends BaseLazyFragment {
 
     /**
      * 解析福利数据
+     *
      * @param gankIOBean 福利对应的bean
      */
     private void parseWelfareData(GankIOBean gankIOBean) {
@@ -135,24 +149,25 @@ public class WelfareFragment extends BaseLazyFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ArrayList<ImageViewInfo> list = new ArrayList<>();
+                imageViewInfoList = new ArrayList<>();
                 List<GankIOBean.ResultsBean> dataList = adapter.getData();
                 for (GankIOBean.ResultsBean bean : dataList) {
                     ImageViewInfo viewInfo = new ImageViewInfo(bean.getUrl());
-                    list.add(viewInfo);
+                    imageViewInfoList.add(viewInfo);
                 }
 
                 //获取view位置坐标信息
-                int firstVisibleItemPosition = mGridLayoutManager.findFirstVisibleItemPosition();
-                for (int i = firstVisibleItemPosition; i < list.size(); i++) {
+                int firstVisiblePosition = mGridLayoutManager.findFirstVisibleItemPosition();
+                int lastVisiblePosition = mGridLayoutManager.findLastVisibleItemPosition();
+                for (int i = firstVisiblePosition; i < lastVisiblePosition + 1; i++) {
                     View itemView = mGridLayoutManager.findViewByPosition(i);
                     if (itemView != null) {
                         ImageView imageView = itemView.findViewById(R.id.iv_pic);
                         Rect rect = ViewUtils.computeBound(imageView);
-                        list.get(i).setRect(rect);
+                        imageViewInfoList.get(i).setRect(rect);
                     }
                 }
-                SchemeUtils.jumpToGalley(mContext, list, position);
+                SchemeUtils.jumpToGalley(mContext, imageViewInfoList, position, firstVisiblePosition, lastVisiblePosition);
             }
         });
     }
@@ -160,5 +175,35 @@ public class WelfareFragment extends BaseLazyFragment {
     @Override
     public void onSingleClick(View v) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventManager.unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handlerEvent(Event<Integer> event) {
+        if (event.getCode() == EventCode.A) {
+            Integer currentPosition = event.getData();
+            mGridLayoutManager.scrollToPositionWithOffset(currentPosition, 0);
+
+            //延时500ms,不然ItemView获取不到
+            Observable.timer(500, TimeUnit.MILLISECONDS)
+                    .compose(RxSchedulers.ioToMain())
+                    .subscribe(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            View itemView = mGridLayoutManager.findViewByPosition(currentPosition);
+                            if (itemView != null) {
+                                ImageView imageView = itemView.findViewById(R.id.iv_pic);
+                                Rect rect = ViewUtils.computeBound(imageView);
+                                imageViewInfoList.get(currentPosition).setRect(rect);
+                                EventManager.sendEvent(new Event<>(EventCode.B, imageViewInfoList));
+                            }
+                        }
+                    });
+        }
     }
 }

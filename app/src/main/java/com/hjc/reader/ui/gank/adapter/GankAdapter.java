@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
-import com.hjc.reader.adapter.ImageAdapter;
+import com.hjc.reader.ui.image.adapter.ImageAdapter;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.utils.image.ImageLoader;
 

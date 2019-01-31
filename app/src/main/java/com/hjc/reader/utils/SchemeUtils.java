@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.hjc.reader.model.ImageViewInfo;
-import com.hjc.reader.ui.GalleyActivity;
+import com.hjc.reader.ui.image.GalleyActivity;
 import com.hjc.reader.ui.WebActivity;
+import com.hjc.reader.ui.image.ShowImageActivity;
 
 import java.util.ArrayList;
 
@@ -35,32 +36,32 @@ public class SchemeUtils {
     /**
      * 查看头像/单张图片
      *
-     * @param context  上下文
-     * @param viewList 图片信息集合
+     * @param context 上下文
+     * @param imgUrl  图片地址
      */
-    public static void jumpToImage(Context context, ArrayList<ImageViewInfo> viewList) {
-        Intent intent = new Intent(context, GalleyActivity.class);
+    public static void jumpToImage(Context context, String imgUrl) {
+        Intent intent = new Intent(context, ShowImageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt("type", 2);
-        bundle.putInt("position", 0);
-        bundle.putParcelableArrayList("viewList", viewList);
+        bundle.putString("imgUrl", imgUrl);
         intent.putExtras(bundle);
         context.startActivity(intent);
-        ((Activity) context).overridePendingTransition(0, 0);
     }
 
     /**
      * 查看多张图片
      *
-     * @param context  上下文
-     * @param viewList 图片信息集合
-     * @param position 第几张图片
+     * @param context              上下文
+     * @param viewList             图片信息集合
+     * @param firstVisiblePosition 第一个可见的item
+     * @param lastVisiblePosition  最后一个可见的item
+     * @param position             第几张图片
      */
-    public static void jumpToGalley(Context context, ArrayList<ImageViewInfo> viewList, int position) {
+    public static void jumpToGalley(Context context, ArrayList<ImageViewInfo> viewList, int position, int firstVisiblePosition, int lastVisiblePosition) {
         Intent intent = new Intent(context, GalleyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt("type", 1);
         bundle.putInt("position", position);
+        bundle.putInt("firstVisiblePosition", firstVisiblePosition);
+        bundle.putInt("lastVisiblePosition", lastVisiblePosition);
         bundle.putParcelableArrayList("viewList", viewList);
         intent.putExtras(bundle);
         context.startActivity(intent);

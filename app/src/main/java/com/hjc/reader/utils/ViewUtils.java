@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hjc.reader.model.ImageViewInfo;
 
 
@@ -23,6 +24,10 @@ public class ViewUtils {
     private static final long ANIM_TIME = 300;
 
     public static void startExitViewScaleAnim(Context context, View target, ImageViewInfo imageViewInfo, Animator.AnimatorListener animatorListener) {
+        if (imageViewInfo.getRect() == null) {
+            LogUtils.e("rect is null");
+            return;
+        }
         int width = imageViewInfo.getRect().width();
         int height = imageViewInfo.getRect().height();
         int localX = imageViewInfo.getRect().left;
@@ -63,6 +68,11 @@ public class ViewUtils {
     }
 
     public static void startEnterViewScaleAnim(Context context, View target, ImageViewInfo imageViewInfo, Animator.AnimatorListener animatorListener) {
+        if (imageViewInfo.getRect() == null) {
+            LogUtils.e("rect is null");
+            return;
+        }
+
         int width = imageViewInfo.getRect().width();
         int height = imageViewInfo.getRect().height();
         int localX = imageViewInfo.getRect().left;

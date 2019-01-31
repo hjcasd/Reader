@@ -1,4 +1,4 @@
-package com.hjc.reader.adapter;
+package com.hjc.reader.ui.image.adapter;
 
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
