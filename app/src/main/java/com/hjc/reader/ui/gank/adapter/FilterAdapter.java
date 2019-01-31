@@ -25,7 +25,7 @@ public class FilterAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
                 imageResId = R.mipmap.icon_filter_android;
                 break;
 
-            case "iOS":
+            case "IOS":
                 imageResId = R.mipmap.icon_filter_ios;
                 break;
 

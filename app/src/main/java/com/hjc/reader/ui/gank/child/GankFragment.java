@@ -177,7 +177,7 @@ public class GankFragment extends BaseLazyFragment {
         rvFilter.setLayoutManager(manager);
 
         List<String> list = new ArrayList<>();
-        String[] titles = new String[]{"全部", "Android", "iOS", "App", "前端", "休息视频", "拓展资源"};
+        String[] titles = new String[]{"全部", "Android", "IOS", "App", "前端", "休息视频", "拓展资源"};
         for (int i = 0; i < titles.length; i++) {
             list.add(titles[i]);
         }
@@ -222,6 +222,7 @@ public class GankFragment extends BaseLazyFragment {
                         type = "all";
                         break;
                 }
+                tvTypeName.setText(titles[position]);
                 smartRefreshLayout.autoRefresh();
             }
         });
