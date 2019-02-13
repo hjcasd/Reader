@@ -40,7 +40,7 @@ public interface Api {
     Observable<WanBannerBean> getWanBannerList();
 
     /**
-     * 玩安卓，文章列表、知识体系下的文章
+     * 玩安卓，文章列表、知识体系下的文章列表
      *
      * @param page 页码，从0开始
      * @param cid  体系id

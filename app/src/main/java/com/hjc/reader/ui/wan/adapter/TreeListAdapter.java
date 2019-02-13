@@ -1,14 +1,15 @@
 package com.hjc.reader.ui.wan.adapter;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.model.response.WanTreeBean;
+import com.hjc.reader.ui.wan.child.ArticleListActivity;
 import com.nex3z.flowlayout.FlowLayout;
 
 import java.util.List;
@@ -45,7 +46,12 @@ public class TreeListAdapter extends BaseQuickAdapter<WanTreeBean.DataBean, Base
             tvTag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtils.showShort("tag---" + bean.getName());
+                    String name = bean.getName();
+                    int id = bean.getId();
+                    Intent intent = new Intent(mContext, ArticleListActivity.class);
+                    intent.putExtra("name", name);
+                    intent.putExtra("id", id);
+                    mContext.startActivity(intent);
                 }
             });
         }

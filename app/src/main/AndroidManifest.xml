@@ -73,6 +73,10 @@
             android:name=".ui.WebActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.wan.child.ArticleListActivity"
+            android:screenOrientation="portrait" />
+
 
         <!--              ==================更新相关=================              -->
         <service android:name=".ui.update.download.DownloadService" />
