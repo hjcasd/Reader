@@ -2,21 +2,15 @@ package com.hjc.reader.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.base.event.Event;
-import com.hjc.reader.base.event.EventManager;
-import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.LoginBean;
@@ -27,24 +21,24 @@ import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
- * @Date: 2019/2/13 15:24
- * @Description: 登录页面
+ * @Date: 2019/2/13 15:25
+ * @Description: 注册页面
  */
-public class LoginActivity extends BaseActivity {
+public class RegisterActivity extends BaseActivity {
     @BindView(R.id.title_bar)
     TitleBar titleBar;
     @BindView(R.id.et_username)
     TextInputEditText etUsername;
     @BindView(R.id.et_password)
     TextInputEditText etPassword;
-    @BindView(R.id.btn_login)
-    Button btnLogin;
-    @BindView(R.id.tv_register)
-    TextView tvRegister;
+    @BindView(R.id.et_confirm_password)
+    TextInputEditText etConfirmPassword;
+    @BindView(R.id.btn_register)
+    Button btnRegister;
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_login;
+        return R.layout.activity_register;
     }
 
     @Override
@@ -59,13 +53,12 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void addListeners() {
-        btnLogin.setOnClickListener(this);
-        tvRegister.setOnClickListener(this);
+        btnRegister.setOnClickListener(this);
 
         titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
             @Override
             public void leftClick(View view) {
-                KeyboardUtils.hideSoftInput(LoginActivity.this);
+                KeyboardUtils.hideSoftInput(RegisterActivity.this);
                 finish();
             }
 
@@ -79,19 +72,16 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onSingleClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_login:
-                login();
-                break;
-
-            case R.id.tv_register:
-                startActivityForResult(new Intent(this, RegisterActivity.class), 100);
+            case R.id.btn_register:
+                register();
                 break;
         }
     }
 
-    private void login() {
+    private void register() {
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         if (StringUtils.isEmpty(username)) {
             ToastUtils.showShort("请输入用户名");
@@ -113,22 +103,38 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
+        if (StringUtils.isEmpty(password)) {
+            ToastUtils.showShort("请输入确认密码");
+            return;
+        }
+
+        if (password.length() < 6) {
+            ToastUtils.showShort("确认密码长度至少为6位");
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            ToastUtils.showShort("两次密码输入不一致");
+            return;
+        }
+
         RetrofitHelper.getInstance().getWanAndroidService()
-                .login(username, password)
+                .register(username, password, confirmPassword)
                 .compose(RxHelper.bind(this))
                 .subscribe(new DefaultObserver<LoginBean>() {
                     @Override
                     public void onNext(LoginBean loginBean) {
                         if (loginBean != null) {
-                            ToastUtils.showShort("登录成功");
-                            KeyboardUtils.hideSoftInput(LoginActivity.this);
+                            ToastUtils.showShort("注册成功");
+                            KeyboardUtils.hideSoftInput(RegisterActivity.this);
 
-                            SPUtils.getInstance().put("isLogin", true);
-                            SPUtils.getInstance().put("username", loginBean.getData().getUsername());
-                            EventManager.sendEvent(new Event(EventCode.C));
+                            Intent intent = new Intent();
+                            intent.putExtra("username", username);
+                            intent.putExtra("password", password);
+                            setResult(1000, intent);
                             finish();
                         } else {
-                            ToastUtils.showShort("登录失败,请稍后重试");
+                            ToastUtils.showShort("注册失败,请稍后重试");
                         }
                     }
 
@@ -144,14 +150,4 @@ public class LoginActivity extends BaseActivity {
                 });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && data != null){
-            String username = data.getStringExtra("username");
-            String password = data.getStringExtra("password");
-            etUsername.setText(username);
-            etPassword.setText(password);
-        }
-    }
 }

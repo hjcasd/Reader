@@ -8,6 +8,7 @@ import com.hjc.reader.model.response.DBBookBean;
 import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.model.response.GankRecommendBean;
+import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.model.response.WanBannerBean;
 import com.hjc.reader.model.response.WanListBean;
@@ -17,6 +18,8 @@ import com.hjc.reader.model.response.WanTreeBean;
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -60,6 +63,29 @@ public interface Api {
     @GET("navi/json")
     Observable<WanNavigationBean> getNavigationList();
 
+    /**
+     * 玩安卓登录
+     *
+     * @param username 用户名
+     * @param password 密码
+     */
+    @FormUrlEncoded
+    @POST("user/login")
+    Observable<LoginBean> login(@Field("username") String username, @Field("password") String password);
+
+    /**
+     * 玩安卓注册
+     */
+    @FormUrlEncoded
+    @POST("user/register")
+    Observable<LoginBean> register(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
+
+    /**
+     * 退出
+     */
+    @GET("user/logout/json")
+    Observable<LoginBean> logout();
+
 
 
 
@@ -82,6 +108,8 @@ public interface Api {
      */
     @GET("today")
     Observable<GankRecommendBean> getRecommendData();
+
+
 
 
     /**     -------------------------------------豆瓣模块------------------------------**/
@@ -113,9 +141,7 @@ public interface Api {
 
 
 
-
-
-
+    /**     -------------------------------------测试------------------------------**/
 
     //检查版本更新
     @POST(URLConfig.URL_CHECK_VERSION)
