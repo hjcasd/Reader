@@ -1,23 +1,23 @@
 package com.hjc.reader.ui.douban.child;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseLazyFragment;
+import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.DBMovieBean;
-import com.hjc.reader.ui.douban.adapter.MovieAdapter;
+import com.hjc.reader.ui.douban.adapter.MovieTopAdapter;
+import com.hjc.reader.widget.TitleBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.util.List;
 
@@ -26,62 +26,53 @@ import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
- * @Date: 2019/1/21 11:29
- * @Description: 电影页面
+ * @Date: 2019/2/13 11:29
+ * @Description: 豆瓣电影Top250页面
  */
-public class MovieFragment extends BaseLazyFragment {
-
+public class MovieTopActivity extends BaseActivity {
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.rv_movie)
-    RecyclerView rvMovie;
+    @BindView(R.id.title_bar)
+    TitleBar titleBar;
+    @BindView(R.id.rv_top)
+    RecyclerView rvTop;
 
-
-    private MovieAdapter mAdapter;
-    private ConstraintLayout clTop;
-
-    public static MovieFragment newInstance() {
-        MovieFragment fragment = new MovieFragment();
-        return fragment;
-    }
+    private MovieTopAdapter mAdapter;
+    private int start = 0;
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_movie;
+        return R.layout.activity_movie_top;
     }
 
     @Override
     public void initView() {
-        View headerView = View.inflate(mContext, R.layout.layout_header_top250, null);
-        clTop = headerView.findViewById(R.id.cl_top);
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
+        rvTop.setLayoutManager(manager);
 
-        LinearLayoutManager manager = new LinearLayoutManager(mContext);
-        rvMovie.setLayoutManager(manager);
+        mAdapter = new MovieTopAdapter(null);
+        rvTop.setAdapter(mAdapter);
 
-        mAdapter = new MovieAdapter(null);
-        rvMovie.setAdapter(mAdapter);
-
-        mAdapter.addHeaderView(headerView);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
     }
 
     @Override
-    public void initData() {
+    public void initData(Bundle savedInstanceState) {
         smartRefreshLayout.autoRefresh();
     }
 
     /**
-     * 解析豆瓣电影数据
+     * 获取Top250电影数据
      */
-    private void getMovieData() {
+    private void getTopData() {
         RetrofitHelper.getInstance().getDouBanService()
-                .getMovieList()
+                .getMovieTop250(start, 21)
                 .compose(RxHelper.bind(this))
                 .subscribe(new DefaultObserver<DBMovieBean>() {
                     @Override
                     public void onNext(DBMovieBean dbMovieBean) {
                         if (dbMovieBean != null) {
-                            parseMovieData(dbMovieBean);
+                            parseTopData(dbMovieBean);
                         } else {
                             ToastUtils.showShort("未获取到数据");
                         }
@@ -99,26 +90,36 @@ public class MovieFragment extends BaseLazyFragment {
                 });
     }
 
-
     /**
-     * 解析豆瓣电影数据
-     *
-     * @param dbMovieBean 电影数据对应的bean
+     * 解析Top250电影数据
+     * @param dbMovieBean  电影数据对应的bean
      */
-    private void parseMovieData(DBMovieBean dbMovieBean) {
-        List<DBMovieBean.SubjectsBean> movieList = dbMovieBean.getSubjects();
-        if (movieList != null && movieList.size() > 0) {
-            mAdapter.setNewData(movieList);
-            smartRefreshLayout.finishRefresh(1000);
+    private void parseTopData(DBMovieBean dbMovieBean) {
+        List<DBMovieBean.SubjectsBean> subjectsList = dbMovieBean.getSubjects();
+        if (subjectsList != null) {
+            if (start == 0) {
+                mAdapter.setNewData(subjectsList);
+                smartRefreshLayout.finishRefresh(1000);
+            } else {
+                mAdapter.addData(subjectsList);
+                smartRefreshLayout.finishLoadMore(1000);
+            }
         }
     }
 
     @Override
     public void addListeners() {
-        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+        smartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                start += 21;
+                getTopData();
+            }
+
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                getMovieData();
+                start = 0;
+                getTopData();
             }
         });
 
@@ -129,15 +130,21 @@ public class MovieFragment extends BaseLazyFragment {
             }
         });
 
-        clTop.setOnClickListener(this);
+        titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
+            @Override
+            public void leftClick(View view) {
+                finish();
+            }
+
+            @Override
+            public void rightClick(View view) {
+
+            }
+        });
     }
 
     @Override
     public void onSingleClick(View v) {
-        switch (v.getId()) {
-            case R.id.cl_top:
-                startActivity(new Intent(mContext, MovieTopActivity.class));
-                break;
-        }
+
     }
 }
