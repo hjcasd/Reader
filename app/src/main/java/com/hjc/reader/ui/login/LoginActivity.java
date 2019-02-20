@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.R;
@@ -20,6 +19,7 @@ import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.LoginBean;
+import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.widget.TitleBar;
 
 import butterknife.BindView;
@@ -123,8 +123,8 @@ public class LoginActivity extends BaseActivity {
                             ToastUtils.showShort("登录成功");
                             KeyboardUtils.hideSoftInput(LoginActivity.this);
 
-                            SPUtils.getInstance().put("isLogin", true);
-                            SPUtils.getInstance().put("username", loginBean.getData().getUsername());
+                            AccountManager.getInstance().init(true, loginBean.getData().getUsername());
+
                             EventManager.sendEvent(new Event(EventCode.C));
                             finish();
                         } else {
@@ -147,7 +147,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && data != null){
+        if (requestCode == 100 && data != null) {
             String username = data.getStringExtra("username");
             String password = data.getStringExtra("password");
             etUsername.setText(username);

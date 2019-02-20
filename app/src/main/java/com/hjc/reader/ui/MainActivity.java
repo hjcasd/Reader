@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
@@ -29,6 +28,7 @@ import com.hjc.reader.ui.douban.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
 import com.hjc.reader.ui.login.LoginActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
+import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.utils.helper.ActivityManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -99,10 +99,10 @@ public class MainActivity extends BaseFragmentActivity {
 
         setCurrentItem(0);
 
-        String username = SPUtils.getInstance().getString("username");
+        String username = AccountManager.getInstance().getUsername();
         if (!StringUtils.isEmpty(username)) {
             tvUsername.setText(username);
-        }else{
+        } else {
             tvUsername.setText("请登录");
         }
     }
@@ -191,7 +191,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.fl_account:
-                boolean isLogin = SPUtils.getInstance().getBoolean("isLogin");
+                boolean isLogin = AccountManager.getInstance().isLogin();
                 if (isLogin) {
                     logout();
                 } else {
@@ -227,8 +227,8 @@ public class MainActivity extends BaseFragmentActivity {
                         if (loginBean != null) {
                             ToastUtils.showShort("退出账号成功");
                             tvUsername.setText("请登录");
-                            SPUtils.getInstance().put("isLogin", false);
-                            SPUtils.getInstance().put("username", "");
+
+                            AccountManager.getInstance().clear();
                         } else {
                             ToastUtils.showShort("退出账号失败,请稍后重试");
                         }
@@ -291,7 +291,7 @@ public class MainActivity extends BaseFragmentActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handlerEvent(Event<LoginBean> event) {
         if (event.getCode() == EventCode.C) {
-            String username = SPUtils.getInstance().getString("username");
+            String username = AccountManager.getInstance().getUsername();
             tvUsername.setText(username);
         }
     }
