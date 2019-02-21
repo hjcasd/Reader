@@ -98,7 +98,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     testImplementation 'junit:junit:4.12'
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation "com.android.support.constraint:constraint-layout:$rootProject.constraintVersion"
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
@@ -112,8 +112,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
     //RxJava
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.trello.rxlifecycle2:rxlifecycle:2.1.0'
     implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
 
@@ -130,7 +130,7 @@ dependencies {
 //    implementation 'jp.wasabeef:glide-transformations:4.0.1'
 
     //权限
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc12'
 
     //沉浸式
     implementation 'com.gyf.immersionbar:immersionbar:2.3.2-beta01'
@@ -161,6 +161,6 @@ dependencies {
     //流式布局
     implementation 'com.nex3z:flow-layout:1.2.4'
 
+    //可缩放图片
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
-
 }

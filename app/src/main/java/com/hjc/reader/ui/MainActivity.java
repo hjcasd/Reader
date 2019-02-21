@@ -1,6 +1,5 @@
 package com.hjc.reader.ui;
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +29,8 @@ import com.hjc.reader.ui.login.LoginActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
 import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.utils.helper.ActivityManager;
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.hjc.reader.utils.permission.PermissionCallBack;
+import com.hjc.reader.utils.permission.PermissionManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -111,18 +111,18 @@ public class MainActivity extends BaseFragmentActivity {
      * 申请权限
      */
     private void requestPermission() {
-        RxPermissions rxPermissions = new RxPermissions(this);
+        PermissionManager manager = new PermissionManager(this);
+        manager.requestStoragePermission(new PermissionCallBack() {
+            @Override
+            public void onGranted() {
+                ToastUtils.showShort("申请存储权限成功");
+            }
 
-        rxPermissions.requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(permission -> {
-                    if (permission.granted) {
-                        ToastUtils.showShort("申请存储权限成功");
-                    } else if (permission.shouldShowRequestPermissionRationale) {
-                        ToastUtils.showShort("该应用需要存储权限,否则可能会导致应用异常");
-                    } else {
-                        ToastUtils.showShort("申请存储权限失败");
-                    }
-                });
+            @Override
+            public void onDenied() {
+                ToastUtils.showShort("申请存储权限失败");
+            }
+        });
     }
 
     @Override
