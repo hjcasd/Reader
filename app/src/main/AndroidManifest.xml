@@ -86,6 +86,11 @@
             android:screenOrientation="portrait" />
 
 
+        <activity
+            android:name=".ui.douban.child.detail.MovieDetailActivity"
+            android:screenOrientation="portrait" />
+
+
         <!--              ==================更新相关=================              -->
         <service android:name=".ui.update.download.DownloadService" />
 

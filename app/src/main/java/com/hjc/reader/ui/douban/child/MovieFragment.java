@@ -3,6 +3,8 @@ package com.hjc.reader.ui.douban.child;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,7 +16,9 @@ import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.DBMovieBean;
+import com.hjc.reader.ui.MainActivity;
 import com.hjc.reader.ui.douban.adapter.MovieAdapter;
+import com.hjc.reader.ui.douban.child.detail.MovieDetailActivity;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -36,9 +40,9 @@ public class MovieFragment extends BaseLazyFragment {
     @BindView(R.id.rv_movie)
     RecyclerView rvMovie;
 
+    private ConstraintLayout clTop;
 
     private MovieAdapter mAdapter;
-    private ConstraintLayout clTop;
 
     public static MovieFragment newInstance() {
         MovieFragment fragment = new MovieFragment();
@@ -71,7 +75,7 @@ public class MovieFragment extends BaseLazyFragment {
     }
 
     /**
-     * 解析豆瓣电影数据
+     * 获取豆瓣电影数据
      */
     private void getMovieData() {
         RetrofitHelper.getInstance().getDouBanService()
@@ -108,28 +112,24 @@ public class MovieFragment extends BaseLazyFragment {
     private void parseMovieData(DBMovieBean dbMovieBean) {
         List<DBMovieBean.SubjectsBean> movieList = dbMovieBean.getSubjects();
         if (movieList != null && movieList.size() > 0) {
+
+            rvMovie.setVisibility(View.VISIBLE);
             mAdapter.setNewData(movieList);
             smartRefreshLayout.finishRefresh(1000);
+        }else{
+            rvMovie.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void addListeners() {
+        clTop.setOnClickListener(this);
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 getMovieData();
             }
         });
-
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showShort("position---" + position);
-            }
-        });
-
-        clTop.setOnClickListener(this);
     }
 
     @Override

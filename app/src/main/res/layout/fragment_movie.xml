@@ -14,6 +14,7 @@
         android:id="@+id/rv_movie"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:scrollbars="vertical"/>
 
 </com.scwang.smartrefresh.layout.SmartRefreshLayout>
