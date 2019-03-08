@@ -13,7 +13,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.model.response.DBMovieBean;
-import com.hjc.reader.ui.douban.child.detail.MovieDetailActivity;
+import com.hjc.reader.ui.douban.child.MovieDetailActivity;
 import com.hjc.reader.utils.FormatUtils;
 import com.hjc.reader.utils.image.ImageLoader;
 

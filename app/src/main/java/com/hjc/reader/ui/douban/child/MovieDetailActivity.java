@@ -1,4 +1,4 @@
-package com.hjc.reader.ui.douban.child.detail;
+package com.hjc.reader.ui.douban.child;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,19 +18,18 @@ import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.RoleBean;
 import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.model.response.DBMovieDetailBean;
-import com.hjc.reader.ui.douban.adapter.MovieAdapter;
 import com.hjc.reader.ui.douban.adapter.RoleAdapter;
 import com.hjc.reader.utils.FormatUtils;
 import com.hjc.reader.utils.image.ImageLoader;
 import com.hjc.reader.widget.TitleBar;
 import com.hjc.reader.widget.dialog.LoadingDialog;
 import com.hjc.reader.widget.helper.LinearItemDecoration;
+import com.hjc.reader.widget.helper.NoScrollLinearManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.observers.DefaultObserver;
 
 /**
@@ -173,11 +171,11 @@ public class MovieDetailActivity extends BaseActivity {
             list.add(bean);
         }
 
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+        NoScrollLinearManager manager = new NoScrollLinearManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
+        manager.setScrollEnabled(false);
         rvRole.setLayoutManager(manager);
-
-//        rvRole.addItemDecoration(new LinearItemDecoration(this, LinearItemDecoration.VERTICAL_LIST, R.drawable.shape_rv_divider));
+        rvRole.addItemDecoration(new LinearItemDecoration(this, LinearItemDecoration.VERTICAL_LIST, R.drawable.shape_rv_divider));
 
         RoleAdapter adapter = new RoleAdapter(list);
         rvRole.setAdapter(adapter);

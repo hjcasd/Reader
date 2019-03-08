@@ -1,6 +1,7 @@
 package com.hjc.reader.ui;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -9,12 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.utils.AppUtils;
+import com.hjc.reader.utils.web.MyWebViewClient;
 import com.hjc.reader.widget.ProgressWebView;
 
 import butterknife.BindView;
@@ -43,12 +46,45 @@ public class WebActivity extends BaseActivity {
     @Override
     public void initView() {
         initToolBar();
+        initWebView();
+    }
 
+    private void initWebView() {
         WebSettings settings = webView.getSettings();
+        // 网页内容的宽度是否可大于WebView控件的宽度
+        settings.setLoadWithOverviewMode(false);
+        // 保存表单数据
+        settings.setSaveFormData(true);
+        // 是否应该支持使用其屏幕缩放控件和手势缩放
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        // 启动应用缓存
+        settings.setAppCacheEnabled(true);
+        // 设置缓存模式
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // setDefaultZoom  api19被弃用
+        // 设置此属性，可任意比例缩放。
+        settings.setUseWideViewPort(true);
+        // 不缩放
+        webView.setInitialScale(100);
+        // 告诉WebView启用JavaScript执行。默认的是false。
         settings.setJavaScriptEnabled(true);
-        //设置自适应屏幕，两者合用
-        settings.setUseWideViewPort(true); //将图片调整到适合webview的大小
-        settings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        //  页面加载好以后，再放开图片
+        settings.setBlockNetworkImage(false);
+        // 使用localStorage则必须打开
+        settings.setDomStorageEnabled(true);
+        // 排版适应屏幕
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+
+        // webview从5.0开始默认不允许混合模式,https中不能加载http资源,需要设置开启。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        /** 设置字体默认缩放大小(改变网页字体大小,setTextSize  api14被弃用)*/
+        settings.setTextZoom(100);
+
+        webView.setWebViewClient(new MyWebViewClient());
     }
 
     private void initToolBar() {
@@ -97,7 +133,7 @@ public class WebActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-               finish();
+                finish();
                 break;
 
             // 刷新页面

@@ -1,6 +1,7 @@
 package com.hjc.reader.ui;
 
 import android.content.Intent;
+import android.icu.text.BreakIterator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -14,11 +15,14 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 public class SplashActivity extends BaseActivity {
     @BindView(R.id.tv_time)
     TextView tvTime;
+    private Disposable disposable1;
+    private Disposable disposable2;
 
     @Override
     public int getLayoutId() {
@@ -32,7 +36,7 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        Observable.timer(3, TimeUnit.SECONDS)
+        disposable1 = Observable.timer(3, TimeUnit.SECONDS)
                 .compose(RxSchedulers.ioToMain())
                 .subscribe(new Consumer<Long>() {
                     @Override
@@ -43,7 +47,7 @@ public class SplashActivity extends BaseActivity {
                 });
 
         //倒计时3s
-        Observable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
+        disposable2 = Observable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
                 .compose(RxHelper.bind(this))
                 .subscribe(new Consumer<Long>() {
                     @Override
@@ -55,11 +59,20 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     public void addListeners() {
-
+        tvTime.setOnClickListener(this);
     }
 
     @Override
     public void onSingleClick(View v) {
-
+        switch (v.getId()){
+            case R.id.tv_time:
+                if (disposable1 != null && disposable2 != null){
+                    disposable1.dispose();
+                    disposable2.dispose();
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
+                }
+                break;
+        }
     }
 }
