@@ -123,13 +123,6 @@ public class MovieTopActivity extends BaseActivity {
             }
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showShort("position---" + position);
-            }
-        });
-
         titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
             @Override
             public void leftClick(View view) {
