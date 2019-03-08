@@ -5,6 +5,7 @@ import com.hjc.reader.http.bean.BaseResponse;
 import com.hjc.reader.http.config.URLConfig;
 import com.hjc.reader.model.request.UpdateRequest;
 import com.hjc.reader.model.response.DBBookBean;
+import com.hjc.reader.model.response.DBBookDetailBean;
 import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.model.response.DBMovieDetailBean;
 import com.hjc.reader.model.response.GankIOBean;
@@ -144,10 +145,20 @@ public interface Api {
     /**
      * 获取电影详情
      *
-     * @param id 电影bean里的id
+     * @param id 电影id
      */
     @GET("v2/movie/subject/{id}")
     Observable<DBMovieDetailBean> getMovieDetail(@Path("id") String id);
+
+    /**
+     * 获取书籍详情
+     * @param id 书籍id
+     * @return
+     */
+    @GET("v2/book/{id}")
+    Observable<DBBookDetailBean> getBookDetail(@Path("id") String id);
+
+
 
 
 

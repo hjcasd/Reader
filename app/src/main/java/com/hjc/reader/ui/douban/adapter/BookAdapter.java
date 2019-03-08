@@ -1,6 +1,11 @@
 package com.hjc.reader.ui.douban.adapter;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -8,6 +13,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.model.response.DBBookBean;
+import com.hjc.reader.ui.douban.child.BookDetailActivity;
+import com.hjc.reader.ui.douban.child.MovieDetailActivity;
 import com.hjc.reader.utils.image.ImageLoader;
 
 import java.util.List;
@@ -26,5 +33,15 @@ public class BookAdapter extends BaseQuickAdapter<DBBookBean.BooksBean, BaseView
         ImageLoader.loadImage(ivCover, item.getImages().getLarge(), 2);
         tvName.setText(item.getTitle());
         tvScore.setText(item.getRating().getAverage());
+
+        helper.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, BookDetailActivity.class);
+                intent.putExtra("bean", item);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, ivCover, mContext.getResources().getString(R.string.transition_book_img));
+                ActivityCompat.startActivity(mContext, intent, options.toBundle());
+            }
+        });
     }
 }

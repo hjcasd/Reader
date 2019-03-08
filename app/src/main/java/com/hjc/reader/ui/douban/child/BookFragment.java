@@ -125,13 +125,6 @@ public class BookFragment extends BaseLazyFragment {
                 getBookData();
             }
         });
-
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ToastUtils.showShort("position---" + position);
-            }
-        });
     }
 
     @Override

@@ -4,20 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<com.hjc.reader.widget.TitleBar-->
-    <!--android:id="@+id/title_bar"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--app:leftImage="@mipmap/icon_back"-->
-    <!--app:rightImage="@mipmap/icon_more"-->
-    <!--app:titleColor="@color/white"-->
-    <!--app:titleText="web标题">-->
-
-    <!--</com.hjc.reader.widget.TitleBar>-->
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/tool_bar"
         android:layout_width="0dp"

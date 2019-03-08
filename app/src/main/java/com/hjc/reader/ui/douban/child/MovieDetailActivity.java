@@ -1,6 +1,7 @@
 package com.hjc.reader.ui.douban.child;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
@@ -20,6 +20,7 @@ import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.model.response.DBMovieDetailBean;
 import com.hjc.reader.ui.douban.adapter.RoleAdapter;
 import com.hjc.reader.utils.FormatUtils;
+import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.image.ImageLoader;
 import com.hjc.reader.widget.TitleBar;
 import com.hjc.reader.widget.dialog.LoadingDialog;
@@ -47,6 +48,8 @@ public class MovieDetailActivity extends BaseActivity {
     ImageView ivCover;
     @BindView(R.id.tv_score)
     TextView tvScore;
+    @BindView(R.id.tv_count)
+    TextView tvCount;
     @BindView(R.id.tv_director)
     TextView tvDirector;
     @BindView(R.id.tv_main)
@@ -68,6 +71,8 @@ public class MovieDetailActivity extends BaseActivity {
 
     private LoadingDialog loadingDialog;
 
+    private DBMovieBean.SubjectsBean mData;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_movie_detail;
@@ -82,18 +87,21 @@ public class MovieDetailActivity extends BaseActivity {
     public void initData(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent != null) {
-            DBMovieBean.SubjectsBean bean = (DBMovieBean.SubjectsBean) intent.getSerializableExtra("bean");
-            if (bean != null) {
-                titleBar.setTitle(bean.getTitle());
+            mData = (DBMovieBean.SubjectsBean) intent.getSerializableExtra("bean");
+            if (mData != null) {
+                titleBar.setTitle(mData.getTitle());
 
-                ImageLoader.loadImage(ivCover, bean.getImages().getLarge(), 3);
-                tvDirector.setText(FormatUtils.formatName(bean.getDirectors()));
-                tvMain.setText(FormatUtils.formatName(bean.getCasts()));
-                tvType.setText(FormatUtils.formatGenres(bean.getGenres()));
-                tvScore.setText(bean.getRating().getAverage() + "");
+                ImageLoader.loadImage(ivCover, mData.getImages().getLarge(), 3);
+                ImageLoader.loadBlurImage(ivBlur, mData.getImages().getMedium(), 25, 5);
+
+                tvScore.setText(mData.getRating().getAverage() + "");
+                tvCount.setText(mData.getCollect_count() + "人评分");
+                tvDirector.setText(FormatUtils.formatName(mData.getDirectors()));
+                tvMain.setText(FormatUtils.formatName(mData.getCasts()));
+                tvType.setText(FormatUtils.formatGenres(mData.getGenres()));
 
                 loadingDialog.showDialog(getSupportFragmentManager());
-                getDetailData(bean.getId());
+                getDetailData(mData.getId());
             }
         }
     }
@@ -186,12 +194,18 @@ public class MovieDetailActivity extends BaseActivity {
         titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
             @Override
             public void leftClick(View view) {
-                finish();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    finishAfterTransition();
+                } else {
+                    finish();
+                }
             }
 
             @Override
             public void rightClick(View view) {
-
+                if (mData != null){
+                    SchemeUtils.jumpToWeb(MovieDetailActivity.this, mData.getAlt(), mData.getTitle());
+                }
             }
         });
     }
