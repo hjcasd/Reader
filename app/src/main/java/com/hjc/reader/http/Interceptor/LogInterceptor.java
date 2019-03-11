@@ -1,8 +1,11 @@
 package com.hjc.reader.http.Interceptor;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.hjc.reader.constant.AppConstants;
+import com.hjc.reader.utils.FormatUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -17,6 +20,7 @@ import okio.BufferedSource;
  * @Description: 日志拦截器
  */
 public class LogInterceptor implements Interceptor {
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -25,15 +29,21 @@ public class LogInterceptor implements Interceptor {
 
         BufferedSource source = response.body().source();
         source.request(Long.MAX_VALUE);
+        Buffer buffer = source.buffer();
 
-        String log = ""
-                .concat("\nrequest code ====== " + response.code())
-                .concat("\nrequest url ====== " + request.url())
-                .concat("\nrequest duration ====== " + (response.receivedResponseAtMillis() - response.sentRequestAtMillis()) + "ms")
-                .concat("\nrequest header ====== " + request.headers())
-                .concat("\nrequest body ====== " + bodyToString(request.body()));
 
-        LogUtils.e("请求信息" + log);
+        if (AppConstants.isDebug) {
+            String requestJson = "请求信息:"
+                    .concat("\nrequest code ====== " + response.code())
+                    .concat("\nrequest url ====== " + request.url())
+                    .concat("\nrequest duration ====== " + (response.receivedResponseAtMillis() - response.sentRequestAtMillis()) + "ms")
+                    .concat("\nrequest header ====== " + request.headers())
+                    .concat("\nrequest body ====== " + bodyToString(request.body()));
+
+            LogUtils.e(requestJson);
+            String responseJson = buffer.clone().readString(UTF8);
+            FormatUtils.formatJsonAndLog(responseJson);
+        }
         return response;
     }
 

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.model.ImageViewInfo;
 import com.hjc.reader.ui.image.GalleyActivity;
 import com.hjc.reader.ui.WebActivity;
@@ -25,6 +27,10 @@ public class SchemeUtils {
      * @param title   标题文字
      */
     public static void jumpToWeb(Context context, String url, String title) {
+        if (FastClickUtils.isFastClick()){
+            ToastUtils.showShort("点的太快了,歇会呗!");
+            return;
+        }
         Intent intent = new Intent(context, WebActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("title", title);

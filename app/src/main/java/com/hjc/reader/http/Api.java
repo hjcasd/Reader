@@ -165,7 +165,7 @@ public interface Api {
     /**     -------------------------------------测试------------------------------**/
 
     //检查版本更新
-    @POST(URLConfig.URL_CHECK_VERSION)
+    @POST("ifs/services/bffq/v1/appVersion")
     Observable<BaseResponse<VersionBean>> checkVersion(@Body UpdateRequest req);
 
     //下载App

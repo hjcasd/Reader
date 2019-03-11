@@ -93,6 +93,10 @@
             android:name=".ui.douban.child.BookDetailActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.collect.CollectActivity"
+            android:screenOrientation="portrait" />
+
 
         <!--              ==================更新相关=================              -->
         <service android:name=".ui.update.download.DownloadService" />

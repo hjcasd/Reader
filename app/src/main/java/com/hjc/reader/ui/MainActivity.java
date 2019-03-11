@@ -23,6 +23,7 @@ import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.LoginBean;
+import com.hjc.reader.ui.collect.CollectActivity;
 import com.hjc.reader.ui.douban.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
 import com.hjc.reader.ui.login.LoginActivity;
@@ -208,7 +209,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_collect:
-                ToastUtils.showShort("我的收藏");
+                startActivity(new Intent(MainActivity.this, CollectActivity.class));
                 break;
 
             case R.id.ll_exit:

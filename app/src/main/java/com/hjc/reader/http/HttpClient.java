@@ -22,6 +22,7 @@ public class HttpClient {
         mBuilder.connectTimeout(HttpConfig.HTTP_TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(HttpConfig.HTTP_TIME_OUT, TimeUnit.SECONDS)
                 .writeTimeout(HttpConfig.HTTP_TIME_OUT, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
 //                .addNetworkInterceptor(new TokenInterceptor(null))  //添加Token拦截器
                 .addInterceptor(new LogInterceptor());
     }

@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -24,6 +24,20 @@
     </style>
 
 
+    <!--我的收藏 - 标题收起时的字体颜色-->
+    <style name="collapsing_title_style_collapsed" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!--我的收藏 - 标题展开时的字体颜色-->
+    <style name="collapsing_title_style_expanded" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
+
+    </style>
+
+
     <style name="Dialog_Base" parent="android:style/Theme.Dialog">
         <!--背景颜色及和透明程度-->
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -36,7 +50,6 @@
         <!--是否模糊-->
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-
 
 
     <!-- ActionSheet进出动画 -->
@@ -70,9 +83,6 @@
         <item name="android:windowEnterAnimation">@anim/dialog_left_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_left_out</item>
     </style>
-
-
-
 
 
     <style name="MyEditText" parent="Theme.AppCompat.Light">

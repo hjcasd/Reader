@@ -26,7 +26,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+//        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getLayoutId());
 
         mBinder = ButterKnife.bind(this);
