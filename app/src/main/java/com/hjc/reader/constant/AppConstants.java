@@ -17,4 +17,9 @@ public class AppConstants {
     //调试模式
     public static boolean isDebug = true;
 
+
+    //Cookie相关
+    public static final String COOKIE_HEADER = "Set-Cookie";
+    public static final String COOKIE_CONFIG = "cookie_config";
+    public static final String COOKIE_KEY = "cookie";
 }

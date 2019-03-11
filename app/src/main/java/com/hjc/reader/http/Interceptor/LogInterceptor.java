@@ -37,7 +37,7 @@ public class LogInterceptor implements Interceptor {
                     .concat("\nrequest code ====== " + response.code())
                     .concat("\nrequest url ====== " + request.url())
                     .concat("\nrequest duration ====== " + (response.receivedResponseAtMillis() - response.sentRequestAtMillis()) + "ms")
-                    .concat("\nrequest header ====== " + request.headers())
+                    .concat("\nrequest header ====== " + request.headers().toString())
                     .concat("\nrequest body ====== " + bodyToString(request.body()));
 
             LogUtils.e(requestJson);

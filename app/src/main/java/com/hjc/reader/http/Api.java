@@ -13,6 +13,7 @@ import com.hjc.reader.model.response.GankRecommendBean;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.model.response.WanBannerBean;
+import com.hjc.reader.model.response.WanCollectBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.model.response.WanNavigationBean;
 import com.hjc.reader.model.response.WanTreeBean;
@@ -66,6 +67,23 @@ public interface Api {
     Observable<WanNavigationBean> getNavigationList();
 
     /**
+     * 收藏的文章列表
+     *
+     * @param page 页码
+     */
+    @GET("lg/collect/list/{page}/json")
+    Observable<WanCollectBean> getArticleList(@Path("page") int page);
+
+    /**
+     * 收藏文章，errorCode返回0为成功
+     *
+     * @param id 文章id
+     */
+    @POST("lg/collect/{id}/json")
+    Observable<WanCollectBean> collectArticle(@Path("id") int id);
+
+
+    /**
      * 玩安卓登录
      *
      * @param username 用户名
@@ -83,7 +101,7 @@ public interface Api {
     Observable<LoginBean> register(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
 
     /**
-     * 退出
+     * 玩安卓退出
      */
     @GET("user/logout/json")
     Observable<LoginBean> logout();

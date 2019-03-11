@@ -8,8 +8,8 @@ import com.hjc.reader.R;
 
 import java.util.List;
 
-public class URLAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
-    public URLAdapter(@Nullable List<String> data) {
+public class LinkAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+    public LinkAdapter(@Nullable List<String> data) {
         super(R.layout.item_rv_article, data) ;
     }
 

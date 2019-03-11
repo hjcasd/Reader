@@ -1,37 +1,25 @@
 package com.hjc.reader.ui.collect;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.ui.collect.child.ArticleFragment;
 import com.hjc.reader.ui.collect.child.JokeFragment;
-import com.hjc.reader.ui.collect.child.URLFragment;
-import com.hjc.reader.ui.wan.child.NavigationFragment;
-import com.hjc.reader.ui.wan.child.TreeFragment;
-import com.hjc.reader.ui.wan.child.WanFragment;
-import com.hjc.reader.utils.AppUtils;
+import com.hjc.reader.ui.collect.child.LinkFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * @Author: HJC
@@ -72,7 +60,7 @@ public class CollectActivity extends BaseActivity {
         List<Fragment> fragments = new ArrayList<>();
 
         ArticleFragment articleFragment = ArticleFragment.newInstance();
-        URLFragment urlFragment = URLFragment.newInstance();
+        LinkFragment urlFragment = LinkFragment.newInstance();
         JokeFragment jokeFragment = JokeFragment.newInstance();
 
         fragments.add(articleFragment);

@@ -1,7 +1,9 @@
 package com.hjc.reader.http;
 
 
+import com.hjc.reader.http.Interceptor.AddCookiesInterceptor;
 import com.hjc.reader.http.Interceptor.LogInterceptor;
+import com.hjc.reader.http.Interceptor.ReceivedCookiesInterceptor;
 import com.hjc.reader.http.config.HttpConfig;
 
 import java.util.concurrent.TimeUnit;
@@ -24,6 +26,8 @@ public class HttpClient {
                 .writeTimeout(HttpConfig.HTTP_TIME_OUT, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
 //                .addNetworkInterceptor(new TokenInterceptor(null))  //添加Token拦截器
+                .addInterceptor(new ReceivedCookiesInterceptor())
+                .addInterceptor(new AddCookiesInterceptor())
                 .addInterceptor(new LogInterceptor());
     }
 
