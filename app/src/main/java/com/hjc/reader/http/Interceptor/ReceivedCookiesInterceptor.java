@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.hjc.reader.constant.AppConstants;
+import com.hjc.reader.utils.helper.AccountManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,19 +21,18 @@ import okhttp3.Response;
  * @Description: 登录后保存cookie到SharedPreferences中
  */
 public class ReceivedCookiesInterceptor implements Interceptor {
+    private static final String COOKIE_HEADER = "Set-Cookie";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Response originalResponse = chain.proceed(chain.request());
         //获取请求返回的cookie
-        if (!originalResponse.headers(AppConstants.COOKIE_HEADER).isEmpty()) {
-            List<String> cookieList = originalResponse.headers(AppConstants.COOKIE_HEADER);
-
-            LogUtils.e("原始cookie:" + cookieList.toString());
+        if (!originalResponse.headers(COOKIE_HEADER).isEmpty()) {
+            List<String> cookieList = originalResponse.headers(COOKIE_HEADER);
 
             // 返回cookie
             if (!TextUtils.isEmpty(cookieList.toString())) {
-                String oldCookie = SPUtils.getInstance(AppConstants.COOKIE_CONFIG).getString(AppConstants.COOKIE_KEY);
+                String oldCookie = AccountManager.getInstance().getCookie();
                 HashMap<String, String> cookieHashMap = new HashMap<>();
 
                 // 之前存过cookie
@@ -75,8 +75,7 @@ public class ReceivedCookiesInterceptor implements Interceptor {
                         sb.append(";");
                     }
                 }
-                SPUtils.getInstance(AppConstants.COOKIE_CONFIG).put(AppConstants.COOKIE_KEY, sb.toString());
-                LogUtils.e("处理后的cookie:" + sb.toString());
+                AccountManager.getInstance().setCookie(sb.toString());
             }
         }
         return originalResponse;

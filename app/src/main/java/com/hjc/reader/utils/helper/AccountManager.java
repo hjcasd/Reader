@@ -10,8 +10,9 @@ import com.blankj.utilcode.util.SPUtils;
 public class AccountManager {
     private static AccountManager mInstance;
 
-    private static final String IS_LOGIN = "isLogin";
-    private static final String USERNAME = "username";
+    private static final String KEY_IS_LOGIN = "isLogin";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_COOKIE = "cookie";
 
     private AccountManager() {
     }
@@ -27,7 +28,7 @@ public class AccountManager {
         return mInstance;
     }
 
-    public void init(boolean isLogin, String username){
+    public void init(boolean isLogin, String username) {
         AccountManager.getInstance().setLogin(isLogin);
         AccountManager.getInstance().setUsername(username);
     }
@@ -38,14 +39,25 @@ public class AccountManager {
      * @return
      */
     public String getUsername() {
-        String username = SPUtils.getInstance().getString(USERNAME);
+        String username = SPUtils.getInstance().getString(KEY_USERNAME);
         return username;
     }
 
     public void setUsername(String username) {
-        SPUtils.getInstance().put(USERNAME, username);
+        SPUtils.getInstance().put(KEY_USERNAME, username);
     }
 
+    /**
+     * 获取cookie
+     */
+    public String getCookie() {
+        String cookie = SPUtils.getInstance().getString(KEY_COOKIE);
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        SPUtils.getInstance().put(KEY_COOKIE, cookie);
+    }
 
     /**
      * 用户是否登录
@@ -53,19 +65,20 @@ public class AccountManager {
      * @return
      */
     public boolean isLogin() {
-        boolean isLogin = SPUtils.getInstance().getBoolean(IS_LOGIN);
+        boolean isLogin = SPUtils.getInstance().getBoolean(KEY_IS_LOGIN);
         return isLogin;
     }
 
     public void setLogin(boolean isLogin) {
-        SPUtils.getInstance().put(IS_LOGIN, isLogin);
+        SPUtils.getInstance().put(KEY_IS_LOGIN, isLogin);
     }
 
     /**
      * 清除账户信息
      */
-    public void clear(){
+    public void clear() {
         AccountManager.getInstance().setLogin(false);
         AccountManager.getInstance().setUsername("");
+        AccountManager.getInstance().setCookie("");
     }
 }

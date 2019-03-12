@@ -1,4 +1,4 @@
-package com.hjc.reader.ui.collect.child;
+package com.hjc.reader.ui.douban.child;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,13 +11,16 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.model.response.CollectArticleBean;
-import com.hjc.reader.ui.collect.adapter.ArticleAdapter;
-import com.hjc.reader.utils.SchemeUtils;
+import com.hjc.reader.model.response.CollectLinkBean;
+import com.hjc.reader.model.response.JokeBean;
+import com.hjc.reader.ui.douban.adapter.JokeAdapter;
+import com.hjc.reader.widget.helper.LinearItemDecoration;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,38 +29,40 @@ import io.reactivex.observers.DefaultObserver;
 /**
  * @Author: HJC
  * @Date: 2019/3/11 11:00
- * @Description: 文章页面
+ * @Description: 段子页面
  */
-public class ArticleFragment extends BaseLazyFragment {
+public class JokeFragment extends BaseLazyFragment {
 
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.rv_article)
-    RecyclerView rvArticle;
+    @BindView(R.id.rv_joke)
+    RecyclerView rvJoke;
 
-    private ArticleAdapter mAdapter;
+    private JokeAdapter mAdapter;
 
-    private int mPage = 0;
+    private int mPage = 1;
 
-    public static ArticleFragment newInstance() {
-        ArticleFragment fragment = new ArticleFragment();
+    public static JokeFragment newInstance() {
+        JokeFragment fragment = new JokeFragment();
         return fragment;
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_article;
+        return R.layout.fragment_joke;
     }
 
     @Override
     public void initView() {
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
-        rvArticle.setLayoutManager(manager);
+        rvJoke.setLayoutManager(manager);
 
-        mAdapter = new ArticleAdapter(null);
-        rvArticle.setAdapter(mAdapter);
+        mAdapter = new JokeAdapter(null);
+        rvJoke.setAdapter(mAdapter);
 
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+        rvJoke.addItemDecoration(new LinearItemDecoration(mContext, LinearItemDecoration.VERTICAL_LIST, R.drawable.shape_rv_divider));
+
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
     }
 
     @Override
@@ -66,17 +71,17 @@ public class ArticleFragment extends BaseLazyFragment {
     }
 
     /**
-     * 获取文章列表数据
+     * 获取段子列表
      */
-    private void getArticleList() {
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .getArticleList(mPage)
+    private void getJokeList() {
+        RetrofitHelper.getInstance().getQSBKService()
+                .getJokeList(mPage)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new DefaultObserver<JokeBean>() {
                     @Override
-                    public void onNext(CollectArticleBean collectArticleBean) {
-                        if (collectArticleBean != null) {
-                            parseArticleData(collectArticleBean);
+                    public void onNext(JokeBean jokeBean) {
+                        if (jokeBean != null) {
+                            parseJokeList(jokeBean);
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
                             smartRefreshLayout.finishRefresh(1000);
@@ -95,29 +100,15 @@ public class ArticleFragment extends BaseLazyFragment {
                 });
     }
 
-    /**
-     * 解析搜藏文章列表数据
-     *
-     * @param collectArticleBean 收藏的文章对应的bean
-     */
-    private void parseArticleData(CollectArticleBean collectArticleBean) {
-        CollectArticleBean.DataBean dataBean = collectArticleBean.getData();
-        List<CollectArticleBean.DataBean.DatasBean> dataList = dataBean.getDatas();
+    private void parseJokeList(JokeBean jokeBean) {
+        List<JokeBean.ItemsBean> dataList = jokeBean.getItems();
         if (dataList != null && dataList.size() > 0) {
-            if (mPage == 0) {
+            if (mPage == 1) {
                 mAdapter.setNewData(dataList);
                 smartRefreshLayout.finishRefresh(1000);
             } else {
                 mAdapter.addData(dataList);
                 smartRefreshLayout.finishLoadMore(1000);
-            }
-        } else {
-            if (mPage == 0) {
-                smartRefreshLayout.finishRefresh(1000);
-                ToastUtils.showShort("暂无收藏,快去收藏吧");
-            } else {
-                smartRefreshLayout.finishLoadMore(1000);
-                ToastUtils.showShort("没有更多收藏了");
             }
         }
     }
@@ -128,24 +119,20 @@ public class ArticleFragment extends BaseLazyFragment {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 mPage++;
-                getArticleList();
+                getJokeList();
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPage = 0;
-                getArticleList();
+                mPage = 1;
+                getJokeList();
             }
         });
 
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<CollectArticleBean.DataBean.DatasBean> dataList = adapter.getData();
-                CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
-                String title = bean.getTitle();
-                String link = bean.getLink();
-                SchemeUtils.jumpToWeb(mContext, link, title);
+
             }
         });
     }
@@ -154,4 +141,5 @@ public class ArticleFragment extends BaseLazyFragment {
     public void onSingleClick(View v) {
 
     }
+
 }

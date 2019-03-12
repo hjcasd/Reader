@@ -9,6 +9,7 @@ import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.model.response.DBMovieDetailBean;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.model.response.GankRecommendBean;
+import com.hjc.reader.model.response.JokeBean;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.model.response.WanBannerBean;
@@ -65,7 +66,6 @@ public interface Api {
      */
     @GET("navi/json")
     Observable<WanNavigationBean> getNavigationList();
-
 
 
     /**
@@ -212,15 +212,36 @@ public interface Api {
     Observable<DBBookDetailBean> getBookDetail(@Path("id") String id);
 
 
-    /**
-     * -------------------------------------测试------------------------------
-     **/
 
-    //检查版本更新
+
+
+    /**     -------------------------------------糗事百科模块------------------------------**/
+
+    /**
+     * 获取段子列表
+     *
+     * @param page 页码，从1开始
+     */
+    @GET("article/list/text")
+    Observable<JokeBean> getJokeList(@Query("page") int page);
+
+
+
+
+
+
+    /**     -------------------------------------测试模块------------------------------**/
+
+    /**
+     * 检查版本更新
+     */
+
     @POST("ifs/services/bffq/v1/appVersion")
     Observable<BaseResponse<VersionBean>> checkVersion(@Body UpdateRequest req);
 
-    //下载App
+    /**
+     * 下载App
+     */
     @Streaming
     @GET
     Observable<ResponseBody> downloadApk(@Url String url);

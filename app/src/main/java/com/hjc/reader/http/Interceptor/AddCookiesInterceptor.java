@@ -3,6 +3,7 @@ package com.hjc.reader.http.Interceptor;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.hjc.reader.constant.AppConstants;
+import com.hjc.reader.utils.helper.AccountManager;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-        String cookie = SPUtils.getInstance(AppConstants.COOKIE_CONFIG).getString(AppConstants.COOKIE_KEY);
+        String cookie = AccountManager.getInstance().getCookie();
         builder.addHeader("Cookie", cookie);
         return chain.proceed(builder.build());
     }

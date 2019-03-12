@@ -129,6 +129,9 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
 
+    //圆形图片
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+
     //权限
     implementation 'com.yanzhenjie:permission:2.0.0-rc12'
 

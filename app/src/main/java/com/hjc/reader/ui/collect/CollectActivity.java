@@ -13,7 +13,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.ui.collect.child.ArticleFragment;
-import com.hjc.reader.ui.collect.child.JokeFragment;
+import com.hjc.reader.ui.douban.child.JokeFragment;
 import com.hjc.reader.ui.collect.child.LinkFragment;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class CollectActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    private String titles[] = new String[]{"文章", "网址", "段子"};
+    private String titles[] = new String[]{"文章", "网址"};
 
     @Override
     public int getLayoutId() {
@@ -61,11 +61,9 @@ public class CollectActivity extends BaseActivity {
 
         ArticleFragment articleFragment = ArticleFragment.newInstance();
         LinkFragment urlFragment = LinkFragment.newInstance();
-        JokeFragment jokeFragment = JokeFragment.newInstance();
 
         fragments.add(articleFragment);
         fragments.add(urlFragment);
-        fragments.add(jokeFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getSupportFragmentManager(), fragments, titles);
         viewPager.setAdapter(adapter);

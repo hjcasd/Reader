@@ -12,6 +12,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
 import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.ui.douban.child.BookFragment;
+import com.hjc.reader.ui.douban.child.JokeFragment;
 import com.hjc.reader.ui.douban.child.MovieFragment;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class Tab3Fragment extends BaseFragment {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    private String titles[] = new String[]{"电影", "书籍"};
+    private String titles[] = new String[]{"电影", "书籍", "段子"};
 
     public static Tab3Fragment newInstance() {
         Tab3Fragment fragment = new Tab3Fragment();
@@ -54,9 +55,11 @@ public class Tab3Fragment extends BaseFragment {
 
         MovieFragment movieFragment = MovieFragment.newInstance();
         BookFragment bookFragment = BookFragment.newInstance();
+        JokeFragment jokeFragment = JokeFragment.newInstance();
 
         fragments.add(movieFragment);
         fragments.add(bookFragment);
+        fragments.add(jokeFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);
         viewPager.setAdapter(adapter);

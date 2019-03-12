@@ -56,7 +56,7 @@ public class LinkFragment extends BaseLazyFragment {
         mAdapter = new LinkAdapter(null);
         rvUrl.setAdapter(mAdapter);
 
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
     }
 
     @Override

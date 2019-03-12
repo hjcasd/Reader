@@ -39,7 +39,7 @@ public class ImageLoader {
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(getDefaultPic(type))
                 .error(getDefaultPic(type))
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
 
         Glide.with(imageView.getContext())
                 .load(url)
@@ -60,8 +60,8 @@ public class ImageLoader {
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(getDefaultPic(type))
                 .error(getDefaultPic(type))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .transforms(new CircleCrop());
+                .transforms(new CircleCrop())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
 
         Glide.with(imageView.getContext())
                 .load(url)
@@ -82,13 +82,12 @@ public class ImageLoader {
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(getDefaultPic(type))
                 .error(getDefaultPic(type))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .transforms(new CenterCrop(), new RoundedCorners(radius));
+                .transforms(new CenterCrop(), new RoundedCorners(radius))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
 
         Glide.with(imageView.getContext())
                 .load(url)
                 .apply(requestOptions)
-
                 .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(imageView);
     }
@@ -128,7 +127,8 @@ public class ImageLoader {
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(getDefaultPic(4))
                 .error(getDefaultPic(4))
-                .transforms(new BlurTransformation(radius, sampling));
+                .transforms(new BlurTransformation(radius, sampling))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
 
         Glide.with(imageView.getContext())
                 .load(url)
