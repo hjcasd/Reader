@@ -212,9 +212,6 @@ public interface Api {
     Observable<DBBookDetailBean> getBookDetail(@Path("id") String id);
 
 
-
-
-
     /**     -------------------------------------糗事百科模块------------------------------**/
 
     /**
@@ -224,25 +221,4 @@ public interface Api {
      */
     @GET("article/list/text")
     Observable<JokeBean> getJokeList(@Query("page") int page);
-
-
-
-
-
-
-    /**     -------------------------------------测试模块------------------------------**/
-
-    /**
-     * 检查版本更新
-     */
-
-    @POST("ifs/services/bffq/v1/appVersion")
-    Observable<BaseResponse<VersionBean>> checkVersion(@Body UpdateRequest req);
-
-    /**
-     * 下载App
-     */
-    @Streaming
-    @GET
-    Observable<ResponseBody> downloadApk(@Url String url);
 }
