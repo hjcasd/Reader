@@ -28,6 +28,7 @@ import com.hjc.reader.ui.douban.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
 import com.hjc.reader.ui.login.LoginActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
+import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.utils.helper.ActivityManager;
 import com.hjc.reader.utils.permission.PermissionCallBack;
@@ -196,7 +197,7 @@ public class MainActivity extends BaseFragmentActivity {
                 if (isLogin) {
                     logout();
                 } else {
-                    startActivity(new Intent(this, LoginActivity.class));
+                    SchemeUtils.jumpToLogin(MainActivity.this);
                 }
                 break;
 
@@ -209,7 +210,11 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_collect:
-                startActivity(new Intent(MainActivity.this, CollectActivity.class));
+                if (AccountManager.getInstance().isLogin()) {
+                    startActivity(new Intent(this, CollectActivity.class));
+                } else {
+                    SchemeUtils.jumpToLogin(MainActivity.this);
+                }
                 break;
 
             case R.id.ll_exit:

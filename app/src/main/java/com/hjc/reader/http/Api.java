@@ -2,7 +2,6 @@ package com.hjc.reader.http;
 
 
 import com.hjc.reader.http.bean.BaseResponse;
-import com.hjc.reader.http.config.URLConfig;
 import com.hjc.reader.model.request.UpdateRequest;
 import com.hjc.reader.model.response.DBBookBean;
 import com.hjc.reader.model.response.DBBookDetailBean;
@@ -13,7 +12,8 @@ import com.hjc.reader.model.response.GankRecommendBean;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.model.response.VersionBean;
 import com.hjc.reader.model.response.WanBannerBean;
-import com.hjc.reader.model.response.WanCollectBean;
+import com.hjc.reader.model.response.CollectArticleBean;
+import com.hjc.reader.model.response.CollectLinkBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.model.response.WanNavigationBean;
 import com.hjc.reader.model.response.WanTreeBean;
@@ -66,13 +66,15 @@ public interface Api {
     @GET("navi/json")
     Observable<WanNavigationBean> getNavigationList();
 
+
+
     /**
      * 收藏的文章列表
      *
      * @param page 页码
      */
     @GET("lg/collect/list/{page}/json")
-    Observable<WanCollectBean> getArticleList(@Path("page") int page);
+    Observable<CollectArticleBean> getArticleList(@Path("page") int page);
 
     /**
      * 收藏文章，errorCode返回0为成功
@@ -80,7 +82,43 @@ public interface Api {
      * @param id 文章id
      */
     @POST("lg/collect/{id}/json")
-    Observable<WanCollectBean> collectArticle(@Path("id") int id);
+    Observable<CollectArticleBean> collectArticle(@Path("id") int id);
+
+    /**
+     * 取消收藏(首页文章列表)
+     *
+     * @param id 文章id
+     */
+    @POST("lg/uncollect_originId/{id}/json")
+    Observable<CollectArticleBean> unCollectOrigin(@Path("id") int id);
+
+    /**
+     * 取消收藏(我的收藏页面文章列表)
+     *
+     * @param id       文章id
+     * @param originId 列表页下发，无则为-1
+     *                 (代表的是你收藏之前的那篇文章本身的id；
+     *                 但是收藏支持主动添加，这种情况下，没有originId则为-1)
+     */
+    @FormUrlEncoded
+    @POST("lg/uncollect/{id}/json")
+    Observable<CollectArticleBean> unCollect(@Path("id") int id, @Field("originId") int originId);
+
+    /**
+     * 收藏的网址列表
+     */
+    @GET("lg/collect/usertools/json")
+    Observable<CollectLinkBean> getLinkList();
+
+    /**
+     * 收藏网址
+     *
+     * @param name 标题
+     * @param link 链接
+     */
+    @FormUrlEncoded
+    @POST("lg/collect/addtool/json")
+    Observable<CollectArticleBean> collectLink(@Field("name") String name, @Field("link") String link);
 
 
     /**
@@ -107,17 +145,15 @@ public interface Api {
     Observable<LoginBean> logout();
 
 
-
-
     /**     -------------------------------------干货模块------------------------------**/
 
     /**
      * 分类数据: http://gank.io/api/data/数据类型/请求个数/第几页
      *
-     * @param type:福利 | Android | iOS | 休息视频 | 拓展资源 | 前端 | all
+     * @param type:福利  | Android | iOS | 休息视频 | 拓展资源 | 前端 | all
      * @param prePage: 请求个数，大于0
-     * @param page: 页码，从1开始
-     * eg: http://gank.io/api/data/Android/10/1
+     * @param page:    页码，从1开始
+     *                 eg: http://gank.io/api/data/Android/10/1
      */
     @GET("data/{type}/{pre_page}/{page}")
     Observable<GankIOBean> getGankIoData(@Path("type") String type, @Path("pre_page") int prePage, @Path("page") int page);
@@ -128,8 +164,6 @@ public interface Api {
      */
     @GET("today")
     Observable<GankRecommendBean> getRecommendData();
-
-
 
 
     /**     -------------------------------------豆瓣模块------------------------------**/
@@ -170,6 +204,7 @@ public interface Api {
 
     /**
      * 获取书籍详情
+     *
      * @param id 书籍id
      * @return
      */
@@ -177,10 +212,9 @@ public interface Api {
     Observable<DBBookDetailBean> getBookDetail(@Path("id") String id);
 
 
-
-
-
-    /**     -------------------------------------测试------------------------------**/
+    /**
+     * -------------------------------------测试------------------------------
+     **/
 
     //检查版本更新
     @POST("ifs/services/bffq/v1/appVersion")

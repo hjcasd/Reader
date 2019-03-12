@@ -9,9 +9,9 @@ import com.hjc.reader.model.response.WanListBean;
 
 import java.util.List;
 
-public class ArticleListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
-    public ArticleListAdapter(@Nullable List<WanListBean.DataBean.DatasBean> data) {
-        super(R.layout.item_rv_article, data);
+public class TagListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
+    public TagListAdapter(@Nullable List<WanListBean.DataBean.DatasBean> data) {
+        super(R.layout.item_rv_tag_list, data);
     }
 
     @Override

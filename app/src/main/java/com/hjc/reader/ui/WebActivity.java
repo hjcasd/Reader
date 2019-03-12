@@ -16,11 +16,20 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
+import com.hjc.reader.http.RetrofitHelper;
+import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.utils.AppUtils;
+import com.hjc.reader.utils.SchemeUtils;
+import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.utils.web.MyWebViewClient;
 import com.hjc.reader.widget.ProgressWebView;
 
+import java.sql.Time;
+import java.util.List;
+
 import butterknife.BindView;
+import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -161,12 +170,59 @@ public class WebActivity extends BaseActivity {
 
             // 添加到收藏
             case R.id.item_collect:
-                ToastUtils.showShort("添加到收藏");
+                if (AccountManager.getInstance().isLogin()) {
+                    collectLink();
+                } else {
+                    SchemeUtils.jumpToLogin(this);
+                }
                 break;
 
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * 收藏网址
+     */
+    private void collectLink() {
+        RetrofitHelper.getInstance().getWanAndroidService()
+                .collectLink(mTitle, mUrl)
+                .compose(RxHelper.bind(this))
+                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                    @Override
+                    public void onNext(CollectArticleBean collectArticleBean) {
+                        if (collectArticleBean != null) {
+                            parseArticleData(collectArticleBean);
+                        } else {
+                            ToastUtils.showShort("服务器异常,请稍后重试");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtils.showShort("服务器异常,请稍后重试");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    /**
+     * 解析收藏网址是否成功
+     *
+     * @param collectArticleBean 收藏的网址对应的bean
+     */
+    private void parseArticleData(CollectArticleBean collectArticleBean) {
+        if (collectArticleBean.getErrorCode() == 0) {
+            ToastUtils.showShort("收藏网址成功");
+        } else {
+            ToastUtils.showShort("收藏网址失败");
+        }
     }
 }

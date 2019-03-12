@@ -1,12 +1,24 @@
 package com.hjc.reader.http;
 
 
+import android.annotation.SuppressLint;
+
 import com.hjc.reader.http.Interceptor.AddCookiesInterceptor;
 import com.hjc.reader.http.Interceptor.LogInterceptor;
 import com.hjc.reader.http.Interceptor.ReceivedCookiesInterceptor;
 import com.hjc.reader.http.config.HttpConfig;
 
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
 
@@ -25,7 +37,8 @@ public class HttpClient {
                 .readTimeout(HttpConfig.HTTP_TIME_OUT, TimeUnit.SECONDS)
                 .writeTimeout(HttpConfig.HTTP_TIME_OUT, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-//                .addNetworkInterceptor(new TokenInterceptor(null))  //添加Token拦截器
+                .sslSocketFactory(createSSLSocketFactory(), (X509TrustManager) trustAllCerts[0])
+                .hostnameVerifier(new TrustAllHostnameVerifier())
                 .addInterceptor(new ReceivedCookiesInterceptor())
                 .addInterceptor(new AddCookiesInterceptor())
                 .addInterceptor(new LogInterceptor());
@@ -46,4 +59,41 @@ public class HttpClient {
     public OkHttpClient.Builder getBuilder() {
         return mBuilder;
     }
+
+    private SSLSocketFactory createSSLSocketFactory() {
+        SSLSocketFactory sSLSocketFactory = null;
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            sSLSocketFactory = sc.getSocketFactory();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sSLSocketFactory;
+    }
+
+    private TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[]{};
+        }
+    }};
+
+    private class TrustAllHostnameVerifier implements HostnameVerifier {
+        @SuppressLint("BadHostnameVerifier")
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    }
+
+
 }

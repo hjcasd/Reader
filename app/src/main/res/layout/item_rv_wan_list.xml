@@ -98,11 +98,11 @@
             app:layout_constraintTop_toTopOf="@id/iv_chapter" />
 
 
-        <ImageView
-            android:id="@+id/iv_collect"
+        <CheckBox
+            android:id="@+id/cb_collect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_uncollect"
+            android:button="@drawable/selector_cb_collect"
             app:layout_constraintBottom_toBottomOf="@id/iv_chapter"
             app:layout_constraintRight_toRightOf="parent" />
 

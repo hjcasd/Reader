@@ -13,7 +13,7 @@ public class HttpConfig {
     public static String BASE_URL = "http://47.100.225.52:8888/";
 
     //多服务器地址
-    public final static String URL_WAN_ANDROID = "http://www.wanandroid.com/";
+    public final static String URL_WAN_ANDROID = "https://www.wanandroid.com/";
     public final static String URL_GANKIO = "https://gank.io/api/";
     public final static String URL_DOUBAN = "https://api.douban.com/";
     public final static String URL_QSBK = "http://m2.qiushibaike.com/";

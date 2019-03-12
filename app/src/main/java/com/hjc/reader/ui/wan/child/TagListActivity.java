@@ -14,7 +14,7 @@ import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.WanListBean;
-import com.hjc.reader.ui.wan.adapter.ArticleListAdapter;
+import com.hjc.reader.ui.wan.adapter.TagListAdapter;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.widget.TitleBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -31,7 +31,7 @@ import io.reactivex.observers.DefaultObserver;
  * @Date: 2019/2/13 10:24
  * @Description: 知识体系tag下文章列表页面
  */
-public class ArticleListActivity extends BaseActivity {
+public class TagListActivity extends BaseActivity {
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.title_bar)
@@ -39,7 +39,7 @@ public class ArticleListActivity extends BaseActivity {
     @BindView(R.id.rv_article)
     RecyclerView rvArticle;
 
-    private ArticleListAdapter mAdapter;
+    private TagListAdapter mAdapter;
 
     private int page = 0;
     private String name;
@@ -47,7 +47,7 @@ public class ArticleListActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_article_list;
+        return R.layout.activity_tag_list;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ArticleListActivity extends BaseActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvArticle.setLayoutManager(manager);
 
-        mAdapter = new ArticleListAdapter(null);
+        mAdapter = new TagListAdapter(null);
         rvArticle.setAdapter(mAdapter);
 
         //添加列表动画
@@ -165,7 +165,7 @@ public class ArticleListActivity extends BaseActivity {
                 WanListBean.DataBean.DatasBean bean = dataList.get(position);
                 String title = bean.getTitle();
                 String link = bean.getLink();
-                SchemeUtils.jumpToWeb(ArticleListActivity.this, link, title);
+                SchemeUtils.jumpToWeb(TagListActivity.this, link, title);
             }
         });
     }

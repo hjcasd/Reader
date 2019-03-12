@@ -1,14 +1,9 @@
 package com.hjc.reader.ui.collect.child;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -16,22 +11,16 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.model.response.WanCollectBean;
-import com.hjc.reader.model.response.WanListBean;
+import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.ui.collect.adapter.ArticleAdapter;
-import com.hjc.reader.ui.gank.adapter.GankAdapter;
 import com.hjc.reader.utils.SchemeUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.reactivex.observers.DefaultObserver;
 
 /**
@@ -83,20 +72,20 @@ public class ArticleFragment extends BaseLazyFragment {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getArticleList(mPage)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanCollectBean>() {
+                .subscribe(new DefaultObserver<CollectArticleBean>() {
                     @Override
-                    public void onNext(WanCollectBean wanCollectBean) {
-                        if (wanCollectBean != null) {
-                            parseArticleData(wanCollectBean);
+                    public void onNext(CollectArticleBean collectArticleBean) {
+                        if (collectArticleBean != null) {
+                            parseArticleData(collectArticleBean);
                         } else {
-                            ToastUtils.showShort("未获取到数据");
+                            ToastUtils.showShort("服务器异常,请稍后重试");
                             smartRefreshLayout.finishRefresh(1000);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        ToastUtils.showShort("服务器异常,请稍后重试");
                     }
 
                     @Override
@@ -107,24 +96,28 @@ public class ArticleFragment extends BaseLazyFragment {
     }
 
     /**
-     * 解析文章数据
+     * 解析搜藏文章列表数据
      *
-     * @param wanCollectBean 文章收藏的对应的bean
+     * @param collectArticleBean 收藏的文章对应的bean
      */
-    private void parseArticleData(WanCollectBean wanCollectBean) {
-        WanCollectBean.DataBean dataBean = wanCollectBean.getData();
-        if (dataBean != null) {
-            List<WanCollectBean.DataBean.DatasBean> dataList = dataBean.getDatas();
-            if (dataList != null && dataList.size() > 0) {
-                if (mPage == 0) {
-                    mAdapter.setNewData(dataList);
-                    smartRefreshLayout.finishRefresh(1000);
-                } else {
-                    mAdapter.addData(dataList);
-                    smartRefreshLayout.finishLoadMore(1000);
-                }
-            }else{
+    private void parseArticleData(CollectArticleBean collectArticleBean) {
+        CollectArticleBean.DataBean dataBean = collectArticleBean.getData();
+        List<CollectArticleBean.DataBean.DatasBean> dataList = dataBean.getDatas();
+        if (dataList != null && dataList.size() > 0) {
+            if (mPage == 0) {
+                mAdapter.setNewData(dataList);
+                smartRefreshLayout.finishRefresh(1000);
+            } else {
+                mAdapter.addData(dataList);
                 smartRefreshLayout.finishLoadMore(1000);
+            }
+        } else {
+            if (mPage == 0) {
+                smartRefreshLayout.finishRefresh(1000);
+                ToastUtils.showShort("暂无收藏,快去收藏吧");
+            } else {
+                smartRefreshLayout.finishLoadMore(1000);
+                ToastUtils.showShort("没有更多收藏了");
             }
         }
     }
@@ -148,8 +141,8 @@ public class ArticleFragment extends BaseLazyFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<WanCollectBean.DataBean.DatasBean> dataList = adapter.getData();
-                WanCollectBean.DataBean.DatasBean bean = dataList.get(position);
+                List<CollectArticleBean.DataBean.DatasBean> dataList = adapter.getData();
+                CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
                 String title = bean.getTitle();
                 String link = bean.getLink();
                 SchemeUtils.jumpToWeb(mContext, link, title);

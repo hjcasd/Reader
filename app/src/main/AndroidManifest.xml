@@ -78,7 +78,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.wan.child.ArticleListActivity"
+            android:name=".ui.wan.child.TagListActivity"
             android:screenOrientation="portrait" />
 
         <activity

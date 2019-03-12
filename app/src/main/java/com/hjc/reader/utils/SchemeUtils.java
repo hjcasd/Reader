@@ -11,6 +11,7 @@ import com.hjc.reader.model.ImageViewInfo;
 import com.hjc.reader.ui.image.GalleyActivity;
 import com.hjc.reader.ui.WebActivity;
 import com.hjc.reader.ui.image.ShowImageActivity;
+import com.hjc.reader.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -23,11 +24,23 @@ public class SchemeUtils {
 
     /**
      * @param context 上下文
+     */
+    public static void jumpToLogin(Context context) {
+        if (FastClickUtils.isFastClick()) {
+            ToastUtils.showShort("点的太快了,歇会呗!");
+            return;
+        }
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * @param context 上下文
      * @param url     页面地址
      * @param title   标题文字
      */
     public static void jumpToWeb(Context context, String url, String title) {
-        if (FastClickUtils.isFastClick()){
+        if (FastClickUtils.isFastClick()) {
             ToastUtils.showShort("点的太快了,歇会呗!");
             return;
         }

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -13,7 +12,6 @@ import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.WanBannerBean;
-import com.hjc.reader.model.response.WanCollectBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.wan.adapter.WanListAdapter;
 import com.hjc.reader.utils.SchemeUtils;
@@ -228,49 +226,8 @@ public class WanFragment extends BaseLazyFragment {
                 SchemeUtils.jumpToWeb(mContext, link, title);
             }
         });
-
-        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                ImageView imageView = (ImageView) view;
-                imageView.setImageResource(R.mipmap.icon_collect);
-
-                List<WanListBean.DataBean.DatasBean> dataList = (List<WanListBean.DataBean.DatasBean>) adapter.getData();
-                WanListBean.DataBean.DatasBean bean = dataList.get(position);
-                collect(bean.getId());
-            }
-        });
     }
 
-    /**
-     * 收藏文章
-     * @param articleId 文章id
-     */
-    private void collect(int articleId){
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .collectArticle(articleId)
-                .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanCollectBean>() {
-                    @Override
-                    public void onNext(WanCollectBean wanCollectBean) {
-                        if (wanCollectBean != null && wanCollectBean.getErrorCode() == 0) {
-                            ToastUtils.showShort("收藏成功");
-                        } else {
-                            ToastUtils.showShort("收藏失败");
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 
     @Override
     public void onSingleClick(View v) {
