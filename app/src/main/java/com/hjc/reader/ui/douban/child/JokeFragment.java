@@ -14,6 +14,7 @@ import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.CollectLinkBean;
 import com.hjc.reader.model.response.JokeBean;
 import com.hjc.reader.ui.douban.adapter.JokeAdapter;
+import com.hjc.reader.widget.dialog.ShareJokeDialog;
 import com.hjc.reader.widget.helper.LinearItemDecoration;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -132,7 +133,9 @@ public class JokeFragment extends BaseLazyFragment {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+                List<JokeBean.ItemsBean> dataList = mAdapter.getData();
+                JokeBean.ItemsBean bean = dataList.get(position);
+                ShareJokeDialog.newInstance(bean.getContent()).showDialog(getChildFragmentManager());
             }
         });
     }

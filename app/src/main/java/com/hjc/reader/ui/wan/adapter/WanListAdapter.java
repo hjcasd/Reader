@@ -113,7 +113,7 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
      */
     private void unCollectArticle(Context context, WanListBean.DataBean.DatasBean bean) {
         RetrofitHelper.getInstance().getWanAndroidService()
-                .unCollectOrigin(bean.getId())
+                .unCollect(bean.getId())
                 .compose(RxHelper.bind((LifecycleProvider) context))
                 .subscribe(new DefaultObserver<CollectArticleBean>() {
                     @Override
@@ -147,6 +147,8 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
                 item.setCollect(false);
                 notifyDataSetChanged();
                 ToastUtils.showShort("已取消收藏");
+            }else {
+                ToastUtils.showShort(collectArticleBean.getErrorMsg());
             }
         } else {
             ToastUtils.showShort("服务器异常,请稍后重试");

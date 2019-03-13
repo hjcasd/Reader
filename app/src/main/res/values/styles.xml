@@ -38,7 +38,7 @@
     </style>
 
 
-    <style name="Dialog_Base" parent="android:style/Theme.Dialog">
+    <style name="Dialog_Base" parent="android:Theme.Holo.Light.Dialog">
         <!--背景颜色及和透明程度-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <!--是否去除标题 -->

@@ -23,8 +23,8 @@ public class LoadingDialog extends BaseDialog {
     SpinKitView spinKitView;
 
     public static LoadingDialog newInstance() {
-        LoadingDialog loadingDialog = new LoadingDialog();
-        return loadingDialog;
+        LoadingDialog dialog = new LoadingDialog();
+        return dialog;
     }
 
     @Override

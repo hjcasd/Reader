@@ -170,7 +170,9 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mBinder.unbind();
+        if (mBinder != null){
+            mBinder.unbind();
+        }
     }
 
     /**

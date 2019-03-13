@@ -41,7 +41,7 @@ public interface Api {
     /**     -------------------------------------玩安卓模块------------------------------**/
 
     /**
-     * 轮播图
+     * 首页轮播图
      */
     @GET("banner/json")
     Observable<WanBannerBean> getWanBannerList();
@@ -90,7 +90,7 @@ public interface Api {
      * @param id 文章id
      */
     @POST("lg/uncollect_originId/{id}/json")
-    Observable<CollectArticleBean> unCollectOrigin(@Path("id") int id);
+    Observable<CollectArticleBean> unCollect(@Path("id") int id);
 
     /**
      * 取消收藏(我的收藏页面文章列表)
@@ -102,7 +102,7 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("lg/uncollect/{id}/json")
-    Observable<CollectArticleBean> unCollect(@Path("id") int id, @Field("originId") int originId);
+    Observable<CollectArticleBean> unCollectOrigin(@Path("id") int id, @Field("originId") int originId);
 
     /**
      * 收藏的网址列表
@@ -119,6 +119,26 @@ public interface Api {
     @FormUrlEncoded
     @POST("lg/collect/addtool/json")
     Observable<CollectArticleBean> collectLink(@Field("name") String name, @Field("link") String link);
+
+
+    /**
+     * 编辑收藏的网站
+     *
+     * @param name 标题
+     * @param link 链接
+     */
+    @FormUrlEncoded
+    @POST("lg/collect/updatetool/json")
+    Observable<CollectArticleBean> editLink(@Field("id") int id, @Field("name") String name, @Field("link") String link);
+
+    /**
+     * 删除收藏的网站
+     *
+     * @param id 收藏网址id
+     */
+    @FormUrlEncoded
+    @POST("lg/collect/deletetool/json")
+    Observable<CollectArticleBean> deleteLink(@Field("id") int id);
 
 
     /**

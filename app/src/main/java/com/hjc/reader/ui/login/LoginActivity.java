@@ -120,13 +120,16 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onNext(LoginBean loginBean) {
                         if (loginBean != null) {
-                            ToastUtils.showShort("登录成功");
-                            KeyboardUtils.hideSoftInput(LoginActivity.this);
+                            if (loginBean.getErrorCode() == 0){
+                                ToastUtils.showShort("登录成功");
+                                KeyboardUtils.hideSoftInput(LoginActivity.this);
 
-                            AccountManager.getInstance().init(true, loginBean.getData().getUsername());
-
-                            EventManager.sendEvent(new Event(EventCode.C));
-                            finish();
+                                AccountManager.getInstance().init(true, loginBean.getData().getUsername());
+                                EventManager.sendEvent(new Event(EventCode.C));
+                                finish();
+                            }else{
+                                ToastUtils.showShort(loginBean.getErrorMsg());
+                            }
                         } else {
                             ToastUtils.showShort("登录失败,请稍后重试");
                         }

@@ -1,5 +1,6 @@
 package com.hjc.reader.model.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class CollectLinkBean {
@@ -38,7 +39,7 @@ public class CollectLinkBean {
         this.data = data;
     }
 
-    public static class DataBean {
+    public static class DataBean implements Serializable {
         /**
          * desc :
          * icon :

@@ -1,5 +1,6 @@
 package com.hjc.reader.ui.collect.child;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.hjc.reader.utils.SchemeUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
@@ -96,7 +98,7 @@ public class ArticleFragment extends BaseLazyFragment {
     }
 
     /**
-     * 解析搜藏文章列表数据
+     * 解析收藏文章列表数据
      *
      * @param collectArticleBean 收藏的文章对应的bean
      */
@@ -148,6 +150,60 @@ public class ArticleFragment extends BaseLazyFragment {
                 SchemeUtils.jumpToWeb(mContext, link, title);
             }
         });
+
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                List<CollectArticleBean.DataBean.DatasBean> dataList = mAdapter.getData();
+                CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
+                unCollectArticle(bean.getId(), bean.getOriginId(), position);
+            }
+        });
+    }
+
+    /**
+     * @param id       文章id
+     * @param originId 文章originId
+     * @param position 位置
+     */
+    private void unCollectArticle(int id, int originId, int position) {
+        RetrofitHelper.getInstance().getWanAndroidService()
+                .unCollectOrigin(id, originId)
+                .compose(RxHelper.bind(this))
+                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                    @Override
+                    public void onNext(CollectArticleBean collectArticleBean) {
+                        parseUnCollectData(collectArticleBean, position);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtils.showShort("服务器异常,请稍后重试");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    /**
+     * 解析取消收藏文章是否成功
+     *
+     * @param collectArticleBean 返回结果对应的bean
+     */
+    private void parseUnCollectData(CollectArticleBean collectArticleBean, int position) {
+        if (collectArticleBean != null) {
+            if (collectArticleBean.getErrorCode() == 0) {
+                mAdapter.remove(position);
+                ToastUtils.showShort("已取消收藏");
+            } else {
+                ToastUtils.showShort(collectArticleBean.getErrorMsg());
+            }
+        } else {
+            ToastUtils.showShort("服务器异常,请稍后重试");
+        }
     }
 
     @Override
