@@ -30,6 +30,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         setContentView(getLayoutId());
 
         mBinder = ButterKnife.bind(this);
+        ActivityManager.addActivity(this);
 
         if (isImmersionBarEnabled()) {
             initImmersionBar();
@@ -37,12 +38,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         initView();
         initData(savedInstanceState);
         addListeners();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ActivityManager.addActivity(this);
     }
 
     /**

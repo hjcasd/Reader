@@ -11,30 +11,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!--通讯录-->
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
-    <!--手机状态-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission
-        android:name="android.permission.READ_LOGS"
-        tools:ignore="ProtectedPermissions" />
-
-    <!--安装应用-->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
-    <!--位置-->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-
-    <!--相机-->
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <!--录音-->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-
     <application
         android:name=".application.App"
         android:allowBackup="true"
@@ -96,22 +72,6 @@
         <activity
             android:name=".ui.collect.CollectActivity"
             android:screenOrientation="portrait" />
-
-
-        <!--              ==================更新相关=================              -->
-        <service android:name=".ui.update.download.DownloadService" />
-
-        <receiver
-            android:name=".ui.update.download.InstallBroadCastReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
 
         <!--7.0文件访问权限-->
         <provider
