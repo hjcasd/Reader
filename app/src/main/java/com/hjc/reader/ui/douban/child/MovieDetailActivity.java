@@ -21,7 +21,7 @@ import com.hjc.reader.model.response.DBMovieDetailBean;
 import com.hjc.reader.ui.douban.adapter.RoleAdapter;
 import com.hjc.reader.utils.FormatUtils;
 import com.hjc.reader.utils.SchemeUtils;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 import com.hjc.reader.widget.TitleBar;
 import com.hjc.reader.widget.dialog.LoadingDialog;
 import com.hjc.reader.widget.helper.LinearItemDecoration;
@@ -91,8 +91,8 @@ public class MovieDetailActivity extends BaseActivity {
             if (mData != null) {
                 titleBar.setTitle(mData.getTitle());
 
-                ImageLoader.loadImage(ivCover, mData.getImages().getLarge(), 3);
-                ImageLoader.loadBlurImage(ivBlur, mData.getImages().getMedium(), 25, 5);
+                ImageManager.loadImage(ivCover, mData.getImages().getLarge(), 3);
+                ImageManager.loadBlurImage(ivBlur, mData.getImages().getMedium(), 25, 5);
 
                 tvScore.setText(mData.getRating().getAverage() + "");
                 tvCount.setText(mData.getCollect_count() + "人评分");

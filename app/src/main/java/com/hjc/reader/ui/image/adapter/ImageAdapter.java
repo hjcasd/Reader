@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.util.List;
 
@@ -19,6 +19,6 @@ public class ImageAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, String item) {
         ImageView ivPic = helper.getView(R.id.iv_pic);
-        ImageLoader.loadImage(ivPic, item, 0);
+        ImageManager.loadImage(ivPic, item, 0);
     }
 }

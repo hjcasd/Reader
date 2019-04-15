@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.model.RoleBean;
 import com.hjc.reader.utils.SchemeUtils;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class RoleAdapter extends BaseQuickAdapter<RoleBean, BaseViewHolder> {
         TextView tvRoleName = helper.getView(R.id.tv_role_name);
         TextView tvRoleType = helper.getView(R.id.tv_role_type);
 
-        ImageLoader.loadImage(ivRolePic, item.getAvatar(), 3);
+        ImageManager.loadImage(ivRolePic, item.getAvatar(), 3);
         tvRoleName.setText(item.getName());
         tvRoleType.setText(item.getType());
 

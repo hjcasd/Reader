@@ -7,7 +7,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class WelfareAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, Bas
     @Override
     protected void convert(BaseViewHolder helper, GankIOBean.ResultsBean item) {
         ImageView ivPic = helper.getView(R.id.iv_pic);
-        ImageLoader.loadImage(ivPic, item.getUrl(), 1);
+        ImageManager.loadImage(ivPic, item.getUrl(), 1);
 
 //        瀑布流布局
 //        int position = helper.getAdapterPosition();

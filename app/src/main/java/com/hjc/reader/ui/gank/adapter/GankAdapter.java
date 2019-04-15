@@ -14,7 +14,7 @@ import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
 import com.hjc.reader.ui.image.adapter.ImageAdapter;
 import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseVi
         tvAuthor.setText(item.getWho());
         String translateTime = getTranslateTime(item.getPublishedAt());
         tvTime.setText(translateTime);
-        ImageLoader.loadImage(ivPic, item.getImages().get(0), 0);
+        ImageManager.loadImage(ivPic, item.getImages().get(0), 0);
     }
 
     private void initType3(BaseViewHolder helper, GankIOBean.ResultsBean item) {

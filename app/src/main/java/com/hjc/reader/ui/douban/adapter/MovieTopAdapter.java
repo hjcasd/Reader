@@ -13,9 +13,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.model.response.DBMovieBean;
-import com.hjc.reader.ui.douban.child.BookDetailActivity;
 import com.hjc.reader.ui.douban.child.MovieDetailActivity;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class MovieTopAdapter extends BaseQuickAdapter<DBMovieBean.SubjectsBean, 
         TextView tvName = helper.getView(R.id.tv_name);
         TextView tvScore = helper.getView(R.id.tv_score);
 
-        ImageLoader.loadImage(ivCover, item.getImages().getLarge(), 2);
+        ImageManager.loadImage(ivCover, item.getImages().getLarge(), 2);
         tvName.setText(item.getTitle());
         tvScore.setText(item.getRating().getAverage() + "");
 

@@ -37,11 +37,8 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
     protected Activity mActivity;
     private Unbinder mBinder;
 
-    private float widthScale = 0.8f;
     private int mGravity = Gravity.CENTER;  //位置
     private int mAnimStyle = 0; //进入退出动画
-    private int mWidth = 0;
-    private int mHeight = 0;
 
     @Override
     public void onAttach(Context context) {
@@ -78,35 +75,25 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
         Dialog dialog = getDialog();
         if (dialog != null) {
             Window window = dialog.getWindow();
-            WindowManager.LayoutParams params = window.getAttributes();
-            params.gravity = mGravity;
 
-            //设置dialog宽度
-            if (mWidth == 0) {
-                params.width = getWidth();
-            } else {
-                params.width = dp2px(mWidth);
-            }
+            if (window != null) {
+                WindowManager.LayoutParams params = window.getAttributes();
 
-            //设置dialog高度
-            if (mHeight == 0) {
+                params.gravity = mGravity;
+                params.width = WindowManager.LayoutParams.WRAP_CONTENT;
                 params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            } else {
-                params.height = dp2px(mHeight);
-            }
 
-            //设置dialog动画
-            if (mAnimStyle != 0) {
-                window.setWindowAnimations(mAnimStyle);
+                //设置dialog动画
+                if (mAnimStyle != 0) {
+                    window.setWindowAnimations(mAnimStyle);
+                }
+                window.setAttributes(params);
             }
-            window.setAttributes(params);
         }
     }
 
     /**
      * 设置Dialog位置
-     * @param gravity
-     * @return
      */
     public BaseDialog setGravity(int gravity) {
         this.mGravity = gravity;
@@ -114,23 +101,7 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
     }
 
     /**
-     * 设置宽高
-     *
-     * @param width
-     * @param height
-     * @return
-     */
-    public BaseDialog setSize(int width, int height) {
-        this.mWidth = width;
-        this.mHeight = height;
-        return this;
-    }
-
-    /**
      * 设置动画类型
-     *
-     * @param animStyle
-     * @return
      */
     public BaseDialog setAnimStyle(@StyleRes int animStyle) {
         this.mAnimStyle = animStyle;
@@ -139,8 +110,6 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
 
     /**
      * 显示Fragment
-     *
-     * @param fm
      */
     public void showDialog(FragmentManager fm) {
         FragmentTransaction ft = fm.beginTransaction();
@@ -153,24 +122,10 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
         fm.executePendingTransactions();
     }
 
-    private int getWidth() {
-        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        int width = point.x;
-        return (int) (width * widthScale);
-    }
-
-    private int dp2px(float dipValue) {
-        final float scale = mContext.getResources().getDisplayMetrics().density;
-        return (int) (dipValue * scale + 0.5f);
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mBinder != null){
+        if (mBinder != null) {
             mBinder.unbind();
         }
     }

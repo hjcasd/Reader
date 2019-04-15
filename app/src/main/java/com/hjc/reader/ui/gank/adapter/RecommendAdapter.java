@@ -16,7 +16,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.model.response.GankDayBean;
 import com.hjc.reader.ui.image.adapter.ImageAdapter;
 import com.hjc.reader.utils.SchemeUtils;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
         tvAuthor.setText(item.getWho());
         String translateTime = getTranslateTime(item.getPublishedAt());
         tvTime.setText(translateTime);
-        ImageLoader.loadImage(ivPic, item.getImages().get(0), 0);
+        ImageManager.loadImage(ivPic, item.getImages().get(0), 0);
 
         helper.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,7 +189,7 @@ public class RecommendAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHold
      */
     private void initType5(BaseViewHolder helper, GankDayBean item) {
         ImageView ivPic = helper.getView(R.id.iv_pic);
-        ImageLoader.loadImage(ivPic, item.getUrl(), 1);
+        ImageManager.loadImage(ivPic, item.getUrl(), 1);
 
         helper.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

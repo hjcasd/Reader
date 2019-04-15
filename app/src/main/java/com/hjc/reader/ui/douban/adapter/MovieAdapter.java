@@ -15,7 +15,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.model.response.DBMovieBean;
 import com.hjc.reader.ui.douban.child.MovieDetailActivity;
 import com.hjc.reader.utils.FormatUtils;
-import com.hjc.reader.utils.image.ImageLoader;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class MovieAdapter extends BaseQuickAdapter<DBMovieBean.SubjectsBean, Bas
         TextView tvType = helper.getView(R.id.tv_type);
         TextView tvScore = helper.getView(R.id.tv_score);
 
-        ImageLoader.loadImage(ivCover, item.getImages().getLarge(), 3);
+        ImageManager.loadImage(ivCover, item.getImages().getLarge(), 3);
         tvName.setText(item.getTitle());
         tvDirecter.setText(FormatUtils.formatName(item.getDirectors()));
         tvMain.setText(FormatUtils.formatName(item.getCasts()));

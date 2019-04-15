@@ -23,9 +23,11 @@ import com.hjc.reader.R;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
- * Glide封装类
+ * @Author: HJC
+ * @Date: 2019/3/21 17:43
+ * @Description: Glide封装类
  */
-public class ImageLoader {
+public class ImageManager {
 
 
     /**

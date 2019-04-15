@@ -2,6 +2,7 @@ package com.hjc.reader.widget.dialog;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.hjc.reader.R;
@@ -40,7 +41,10 @@ public class LoadingDialog extends BaseDialog {
     @Override
     public void initData(Bundle savedInstanceState) {
         //去掉遮盖层
-        getDialog().getWindow().setDimAmount(0f);
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setDimAmount(0f);
+        }
         setCancelable(false);
     }
 
@@ -49,7 +53,7 @@ public class LoadingDialog extends BaseDialog {
 
     }
 
-    public void dismissDialog(){
+    public void dismissDialog() {
         Observable.timer(500, TimeUnit.MILLISECONDS)
                 .compose(RxSchedulers.ioToMain())
                 .subscribe(aLong -> dismiss());
