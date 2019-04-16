@@ -20,11 +20,13 @@ public class JokeAdapter extends BaseQuickAdapter<JokeBean.ItemsBean, BaseViewHo
 
     @Override
     protected void convert(BaseViewHolder helper, JokeBean.ItemsBean item) {
-        helper.setText(R.id.tv_name, item.getUser().getLogin());
+        JokeBean.ItemsBean.UserBeanX userBean = item.getUser();
+        helper.setText(R.id.tv_name, userBean != null ? userBean.getLogin() : "未知");
+
         helper.setText(R.id.tv_time, TimeUtils.millis2String(Long.valueOf(item.getPublished_at() + "000")));
         helper.setText(R.id.tv_content, item.getContent());
 
         CircleImageView civAvatar = helper.getView(R.id.civ_avatar);
-        Glide.with(mContext).load(item.getUser().getThumb()).into(civAvatar);
+        Glide.with(mContext).load(userBean != null ? userBean.getThumb() : R.mipmap.ic_launcher).into(civAvatar);
     }
 }

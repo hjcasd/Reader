@@ -32,7 +32,7 @@ public class Tab3Fragment extends BaseFragment {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    private String titles[] = new String[]{"电影", "书籍", "段子"};
+    private String titles[] = new String[]{"电影", "段子"};
 
     public static Tab3Fragment newInstance() {
         Tab3Fragment fragment = new Tab3Fragment();
@@ -54,11 +54,11 @@ public class Tab3Fragment extends BaseFragment {
         List<Fragment> fragments = new ArrayList<>();
 
         MovieFragment movieFragment = MovieFragment.newInstance();
-        BookFragment bookFragment = BookFragment.newInstance();
+//        BookFragment bookFragment = BookFragment.newInstance();  书籍api失效
         JokeFragment jokeFragment = JokeFragment.newInstance();
 
         fragments.add(movieFragment);
-        fragments.add(bookFragment);
+//        fragments.add(bookFragment);
         fragments.add(jokeFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);

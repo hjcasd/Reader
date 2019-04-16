@@ -16,6 +16,6 @@ public class HttpConfig {
     public final static String URL_WAN_ANDROID = "https://www.wanandroid.com/";
     public final static String URL_GANKIO = "https://gank.io/api/";
     public final static String URL_DOUBAN = "https://api.douban.com/";
-    public final static String URL_QSBK = "http://m2.qiushibaike.com/";
-    public final static String URL_FIR = "http://api.fir.im/apps/";
+    public final static String URL_QSBK = "https://m2.qiushibaike.com/";
+    public final static String URL_FIR = "https://api.fir.im/apps/";
 }

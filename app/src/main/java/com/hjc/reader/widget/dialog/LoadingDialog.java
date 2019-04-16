@@ -3,6 +3,7 @@ package com.hjc.reader.widget.dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.hjc.reader.R;
@@ -36,6 +37,11 @@ public class LoadingDialog extends BaseDialog {
     @Override
     public int getLayoutId() {
         return R.layout.dialog_loading;
+    }
+
+    @Override
+    protected int getWidth() {
+        return WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
     @Override

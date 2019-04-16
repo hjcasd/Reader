@@ -75,13 +75,12 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
         Dialog dialog = getDialog();
         if (dialog != null) {
             Window window = dialog.getWindow();
-
             if (window != null) {
                 WindowManager.LayoutParams params = window.getAttributes();
 
                 params.gravity = mGravity;
-                params.width = WindowManager.LayoutParams.WRAP_CONTENT;
-                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                params.width = getWidth();
+                params.height = getHeight();
 
                 //设置dialog动画
                 if (mAnimStyle != 0) {
@@ -90,6 +89,25 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
                 window.setAttributes(params);
             }
         }
+    }
+
+    /**
+     * 设置宽度为屏幕宽度的0.8
+     */
+    protected int getWidth() {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int width = point.x;
+        return (int) (width * 0.8);
+    }
+
+    /**
+     * 设置高度wrap
+     */
+    protected int getHeight() {
+        return WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
     /**
@@ -121,6 +139,7 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
         show(fm, "dialogFragment");
         fm.executePendingTransactions();
     }
+
 
     @Override
     public void onDestroyView() {
