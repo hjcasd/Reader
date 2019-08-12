@@ -15,7 +15,7 @@ public class HttpConfig {
     //多服务器地址
     public final static String URL_WAN_ANDROID = "https://www.wanandroid.com/";
     public final static String URL_GANKIO = "https://gank.io/api/";
-    public final static String URL_DOUBAN = "https://api.douban.com/";
+    public final static String URL_M_TIME = "https://api-m.mtime.cn/";
+    public final static String URL_M_TIME_TICKET = "https://ticket-api-m.mtime.cn/";
     public final static String URL_QSBK = "https://m2.qiushibaike.com/";
-    public final static String URL_FIR = "https://api.fir.im/apps/";
 }

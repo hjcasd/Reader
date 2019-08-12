@@ -115,6 +115,29 @@
 
         </LinearLayout>
 
+
+        <LinearLayout
+            android:id="@+id/ll_joke"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@mipmap/icon_nav_collect" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="糗事百科"
+                android:textColor="@color/black_dark" />
+
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_exit"
             android:layout_width="match_parent"

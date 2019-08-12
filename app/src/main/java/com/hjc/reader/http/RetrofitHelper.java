@@ -17,7 +17,6 @@ public class RetrofitHelper {
     private static RetrofitHelper mRetrofitClient;
 
     private RetrofitHelper() {
-
     }
 
     public static RetrofitHelper getInstance() {
@@ -34,28 +33,28 @@ public class RetrofitHelper {
     private Api create(String type) {
         String baseUrl;
         switch (type) {
-            case HttpConfig.URL_DOUBAN:
-                baseUrl = HttpConfig.URL_DOUBAN;
+            case HttpConfig.URL_WAN_ANDROID:
+                baseUrl = HttpConfig.URL_WAN_ANDROID;
                 break;
 
             case HttpConfig.URL_GANKIO:
                 baseUrl = HttpConfig.URL_GANKIO;
                 break;
 
-            case HttpConfig.URL_FIR:
-                baseUrl = HttpConfig.URL_FIR;
+            case HttpConfig.URL_M_TIME:
+                baseUrl = HttpConfig.URL_M_TIME;
+                break;
+
+            case HttpConfig.URL_M_TIME_TICKET:
+                baseUrl = HttpConfig.URL_M_TIME_TICKET;
                 break;
 
             case HttpConfig.URL_QSBK:
                 baseUrl = HttpConfig.URL_QSBK;
                 break;
 
-            case HttpConfig.URL_WAN_ANDROID:
-                baseUrl = HttpConfig.URL_WAN_ANDROID;
-                break;
-
             default:
-                baseUrl = HttpConfig.URL_DOUBAN;
+                baseUrl = HttpConfig.URL_WAN_ANDROID;
                 break;
         }
         OkHttpClient.Builder builder = HttpClient.getInstance().getBuilder();
@@ -69,16 +68,16 @@ public class RetrofitHelper {
         return retrofit.create(Api.class);
     }
 
-    public Api getDouBanService() {
-        return create(HttpConfig.URL_DOUBAN);
+    public Api getMTimeService() {
+        return create(HttpConfig.URL_M_TIME);
+    }
+
+    public Api getMTimeTicketService() {
+        return create(HttpConfig.URL_M_TIME_TICKET);
     }
 
     public Api getGankIOService() {
         return create(HttpConfig.URL_GANKIO);
-    }
-
-    public Api getFirService() {
-        return create(HttpConfig.URL_FIR);
     }
 
     public Api getWanAndroidService() {

@@ -23,10 +23,10 @@ import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.LoginBean;
-import com.hjc.reader.ui.collect.CollectActivity;
-import com.hjc.reader.ui.douban.Tab3Fragment;
+import com.hjc.reader.ui.film.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
-import com.hjc.reader.ui.login.LoginActivity;
+import com.hjc.reader.ui.menu.CollectActivity;
+import com.hjc.reader.ui.menu.JokeActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.helper.AccountManager;
@@ -66,6 +66,8 @@ public class MainActivity extends BaseFragmentActivity {
     LinearLayout llScan;
     @BindView(R.id.ll_collect)
     LinearLayout llCollect;
+    @BindView(R.id.ll_joke)
+    LinearLayout llJoke;
     @BindView(R.id.ll_exit)
     LinearLayout llExit;
 
@@ -140,6 +142,7 @@ public class MainActivity extends BaseFragmentActivity {
         llHomePage.setOnClickListener(this);
         llScan.setOnClickListener(this);
         llCollect.setOnClickListener(this);
+        llJoke.setOnClickListener(this);
         llExit.setOnClickListener(this);
 
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -215,6 +218,10 @@ public class MainActivity extends BaseFragmentActivity {
                 } else {
                     SchemeUtils.jumpToLogin(MainActivity.this);
                 }
+                break;
+
+            case R.id.ll_joke:
+                startActivity(new Intent(this, JokeActivity.class));
                 break;
 
             case R.id.ll_exit:

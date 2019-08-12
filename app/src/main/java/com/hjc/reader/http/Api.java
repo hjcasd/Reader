@@ -1,35 +1,27 @@
 package com.hjc.reader.http;
 
 
-import com.hjc.reader.http.bean.BaseResponse;
-import com.hjc.reader.model.request.UpdateRequest;
-import com.hjc.reader.model.response.DBBookBean;
-import com.hjc.reader.model.response.DBBookDetailBean;
-import com.hjc.reader.model.response.DBMovieBean;
-import com.hjc.reader.model.response.DBMovieDetailBean;
+import com.hjc.reader.model.response.CollectArticleBean;
+import com.hjc.reader.model.response.CollectLinkBean;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.model.response.GankRecommendBean;
 import com.hjc.reader.model.response.JokeBean;
 import com.hjc.reader.model.response.LoginBean;
-import com.hjc.reader.model.response.VersionBean;
+import com.hjc.reader.model.response.MovieComingBean;
+import com.hjc.reader.model.response.MovieDetailBean;
+import com.hjc.reader.model.response.MovieHotBean;
 import com.hjc.reader.model.response.WanBannerBean;
-import com.hjc.reader.model.response.CollectArticleBean;
-import com.hjc.reader.model.response.CollectLinkBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.model.response.WanNavigationBean;
 import com.hjc.reader.model.response.WanTreeBean;
 
 import io.reactivex.Observable;
-import okhttp3.ResponseBody;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.Streaming;
-import retrofit2.http.Url;
 
 /**
  * @Author: HJC
@@ -38,7 +30,7 @@ import retrofit2.http.Url;
  */
 public interface Api {
 
-    /**     -------------------------------------玩安卓模块------------------------------**/
+    /*     -------------------------------------玩安卓模块------------------------------        **/
 
     /**
      * 首页轮播图
@@ -165,7 +157,7 @@ public interface Api {
     Observable<LoginBean> logout();
 
 
-    /**     -------------------------------------干货模块------------------------------**/
+    /*     -------------------------------------干货模块------------------------------            **/
 
     /**
      * 分类数据: http://gank.io/api/data/数据类型/请求个数/第几页
@@ -186,53 +178,31 @@ public interface Api {
     Observable<GankRecommendBean> getRecommendData();
 
 
-    /**     -------------------------------------豆瓣模块------------------------------**/
+    /*     -------------------------------------时光网电影模块------------------------------     **/
 
     /**
-     * 豆瓣热映电影
+     * 热映榜电影
      */
-    @GET("v2/movie/in_theaters")
-    Observable<DBMovieBean> getMovieList();
+    @GET("Showtime/LocationMovies.api?locationId=561")
+    Observable<MovieHotBean> getHotFilm();
 
     /**
-     * 豆瓣电影top250
-     *
-     * @param start 从多少开始，如从"0"开始
-     * @param count 一次请求的数目，如"10"条，最多100
+     * 即将上映电影
      */
-    @GET("v2/movie/top250")
-    Observable<DBMovieBean> getMovieTop250(@Query("start") int start, @Query("count") int count);
-
-    /**
-     * 根据tag获取图书
-     *
-     * @param tag   搜索关键字 "",表示全部
-     * @param start 开始位置
-     * @param count 一次请求的数目 最多100
-     */
-    @GET("v2/book/search")
-    Observable<DBBookBean> getBookList(@Query("tag") String tag, @Query("start") int start, @Query("count") int count);
-
+    @GET("Movie/MovieComingNew.api?locationId=561")
+    Observable<MovieComingBean> getComingFilm();
 
     /**
      * 获取电影详情
+     * FilmDetailBasicBean 561为武汉地区
      *
-     * @param id 电影id
+     * @param movieId 电影bean里的id
      */
-    @GET("v2/movie/subject/{id}")
-    Observable<DBMovieDetailBean> getMovieDetail(@Path("id") String id);
-
-    /**
-     * 获取书籍详情
-     *
-     * @param id 书籍id
-     * @return
-     */
-    @GET("v2/book/{id}")
-    Observable<DBBookDetailBean> getBookDetail(@Path("id") String id);
+    @GET("movie/detail.api?locationId=561")
+    Observable<MovieDetailBean> getDetailFilm(@Query("movieId") int movieId);
 
 
-    /**     -------------------------------------糗事百科模块------------------------------**/
+    /*     -------------------------------------糗事百科模块------------------------------       **/
 
     /**
      * 获取段子列表

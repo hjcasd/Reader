@@ -31,7 +31,6 @@ public class LogInterceptor implements Interceptor {
         source.request(Long.MAX_VALUE);
         Buffer buffer = source.buffer();
 
-
         if (AppConstants.isDebug) {
             String requestJson = "请求信息:"
                     .concat("\nrequest code ====== " + response.code())
@@ -39,8 +38,8 @@ public class LogInterceptor implements Interceptor {
                     .concat("\nrequest duration ====== " + (response.receivedResponseAtMillis() - response.sentRequestAtMillis()) + "ms")
                     .concat("\nrequest header ====== " + request.headers().toString())
                     .concat("\nrequest body ====== " + bodyToString(request.body()));
-
             LogUtils.e(requestJson);
+
             String responseJson = buffer.clone().readString(UTF8);
             FormatUtils.formatJsonAndLog(responseJson);
         }

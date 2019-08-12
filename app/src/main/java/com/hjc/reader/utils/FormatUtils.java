@@ -1,9 +1,6 @@
 package com.hjc.reader.utils;
 
-import android.util.Log;
-
 import com.blankj.utilcode.util.LogUtils;
-import com.hjc.reader.model.response.DBMovieBean;
 
 import java.util.List;
 
@@ -15,22 +12,6 @@ import java.util.List;
  */
 
 public class FormatUtils {
-
-    public static String formatName(List<DBMovieBean.SubjectsBean.PersonBean> casts) {
-        if (casts != null && casts.size() > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < casts.size(); i++) {
-                if (i < casts.size() - 1) {
-                    stringBuilder.append(casts.get(i).getName()).append(" / ");
-                } else {
-                    stringBuilder.append(casts.get(i).getName());
-                }
-            }
-            return stringBuilder.toString();
-        } else {
-            return "佚名";
-        }
-    }
 
     /**
      * 格式化电影类型

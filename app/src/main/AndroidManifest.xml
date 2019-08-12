@@ -59,19 +59,15 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.douban.child.MovieTopActivity"
+            android:name=".ui.film.child.MovieDetailActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.douban.child.MovieDetailActivity"
+            android:name=".ui.menu.CollectActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.douban.child.BookDetailActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.collect.CollectActivity"
+            android:name=".ui.menu.JokeActivity"
             android:screenOrientation="portrait" />
 
         <!--7.0文件访问权限-->
