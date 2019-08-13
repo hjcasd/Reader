@@ -68,7 +68,7 @@ public abstract class BaseProgressObserver<T> extends BaseObserver<T> {
 
     private void hideLoading() {
         if (loadingDialog != null) {
-            loadingDialog.dismiss();
+            loadingDialog.dismissDialog();
         }
     }
 }

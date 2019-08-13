@@ -67,7 +67,6 @@ public class ComingMovieFragment extends BaseLazyFragment {
                 .getComingFilm()
                 .compose(RxHelper.bind(this))
                 .subscribe(new BaseProgressObserver<MovieComingBean>(getChildFragmentManager(), isShow) {
-
                     @Override
                     public void onSuccess(MovieComingBean result) {
                         smartRefreshLayout.finishRefresh();
@@ -76,6 +75,12 @@ public class ComingMovieFragment extends BaseLazyFragment {
                         } else {
                             ToastUtils.showShort("未获取到数据");
                         }
+                    }
+
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
                     }
                 });
     }

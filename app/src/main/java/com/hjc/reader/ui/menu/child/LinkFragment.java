@@ -1,6 +1,5 @@
 package com.hjc.reader.ui.menu.child;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,20 +8,19 @@ import android.view.View;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjc.reader.R;
-import com.hjc.reader.base.event.Event;
+import com.hjc.reader.base.event.MessageEvent;
 import com.hjc.reader.base.event.EventManager;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.model.response.CollectLinkBean;
 import com.hjc.reader.ui.menu.adapter.LinkAdapter;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.widget.dialog.EditLinkDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -30,7 +28,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -72,35 +69,33 @@ public class LinkFragment extends BaseLazyFragment {
     @Override
     public void initData() {
         EventManager.register(this);
-        smartRefreshLayout.autoRefresh();
+        getLinkList(true);
     }
 
     /**
      * 获取收藏的网址列表
+     *
+     * @param isShow 是否显示loading
      */
-    private void getLinkList() {
+    private void getLinkList(boolean isShow) {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getLinkList()
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<CollectLinkBean>() {
+                .subscribe(new BaseProgressObserver<CollectLinkBean>(getChildFragmentManager(), isShow) {
                     @Override
-                    public void onNext(CollectLinkBean collectLinkBean) {
-                        if (collectLinkBean != null) {
-                            parseLinkList(collectLinkBean);
+                    public void onSuccess(CollectLinkBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        if (result != null) {
+                            parseLinkList(result);
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
-                            smartRefreshLayout.finishRefresh(1000);
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
                     }
                 });
     }
@@ -114,65 +109,52 @@ public class LinkFragment extends BaseLazyFragment {
         List<CollectLinkBean.DataBean> dataList = collectLinkBean.getData();
         if (dataList != null && dataList.size() > 0) {
             mAdapter.setNewData(dataList);
-            smartRefreshLayout.finishRefresh(1000);
         } else {
-            smartRefreshLayout.finishRefresh(1000);
             ToastUtils.showShort("暂无收藏,快去收藏吧");
         }
     }
 
     @Override
     public void addListeners() {
-        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                getLinkList();
-            }
+        smartRefreshLayout.setOnRefreshListener(refreshLayout -> getLinkList(false));
+
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
+            CollectLinkBean.DataBean bean = dataList.get(position);
+            SchemeUtils.jumpToWeb(mContext, bean.getLink(), bean.getName());
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
-                CollectLinkBean.DataBean bean = dataList.get(position);
-                SchemeUtils.jumpToWeb(mContext, bean.getLink(), bean.getName());
-            }
-        });
+        mAdapter.setOnItemLongClickListener((adapter, view, position) -> {
+            mCurrentPosition = position;
 
-        mAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                mCurrentPosition = position;
+            List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
+            CollectLinkBean.DataBean bean = dataList.get(position);
 
-                List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
-                CollectLinkBean.DataBean bean = dataList.get(position);
+            String[] items = {"编辑", "删除"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setItems(items, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        EditLinkDialog.newInstance(bean).showDialog(getChildFragmentManager());
+                        break;
 
-                String[] items = {"编辑", "删除"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setItems(items, (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            EditLinkDialog.newInstance(bean).showDialog(getChildFragmentManager());
-                            break;
+                    case 1:
+                        deleteLink(bean.getId(), position);
+                        break;
 
-                        case 1:
-                            deleteLink(bean.getId(), position);
-                            break;
-
-                        default:
-                            break;
-                    }
-                });
-                builder.show();
-                return true;
-            }
+                    default:
+                        break;
+                }
+            });
+            builder.show();
+            return true;
         });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handlerEvent(Event<CollectLinkBean.DataBean> event) {
-        if (event.getCode() == EventCode.D) {
-            CollectLinkBean.DataBean srcBean = event.getData();
+    public void handlerEvent(MessageEvent<CollectLinkBean.DataBean> messageEvent) {
+        if (messageEvent.getCode() == EventCode.D) {
+            CollectLinkBean.DataBean srcBean = messageEvent.getData();
             List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
             CollectLinkBean.DataBean desBean = dataList.get(mCurrentPosition);
 
@@ -191,29 +173,19 @@ public class LinkFragment extends BaseLazyFragment {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .deleteLink(id)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseProgressObserver<CollectArticleBean>(getChildFragmentManager(), true) {
                     @Override
-                    public void onNext(CollectArticleBean bean) {
-                        if (bean != null) {
-                            if (bean.getErrorCode() == 0) {
+                    public void onSuccess(CollectArticleBean result) {
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
                                 mAdapter.remove(position);
                                 ToastUtils.showShort("删除网址成功");
                             } else {
-                                ToastUtils.showShort(bean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

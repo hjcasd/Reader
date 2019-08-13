@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
@@ -18,6 +17,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.utils.AppUtils;
 import com.hjc.reader.utils.SchemeUtils;
@@ -25,11 +25,7 @@ import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.utils.web.MyWebViewClient;
 import com.hjc.reader.widget.ProgressWebView;
 
-import java.sql.Time;
-import java.util.List;
-
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -191,24 +187,14 @@ public class WebActivity extends BaseActivity {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .collectLink(mTitle, mUrl)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseProgressObserver<CollectArticleBean>(getSupportFragmentManager()) {
                     @Override
-                    public void onNext(CollectArticleBean collectArticleBean) {
-                        if (collectArticleBean != null) {
-                            parseArticleData(collectArticleBean);
+                    public void onSuccess(CollectArticleBean result) {
+                        if (result != null) {
+                            parseArticleData(result);
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

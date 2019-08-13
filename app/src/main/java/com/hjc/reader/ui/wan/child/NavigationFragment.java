@@ -10,16 +10,15 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.WanNavigationBean;
 import com.hjc.reader.ui.wan.adapter.NavigationAdapter;
 import com.hjc.reader.ui.wan.adapter.NavigationContentAdapter;
-import com.hjc.reader.widget.dialog.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -39,11 +38,9 @@ public class NavigationFragment extends BaseLazyFragment {
     private LinearLayoutManager contentManager;
 
     private int oldPosition = 0;
-    private LoadingDialog loadingDialog;
 
     public static NavigationFragment newInstance() {
-        NavigationFragment fragment = new NavigationFragment();
-        return fragment;
+        return new NavigationFragment();
     }
 
     @Override
@@ -62,13 +59,10 @@ public class NavigationFragment extends BaseLazyFragment {
         rvNavigationContent.setLayoutManager(contentManager);
         mNavigationContentAdapter = new NavigationContentAdapter(null);
         rvNavigationContent.setAdapter(mNavigationContentAdapter);
-
-        loadingDialog = LoadingDialog.newInstance();
     }
 
     @Override
     public void initData() {
-        loadingDialog.showDialog(getChildFragmentManager());
         getListData();
     }
 
@@ -79,26 +73,16 @@ public class NavigationFragment extends BaseLazyFragment {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getNavigationList()
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanNavigationBean>() {
+                .subscribe(new BaseProgressObserver<WanNavigationBean>(getChildFragmentManager()) {
                     @Override
-                    public void onNext(WanNavigationBean wanNavigationBean) {
-                        if (wanNavigationBean != null) {
-                            if (wanNavigationBean.getErrorCode() == 0) {
-                                parseListData(wanNavigationBean);
+                    public void onSuccess(WanNavigationBean result) {
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseListData(result);
                             } else {
-                                ToastUtils.showShort(wanNavigationBean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
@@ -118,19 +102,13 @@ public class NavigationFragment extends BaseLazyFragment {
             mNavigationAdapter.setNewData(chapterList);
             mNavigationAdapter.setSelection(0);
             mNavigationContentAdapter.setNewData(dataList);
-            loadingDialog.dismissDialog();
         }
     }
 
     @Override
     public void addListeners() {
         //点击侧边栏菜单,滑动到指定位置
-        mNavigationAdapter.setOnSelectListener(new NavigationAdapter.OnSelectListener() {
-            @Override
-            public void onSelected(int position) {
-                contentManager.scrollToPositionWithOffset(position, 0);
-            }
-        });
+        mNavigationAdapter.setOnSelectListener(position -> contentManager.scrollToPositionWithOffset(position, 0));
 
         //侧边栏菜单随右边列表一起滚动
         rvNavigationContent.addOnScrollListener(new RecyclerView.OnScrollListener() {

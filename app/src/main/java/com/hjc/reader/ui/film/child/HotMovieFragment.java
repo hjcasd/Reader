@@ -77,6 +77,12 @@ public class HotMovieFragment extends BaseLazyFragment {
                             ToastUtils.showShort("未获取到数据");
                         }
                     }
+
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
+                    }
                 });
     }
 

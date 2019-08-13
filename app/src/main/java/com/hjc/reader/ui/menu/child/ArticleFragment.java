@@ -11,6 +11,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.ui.menu.adapter.ArticleAdapter;
 import com.hjc.reader.utils.SchemeUtils;
@@ -21,7 +22,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -40,8 +40,7 @@ public class ArticleFragment extends BaseLazyFragment {
     private int mPage = 0;
 
     public static ArticleFragment newInstance() {
-        ArticleFragment fragment = new ArticleFragment();
-        return fragment;
+        return new ArticleFragment();
     }
 
     @Override
@@ -62,35 +61,35 @@ public class ArticleFragment extends BaseLazyFragment {
 
     @Override
     public void initData() {
-        smartRefreshLayout.autoRefresh();
+        getArticleList(true);
     }
 
     /**
      * 获取文章列表数据
+     *
+     * @param isShow 是否显示loading
      */
-    private void getArticleList() {
+    private void getArticleList(boolean isShow) {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getArticleList(mPage)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseProgressObserver<CollectArticleBean>(getChildFragmentManager(), isShow) {
                     @Override
-                    public void onNext(CollectArticleBean collectArticleBean) {
-                        if (collectArticleBean != null) {
-                            parseArticleData(collectArticleBean);
+                    public void onSuccess(CollectArticleBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
+                        if (result != null) {
+                            parseArticleData(result);
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
-                            smartRefreshLayout.finishRefresh(1000);
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
                     }
                 });
     }
@@ -106,17 +105,13 @@ public class ArticleFragment extends BaseLazyFragment {
         if (dataList != null && dataList.size() > 0) {
             if (mPage == 0) {
                 mAdapter.setNewData(dataList);
-                smartRefreshLayout.finishRefresh(1000);
             } else {
                 mAdapter.addData(dataList);
-                smartRefreshLayout.finishLoadMore(1000);
             }
         } else {
             if (mPage == 0) {
-                smartRefreshLayout.finishRefresh(1000);
                 ToastUtils.showShort("暂无收藏,快去收藏吧");
             } else {
-                smartRefreshLayout.finishLoadMore(1000);
                 ToastUtils.showShort("没有更多收藏了");
             }
         }
@@ -128,34 +123,28 @@ public class ArticleFragment extends BaseLazyFragment {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 mPage++;
-                getArticleList();
+                getArticleList(false);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 mPage = 0;
-                getArticleList();
+                getArticleList(false);
             }
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<CollectArticleBean.DataBean.DatasBean> dataList = adapter.getData();
-                CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
-                String title = bean.getTitle();
-                String link = bean.getLink();
-                SchemeUtils.jumpToWeb(mContext, link, title);
-            }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<CollectArticleBean.DataBean.DatasBean> dataList = adapter.getData();
+            CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
+            String title = bean.getTitle();
+            String link = bean.getLink();
+            SchemeUtils.jumpToWeb(mContext, link, title);
         });
 
-        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                List<CollectArticleBean.DataBean.DatasBean> dataList = mAdapter.getData();
-                CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
-                unCollectArticle(bean.getId(), bean.getOriginId(), position);
-            }
+        mAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            List<CollectArticleBean.DataBean.DatasBean> dataList = mAdapter.getData();
+            CollectArticleBean.DataBean.DatasBean bean = dataList.get(position);
+            unCollectArticle(bean.getId(), bean.getOriginId(), position);
         });
     }
 
@@ -168,20 +157,10 @@ public class ArticleFragment extends BaseLazyFragment {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .unCollectOrigin(id, originId)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseProgressObserver<CollectArticleBean>(getChildFragmentManager()) {
                     @Override
-                    public void onNext(CollectArticleBean collectArticleBean) {
-                        parseUnCollectData(collectArticleBean, position);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onSuccess(CollectArticleBean result) {
+                        parseUnCollectData(result, position);
                     }
                 });
     }

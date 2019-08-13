@@ -11,6 +11,8 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseCommonObserver;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.WanBannerBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.wan.adapter.WanListAdapter;
@@ -22,13 +24,11 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
-import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -36,7 +36,6 @@ import io.reactivex.observers.DefaultObserver;
  * @Description: 玩安卓页面
  */
 public class WanFragment extends BaseLazyFragment {
-
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.rv_list)
@@ -50,8 +49,7 @@ public class WanFragment extends BaseLazyFragment {
     private int page = 0;
 
     public static WanFragment newInstance() {
-        WanFragment fragment = new WanFragment();
-        return fragment;
+        return new WanFragment();
     }
 
     @Override
@@ -79,7 +77,7 @@ public class WanFragment extends BaseLazyFragment {
     @Override
     public void initData() {
         getBannerData();
-        smartRefreshLayout.autoRefresh();
+        getListData(true);
     }
 
     /**
@@ -89,26 +87,16 @@ public class WanFragment extends BaseLazyFragment {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getWanBannerList()
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanBannerBean>() {
+                .subscribe(new BaseCommonObserver<WanBannerBean>() {
                     @Override
-                    public void onNext(WanBannerBean wanBannerBean) {
-                        if (wanBannerBean != null) {
-                            if (wanBannerBean.getErrorCode() == 0) {
-                                parseBannerData(wanBannerBean);
+                    public void onSuccess(WanBannerBean result) {
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseBannerData(result);
                             } else {
-                                ToastUtils.showShort(wanBannerBean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
@@ -116,10 +104,10 @@ public class WanFragment extends BaseLazyFragment {
     /**
      * 解析Banner数据
      *
-     * @param wanBannerBean banner对应的bean
+     * @param result banner对应的bean
      */
-    private void parseBannerData(WanBannerBean wanBannerBean) {
-        mBannerList = wanBannerBean.getData();
+    private void parseBannerData(WanBannerBean result) {
+        mBannerList = result.getData();
 
         List<String> imgList = new ArrayList<>();
         List<String> titleList = new ArrayList<>();
@@ -140,31 +128,32 @@ public class WanFragment extends BaseLazyFragment {
 
     /**
      * 获取文章列表数据
+     *
+     * @param isShow 是否显示loading
      */
-    private void getListData() {
+    private void getListData(boolean isShow) {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getWanList(page, null)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanListBean>() {
+                .subscribe(new BaseProgressObserver<WanListBean>(getChildFragmentManager(), isShow) {
                     @Override
-                    public void onNext(WanListBean wanListBean) {
-                        if (wanListBean != null) {
-                            if (wanListBean.getErrorCode() == 0) {
-                                parseListData(wanListBean);
+                    public void onSuccess(WanListBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseListData(result);
                             } else {
-                                ToastUtils.showShort(wanListBean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
                     }
                 });
     }
@@ -172,20 +161,17 @@ public class WanFragment extends BaseLazyFragment {
     /**
      * 解析文章列表数据
      *
-     * @param wanListBean 文章列表对应的bean
+     * @param result 文章列表对应的bean
      */
-    private void parseListData(WanListBean wanListBean) {
-        WanListBean.DataBean dataBean = wanListBean.getData();
+    private void parseListData(WanListBean result) {
+        WanListBean.DataBean dataBean = result.getData();
         if (dataBean != null) {
             List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
-
             if (dataList != null && dataList.size() > 0) {
                 if (page == 0) {
                     mAdapter.setNewData(dataList);
-                    smartRefreshLayout.finishRefresh(1000);
                 } else {
                     mAdapter.addData(dataList);
-                    smartRefreshLayout.finishLoadMore(1000);
                 }
             }
         }
@@ -194,37 +180,31 @@ public class WanFragment extends BaseLazyFragment {
 
     @Override
     public void addListeners() {
-        banner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                WanBannerBean.DataBean bean = mBannerList.get(position);
-                SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getTitle());
-            }
+        banner.setOnBannerListener(position -> {
+            WanBannerBean.DataBean bean = mBannerList.get(position);
+            SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getTitle());
         });
 
         smartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
-                getListData();
+                getListData(false);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page = 0;
-                getListData();
+                getListData(false);
             }
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
-                WanListBean.DataBean.DatasBean bean = dataList.get(position);
-                String title = bean.getTitle();
-                String link = bean.getLink();
-                SchemeUtils.jumpToWeb(mContext, link, title);
-            }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
+            WanListBean.DataBean.DatasBean bean = dataList.get(position);
+            String title = bean.getTitle();
+            String link = bean.getLink();
+            SchemeUtils.jumpToWeb(mContext, link, title);
         });
     }
 

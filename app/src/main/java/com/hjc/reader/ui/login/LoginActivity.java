@@ -13,17 +13,17 @@ import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.base.event.Event;
 import com.hjc.reader.base.event.EventManager;
+import com.hjc.reader.base.event.MessageEvent;
 import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.utils.helper.AccountManager;
 import com.hjc.reader.widget.TitleBar;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -116,33 +116,23 @@ public class LoginActivity extends BaseActivity {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .login(username, password)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<LoginBean>() {
+                .subscribe(new BaseProgressObserver<LoginBean>(getSupportFragmentManager()) {
                     @Override
-                    public void onNext(LoginBean loginBean) {
-                        if (loginBean != null) {
-                            if (loginBean.getErrorCode() == 0){
+                    public void onSuccess(LoginBean result) {
+                        if (result != null) {
+                            if (result.getErrorCode() == 0){
                                 ToastUtils.showShort("登录成功");
                                 KeyboardUtils.hideSoftInput(LoginActivity.this);
 
-                                AccountManager.getInstance().init(true, loginBean.getData().getUsername());
-                                EventManager.sendEvent(new Event(EventCode.C));
+                                AccountManager.getInstance().init(true, result.getData().getUsername());
+                                EventManager.sendEvent(new MessageEvent(EventCode.C));
                                 finish();
                             }else{
-                                ToastUtils.showShort(loginBean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         } else {
                             ToastUtils.showShort("登录失败,请稍后重试");
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

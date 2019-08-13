@@ -13,6 +13,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.wan.adapter.TagListAdapter;
 import com.hjc.reader.utils.SchemeUtils;
@@ -24,7 +25,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -42,7 +42,6 @@ public class TagListActivity extends BaseActivity {
     private TagListAdapter mAdapter;
 
     private int page = 0;
-    private String name;
     private int id;
 
     @Override
@@ -66,41 +65,42 @@ public class TagListActivity extends BaseActivity {
     public void initData(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent != null) {
-            name = intent.getStringExtra("name");
+            String name = intent.getStringExtra("name");
             id = intent.getIntExtra("id", 0);
 
             titleBar.setTitle(name);
-            smartRefreshLayout.autoRefresh();
+            getListData(true);
         }
     }
 
     /**
      * 获取文章列表数据
+     *
+     * @param isShow 是否显示loading
      */
-    private void getListData() {
+    private void getListData(boolean isShow) {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getWanList(page, id)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanListBean>() {
+                .subscribe(new BaseProgressObserver<WanListBean>(getSupportFragmentManager(), isShow) {
                     @Override
-                    public void onNext(WanListBean wanListBean) {
-                        if (wanListBean != null) {
-                            if (wanListBean.getErrorCode() == 0) {
-                                parseListData(wanListBean);
+                    public void onSuccess(WanListBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseListData(result);
                             } else {
-                                ToastUtils.showShort(wanListBean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
                     }
                 });
     }
@@ -108,24 +108,20 @@ public class TagListActivity extends BaseActivity {
     /**
      * 解析文章列表数据
      *
-     * @param wanListBean 文章列表对应的bean
+     * @param result 文章列表对应的bean
      */
-    private void parseListData(WanListBean wanListBean) {
-        WanListBean.DataBean dataBean = wanListBean.getData();
+    private void parseListData(WanListBean result) {
+        WanListBean.DataBean dataBean = result.getData();
         if (dataBean != null) {
             List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
-
             if (dataList != null && dataList.size() > 0) {
                 if (page == 0) {
                     mAdapter.setNewData(dataList);
-                    smartRefreshLayout.finishRefresh(1000);
                 } else {
                     mAdapter.addData(dataList);
-                    smartRefreshLayout.finishLoadMore(1000);
                 }
             } else {
                 ToastUtils.showShort("没有更多数据了");
-                smartRefreshLayout.finishLoadMore(1000);
             }
         }
     }
@@ -148,25 +144,22 @@ public class TagListActivity extends BaseActivity {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
-                getListData();
+                getListData(false);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page = 0;
-                getListData();
+                getListData(false);
             }
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
-                WanListBean.DataBean.DatasBean bean = dataList.get(position);
-                String title = bean.getTitle();
-                String link = bean.getLink();
-                SchemeUtils.jumpToWeb(TagListActivity.this, link, title);
-            }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
+            WanListBean.DataBean.DatasBean bean = dataList.get(position);
+            String title = bean.getTitle();
+            String link = bean.getLink();
+            SchemeUtils.jumpToWeb(TagListActivity.this, link, title);
         });
     }
 

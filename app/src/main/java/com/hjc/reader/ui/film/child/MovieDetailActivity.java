@@ -132,7 +132,6 @@ public class MovieDetailActivity extends BaseActivity {
                 .getDetailFilm(id)
                 .compose(RxHelper.bind(this))
                 .subscribe(new BaseProgressObserver<MovieDetailBean>(getSupportFragmentManager(), true) {
-
                     @Override
                     public void onSuccess(MovieDetailBean result) {
                         if (result != null) {

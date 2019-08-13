@@ -1,18 +1,16 @@
 package com.hjc.reader.widget.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 
-import com.github.ybq.android.spinkit.SpinKitView;
 import com.hjc.reader.R;
 import com.hjc.reader.base.dialog.BaseDialog;
 import com.hjc.reader.http.helper.RxSchedulers;
 
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
 import io.reactivex.Observable;
 
 /**
@@ -21,12 +19,8 @@ import io.reactivex.Observable;
  * @Description: 加载框
  */
 public class LoadingDialog extends BaseDialog {
-    @BindView(R.id.spin_kit_view)
-    SpinKitView spinKitView;
-
     public static LoadingDialog newInstance() {
-        LoadingDialog dialog = new LoadingDialog();
-        return dialog;
+        return new LoadingDialog();
     }
 
     @Override
@@ -37,11 +31,6 @@ public class LoadingDialog extends BaseDialog {
     @Override
     public int getLayoutId() {
         return R.layout.dialog_loading;
-    }
-
-    @Override
-    protected int getWidth() {
-        return WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
     @Override
@@ -59,6 +48,7 @@ public class LoadingDialog extends BaseDialog {
 
     }
 
+    @SuppressLint("CheckResult")
     public void dismissDialog() {
         Observable.timer(500, TimeUnit.MILLISECONDS)
                 .compose(RxSchedulers.ioToMain())

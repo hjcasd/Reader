@@ -13,7 +13,7 @@ import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.base.event.Event;
+import com.hjc.reader.base.event.MessageEvent;
 import com.hjc.reader.base.event.EventManager;
 import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.model.ImageViewInfo;
@@ -117,18 +117,18 @@ public class GalleyActivity extends BaseActivity implements ViewPager.OnPageChan
         tvPageCount.setText((currentPosition + 1) + " / " + viewList.size());
 
         if (position > lastVisiblePosition){
-            EventManager.sendEvent(new Event<>(EventCode.A, currentPosition));
+            EventManager.sendEvent(new MessageEvent<>(EventCode.A, currentPosition));
         }
 
         if (position < firstVisiblePosition){
-            EventManager.sendEvent(new Event<>(EventCode.A, currentPosition));
+            EventManager.sendEvent(new MessageEvent<>(EventCode.A, currentPosition));
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handlerEvent(Event<List<ImageViewInfo>> event) {
-        if (event.getCode() == EventCode.B) {
-            viewList = (ArrayList<ImageViewInfo>) event.getData();
+    public void handlerEvent(MessageEvent<List<ImageViewInfo>> messageEvent) {
+        if (messageEvent.getCode() == EventCode.B) {
+            viewList = (ArrayList<ImageViewInfo>) messageEvent.getData();
             adapter.notifyDataSetChanged();
         }
     }

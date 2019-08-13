@@ -2,7 +2,6 @@ package com.hjc.reader.ui.wan.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.CheckBox;
 
 import com.blankj.utilcode.util.ToastUtils;
@@ -11,6 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseCommonObserver;
 import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.utils.SchemeUtils;
@@ -18,8 +18,6 @@ import com.hjc.reader.utils.helper.AccountManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
-
-import io.reactivex.observers.DefaultObserver;
 
 public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
 
@@ -37,21 +35,18 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
         CheckBox cbCollect = helper.getView(R.id.cb_collect);
         cbCollect.setChecked(item.isCollect());
 
-        cbCollect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //收藏或取消收藏前判断是否已登录
-                if (AccountManager.getInstance().isLogin()) {
-                    if (!item.isCollect()) {
-                        collectArticle(mContext, item);
-                    } else {
-                        unCollectArticle(mContext, item);
-                    }
+        cbCollect.setOnClickListener(v -> {
+            //收藏或取消收藏前判断是否已登录
+            if (AccountManager.getInstance().isLogin()) {
+                if (!item.isCollect()) {
+                    collectArticle(mContext, item);
                 } else {
-                    item.setCollect(false);
-                    notifyDataSetChanged();
-                    SchemeUtils.jumpToLogin(mContext);
+                    unCollectArticle(mContext, item);
                 }
+            } else {
+                item.setCollect(false);
+                notifyDataSetChanged();
+                SchemeUtils.jumpToLogin(mContext);
             }
         });
     }
@@ -66,22 +61,17 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
         RetrofitHelper.getInstance().getWanAndroidService()
                 .collectArticle(item.getId())
                 .compose(RxHelper.bind((LifecycleProvider) context))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseCommonObserver<CollectArticleBean>() {
                     @Override
-                    public void onNext(CollectArticleBean collectArticleBean) {
-                        parseCollectData(collectArticleBean, item);
+                    public void onSuccess(CollectArticleBean result) {
+                        parseCollectData(result, item);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
                         item.setCollect(false);
                         notifyDataSetChanged();
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
@@ -90,7 +80,7 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
      * 解析收藏文章是否成功
      *
      * @param collectArticleBean 返回结果对应的bean
-     * @param item           对应item的bean
+     * @param item               对应item的bean
      */
     private void parseCollectData(CollectArticleBean collectArticleBean, WanListBean.DataBean.DatasBean item) {
         if (collectArticleBean != null) {
@@ -115,22 +105,17 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
         RetrofitHelper.getInstance().getWanAndroidService()
                 .unCollect(bean.getId())
                 .compose(RxHelper.bind((LifecycleProvider) context))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseCommonObserver<CollectArticleBean>() {
                     @Override
-                    public void onNext(CollectArticleBean collectArticleBean) {
-                        parseUnCollectData(collectArticleBean, bean);
+                    public void onSuccess(CollectArticleBean result) {
+                        parseUnCollectData(result, bean);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
                         bean.setCollect(true);
                         notifyDataSetChanged();
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
@@ -139,7 +124,7 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
      * 解析取消收藏文章是否成功
      *
      * @param collectArticleBean 返回结果对应的bean
-     * @param item           对应item的bean
+     * @param item               对应item的bean
      */
     private void parseUnCollectData(CollectArticleBean collectArticleBean, WanListBean.DataBean.DatasBean item) {
         if (collectArticleBean != null) {
@@ -147,7 +132,7 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
                 item.setCollect(false);
                 notifyDataSetChanged();
                 ToastUtils.showShort("已取消收藏");
-            }else {
+            } else {
                 ToastUtils.showShort(collectArticleBean.getErrorMsg());
             }
         } else {

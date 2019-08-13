@@ -11,6 +11,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.WanTreeBean;
 import com.hjc.reader.ui.wan.adapter.TreeListAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -20,7 +21,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -37,8 +37,7 @@ public class TreeFragment extends BaseLazyFragment {
     private TreeListAdapter mAdapter;
 
     public static TreeFragment newInstance() {
-        TreeFragment fragment = new TreeFragment();
-        return fragment;
+        return new TreeFragment();
     }
 
     @Override
@@ -60,49 +59,48 @@ public class TreeFragment extends BaseLazyFragment {
 
     @Override
     public void initData() {
-        smartRefreshLayout.autoRefresh();
+        getListData(true);
     }
 
     /**
      * 获取知识体系数据
+     *
+     * @param isShow 是否显示loading
      */
-    private void getListData() {
+    private void getListData(boolean isShow) {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .getTreeList()
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<WanTreeBean>() {
+                .subscribe(new BaseProgressObserver<WanTreeBean>(getChildFragmentManager(), isShow) {
                     @Override
-                    public void onNext(WanTreeBean wanTreeBean) {
-                        if (wanTreeBean != null) {
-                            if (wanTreeBean.getErrorCode() == 0) {
-                                parseListData(wanTreeBean);
+                    public void onSuccess(WanTreeBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseListData(result);
                             } else {
-                                ToastUtils.showShort(wanTreeBean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
                     }
                 });
     }
 
     /**
      * 解析知识体系数据
-     * @param wanTreeBean 知识体系数据对应的bean
+     *
+     * @param result 知识体系数据对应的bean
      */
-    private void parseListData(WanTreeBean wanTreeBean) {
-        List<WanTreeBean.DataBean> dataList = wanTreeBean.getData();
+    private void parseListData(WanTreeBean result) {
+        List<WanTreeBean.DataBean> dataList = result.getData();
         if (dataList != null && dataList.size() > 0) {
             mAdapter.setNewData(dataList);
-            smartRefreshLayout.finishRefresh(1000);
         }
     }
 
@@ -111,7 +109,7 @@ public class TreeFragment extends BaseLazyFragment {
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                getListData();
+                getListData(false);
             }
         });
     }

@@ -17,11 +17,12 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseFragmentActivity;
-import com.hjc.reader.base.event.Event;
 import com.hjc.reader.base.event.EventManager;
+import com.hjc.reader.base.event.MessageEvent;
 import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.ui.film.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
@@ -38,7 +39,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 public class MainActivity extends BaseFragmentActivity {
     @BindView(R.id.drawer_layout)
@@ -234,10 +234,10 @@ public class MainActivity extends BaseFragmentActivity {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .logout()
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<LoginBean>() {
+                .subscribe(new BaseProgressObserver<LoginBean>(getSupportFragmentManager()) {
                     @Override
-                    public void onNext(LoginBean loginBean) {
-                        if (loginBean != null) {
+                    public void onSuccess(LoginBean result) {
+                        if (result != null) {
                             ToastUtils.showShort("退出账号成功");
                             tvUsername.setText("请登录");
 
@@ -245,16 +245,6 @@ public class MainActivity extends BaseFragmentActivity {
                         } else {
                             ToastUtils.showShort("退出账号失败,请稍后重试");
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
@@ -302,8 +292,8 @@ public class MainActivity extends BaseFragmentActivity {
      * 登录后的逻辑处理
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handlerEvent(Event<LoginBean> event) {
-        if (event.getCode() == EventCode.C) {
+    public void handlerEvent(MessageEvent<LoginBean> messageEvent) {
+        if (messageEvent.getCode() == EventCode.C) {
             String username = AccountManager.getInstance().getUsername();
             tvUsername.setText(username);
         }

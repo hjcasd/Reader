@@ -1,10 +1,7 @@
 package com.hjc.reader.widget.dialog;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -13,20 +10,17 @@ import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.hjc.reader.R;
 import com.hjc.reader.base.dialog.BaseDialog;
-import com.hjc.reader.base.event.Event;
+import com.hjc.reader.base.event.MessageEvent;
 import com.hjc.reader.base.event.EventManager;
 import com.hjc.reader.constant.EventCode;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.model.response.CollectLinkBean;
-import com.hjc.reader.utils.AppUtils;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -34,7 +28,6 @@ import io.reactivex.observers.DefaultObserver;
  * @Description: 编辑网址的dialog
  */
 public class EditLinkDialog extends BaseDialog {
-
     @BindView(R.id.et_name)
     EditText etName;
     @BindView(R.id.et_link)
@@ -67,10 +60,13 @@ public class EditLinkDialog extends BaseDialog {
     @Override
     public void initData(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        mData = (CollectLinkBean.DataBean) bundle.getSerializable("data");
-
-        etName.setText(mData.getName());
-        etLink.setText(mData.getLink());
+        if (bundle != null) {
+            mData = (CollectLinkBean.DataBean) bundle.getSerializable("data");
+            if (mData != null) {
+                etName.setText(mData.getName());
+                etLink.setText(mData.getLink());
+            }
+        }
     }
 
     @Override
@@ -115,32 +111,22 @@ public class EditLinkDialog extends BaseDialog {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .editLink(id, name, link)
                 .compose(RxHelper.bind((LifecycleProvider) mContext))
-                .subscribe(new DefaultObserver<CollectArticleBean>() {
+                .subscribe(new BaseProgressObserver<CollectArticleBean>(getChildFragmentManager()) {
                     @Override
-                    public void onNext(CollectArticleBean bean) {
-                        if (bean != null) {
-                            if (bean.getErrorCode() == 0) {
+                    public void onSuccess(CollectArticleBean result) {
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
                                 mData.setName(name);
                                 mData.setLink(link);
                                 ToastUtils.showShort("编辑成功");
                                 dismiss();
-                                EventManager.sendEvent(new Event(EventCode.D, mData));
+                                EventManager.sendEvent(new MessageEvent(EventCode.D, mData));
                             } else {
-                                ToastUtils.showShort(bean.getErrorMsg());
+                                ToastUtils.showShort(result.getErrorMsg());
                             }
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

@@ -12,6 +12,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.JokeBean;
 import com.hjc.reader.ui.menu.adapter.JokeAdapter;
 import com.hjc.reader.widget.TitleBar;
@@ -24,7 +25,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -66,35 +66,35 @@ public class JokeActivity extends BaseActivity {
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        smartRefreshLayout.autoRefresh();
+        getJokeList(true);
     }
 
     /**
      * 获取段子列表
+     *
+     * @param isShow 是否显示loading
      */
-    private void getJokeList() {
+    private void getJokeList(boolean isShow) {
         RetrofitHelper.getInstance().getQSBKService()
                 .getJokeList(mPage)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<JokeBean>() {
+                .subscribe(new BaseProgressObserver<JokeBean>(getSupportFragmentManager(), isShow) {
                     @Override
-                    public void onNext(JokeBean jokeBean) {
-                        if (jokeBean != null) {
-                            parseJokeList(jokeBean);
+                    public void onSuccess(JokeBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
+                        if (result != null) {
+                            parseJokeList(result);
                         } else {
                             ToastUtils.showShort("服务器异常,请稍后重试");
-                            smartRefreshLayout.finishRefresh(1000);
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.showShort("服务器异常,请稍后重试");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
                     }
                 });
     }
@@ -104,10 +104,8 @@ public class JokeActivity extends BaseActivity {
         if (dataList != null && dataList.size() > 0) {
             if (mPage == 1) {
                 mAdapter.setNewData(dataList);
-                smartRefreshLayout.finishRefresh(1000);
             } else {
                 mAdapter.addData(dataList);
-                smartRefreshLayout.finishLoadMore(1000);
             }
         }
     }
@@ -130,24 +128,21 @@ public class JokeActivity extends BaseActivity {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 mPage++;
-                getJokeList();
+                getJokeList(false);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 mPage = 1;
-                getJokeList();
+                getJokeList(false);
             }
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<JokeBean.ItemsBean> dataList = mAdapter.getData();
-                JokeBean.ItemsBean bean = dataList.get(position);
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<JokeBean.ItemsBean> dataList = mAdapter.getData();
+            JokeBean.ItemsBean bean = dataList.get(position);
 
-                ShareJokeDialog.newInstance(bean.getContent()).showDialog(getSupportFragmentManager());
-            }
+            ShareJokeDialog.newInstance(bean.getContent()).showDialog(getSupportFragmentManager());
         });
     }
 

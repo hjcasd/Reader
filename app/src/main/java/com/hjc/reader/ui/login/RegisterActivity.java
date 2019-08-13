@@ -13,11 +13,11 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.widget.TitleBar;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -108,11 +108,6 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        if (password.length() < 6) {
-            ToastUtils.showShort("确认密码长度至少为6位");
-            return;
-        }
-
         if (!password.equals(confirmPassword)) {
             ToastUtils.showShort("两次密码输入不一致");
             return;
@@ -121,10 +116,10 @@ public class RegisterActivity extends BaseActivity {
         RetrofitHelper.getInstance().getWanAndroidService()
                 .register(username, password, confirmPassword)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<LoginBean>() {
+                .subscribe(new BaseProgressObserver<LoginBean>(getSupportFragmentManager()) {
                     @Override
-                    public void onNext(LoginBean loginBean) {
-                        if (loginBean != null) {
+                    public void onSuccess(LoginBean result) {
+                        if (result != null) {
                             ToastUtils.showShort("注册成功");
                             KeyboardUtils.hideSoftInput(RegisterActivity.this);
 
@@ -136,16 +131,6 @@ public class RegisterActivity extends BaseActivity {
                         } else {
                             ToastUtils.showShort("注册失败,请稍后重试");
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

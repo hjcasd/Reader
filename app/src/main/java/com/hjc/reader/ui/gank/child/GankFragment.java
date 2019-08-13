@@ -14,6 +14,7 @@ import com.hjc.reader.R;
 import com.hjc.reader.base.fragment.BaseLazyFragment;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.ui.gank.adapter.FilterAdapter;
 import com.hjc.reader.ui.gank.adapter.GankAdapter;
@@ -23,10 +24,10 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * @Author: HJC
@@ -49,8 +50,7 @@ public class GankFragment extends BaseLazyFragment {
     private String type = "all";
 
     public static GankFragment newInstance() {
-        GankFragment fragment = new GankFragment();
-        return fragment;
+        return new GankFragment();
     }
 
     @Override
@@ -76,34 +76,35 @@ public class GankFragment extends BaseLazyFragment {
 
     @Override
     public void initData() {
-        smartRefreshLayout.autoRefresh();
+        getGankData(true);
     }
 
     /**
      * 获取分类数据
+     *
+     * @param isShow 是否显示loading
      */
-    private void getGankData() {
+    private void getGankData(boolean isShow) {
         RetrofitHelper.getInstance().getGankIOService()
                 .getGankIoData(type, 20, page)
                 .compose(RxHelper.bind(this))
-                .subscribe(new DefaultObserver<GankIOBean>() {
+                .subscribe(new BaseProgressObserver<GankIOBean>(getChildFragmentManager(), isShow) {
                     @Override
-                    public void onNext(GankIOBean gankIOBean) {
-                        if (gankIOBean != null) {
-                            parseWelfareData(gankIOBean);
+                    public void onSuccess(GankIOBean result) {
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
+                        if (result != null) {
+                            parseWelfareData(result);
                         } else {
                             ToastUtils.showShort("未获取到数据");
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadMore();
                     }
                 });
     }
@@ -118,10 +119,8 @@ public class GankFragment extends BaseLazyFragment {
         if (resultList != null && resultList.size() > 0) {
             if (page == 1) {
                 mAdapter.setNewData(resultList);
-                smartRefreshLayout.finishRefresh(1000);
             } else {
                 mAdapter.addData(resultList);
-                smartRefreshLayout.finishLoadMore(1000);
             }
         }
     }
@@ -134,23 +133,20 @@ public class GankFragment extends BaseLazyFragment {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
-                getGankData();
+                getGankData(false);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page = 1;
-                getGankData();
+                getGankData(false);
             }
         });
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<GankIOBean.ResultsBean> dataList = adapter.getData();
-                GankIOBean.ResultsBean bean = dataList.get(position);
-                SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getDesc());
-            }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<GankIOBean.ResultsBean> dataList = adapter.getData();
+            GankIOBean.ResultsBean bean = dataList.get(position);
+            SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getDesc());
         });
     }
 
@@ -159,6 +155,9 @@ public class GankFragment extends BaseLazyFragment {
         switch (v.getId()) {
             case R.id.ll_filter:
                 showFilterDialog();
+                break;
+
+            default:
                 break;
         }
     }
@@ -176,55 +175,49 @@ public class GankFragment extends BaseLazyFragment {
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
         rvFilter.setLayoutManager(manager);
 
-        List<String> list = new ArrayList<>();
         String[] titles = new String[]{"全部", "Android", "IOS", "App", "前端", "休息视频", "拓展资源"};
-        for (int i = 0; i < titles.length; i++) {
-            list.add(titles[i]);
-        }
+        List<String> list = new ArrayList<>(Arrays.asList(titles));
 
         FilterAdapter adapter = new FilterAdapter(list);
         rvFilter.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                bottomSheetDialog.dismiss();
-                switch (position) {
-                    case 0:
-                        type = "all";
-                        break;
+        adapter.setOnItemClickListener((adapter1, view1, position) -> {
+            bottomSheetDialog.dismiss();
+            switch (position) {
+                case 0:
+                    type = "all";
+                    break;
 
-                    case 1:
-                        type = "Android";
-                        break;
+                case 1:
+                    type = "Android";
+                    break;
 
-                    case 2:
-                        type = "iOS";
-                        break;
+                case 2:
+                    type = "iOS";
+                    break;
 
-                    case 3:
-                        type = "App";
-                        break;
+                case 3:
+                    type = "App";
+                    break;
 
-                    case 4:
-                        type = "前端";
-                        break;
+                case 4:
+                    type = "前端";
+                    break;
 
-                    case 5:
-                        type = "休息视频";
-                        break;
+                case 5:
+                    type = "休息视频";
+                    break;
 
-                    case 6:
-                        type = "拓展资源";
-                        break;
+                case 6:
+                    type = "拓展资源";
+                    break;
 
-                    default:
-                        type = "all";
-                        break;
-                }
-                tvTypeName.setText(titles[position]);
-                smartRefreshLayout.autoRefresh();
+                default:
+                    type = "all";
+                    break;
             }
+            tvTypeName.setText(titles[position]);
+            smartRefreshLayout.autoRefresh();
         });
         bottomSheetDialog.show();
     }
