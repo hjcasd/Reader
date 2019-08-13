@@ -134,7 +134,8 @@
                 android:id="@+id/cl_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_blur">
@@ -156,25 +157,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <ImageView
-                    android:id="@+id/iv_introduce"
-                    android:layout_width="15dp"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@mipmap/icon_red_line"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_special" />
-
                 <TextView
+                    android:id="@+id/tv_introduce_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/shape_red_line"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
                     android:text="剧情简介"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_introduce"
-                    app:layout_constraintLeft_toRightOf="@id/iv_introduce"
-                    app:layout_constraintTop_toTopOf="@id/iv_introduce" />
-
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_special" />
 
                 <TextView
                     android:id="@+id/tv_brief"
@@ -187,62 +182,231 @@
                     android:textSize="14sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_introduce" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_introduce_tip" />
 
 
-                <ImageView
-                    android:id="@+id/iv_person"
-                    android:layout_width="15dp"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@mipmap/icon_red_line"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_brief" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="演员"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_person"
-                    app:layout_constraintLeft_toRightOf="@id/iv_person"
-                    app:layout_constraintTop_toTopOf="@id/iv_person" />
-
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_role"
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_actor"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_person">
+                    app:layout_constraintTop_toBottomOf="@id/tv_brief">
+
+                    <TextView
+                        android:id="@+id/tv_actor_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/shape_red_line"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
+                        android:text="演员"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_role"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_actor_tip">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </android.support.constraint.ConstraintLayout>
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_actor">
+
+                    <TextView
+                        android:id="@+id/tv_box_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/shape_red_line"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
+                        android:text="票房"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@color/red_deep"
+                        android:padding="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_box_tip">
+
+                        <LinearLayout
+                            android:id="@+id/ll_today"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/ll_total"
+                            app:layout_constraintTop_toBottomOf="@id/tv_box_tip">
+
+                            <TextView
+                                android:id="@+id/tv_today_box"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1684.04"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="今日票房(万)"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_total"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            app:layout_constraintLeft_toRightOf="@id/ll_today"
+                            app:layout_constraintRight_toLeftOf="@id/ll_ranking"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/tv_total_box"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35.68"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="累计票房(亿)"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_ranking"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            app:layout_constraintLeft_toRightOf="@id/ll_total"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/tv_ranking"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="累计排名"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.constraint.ConstraintLayout>
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_trailer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_box">
+
+                    <TextView
+                        android:id="@+id/tv_trailer_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/shape_red_line"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
+                        android:text="预告片"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/iv_trailer"
+                        android:layout_width="0dp"
+                        android:layout_height="160dp"
+                        android:layout_margin="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/img_example"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_trailer_tip" />
+
+                </android.support.constraint.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/tv_stills_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/shape_red_line"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:text="剧照"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_trailer" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_stills"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_stills_tip">
 
                 </android.support.v7.widget.RecyclerView>
 
-                <ImageView
-                    android:id="@+id/iv_box_office_title"
-                    android:layout_width="15dp"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@mipmap/icon_red_line"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_role" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="票房"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_box_office_title"
-                    app:layout_constraintLeft_toRightOf="@id/iv_box_office_title"
-                    app:layout_constraintTop_toTopOf="@id/iv_box_office_title" />
-
 
             </android.support.constraint.ConstraintLayout>
-
 
         </android.support.constraint.ConstraintLayout>
 

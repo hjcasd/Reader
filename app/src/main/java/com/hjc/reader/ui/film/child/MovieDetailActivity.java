@@ -20,6 +20,7 @@ import com.hjc.reader.http.observer.BaseProgressObserver;
 import com.hjc.reader.model.response.MovieDetailBean;
 import com.hjc.reader.model.response.MovieItemBean;
 import com.hjc.reader.ui.film.adapter.RoleAdapter;
+import com.hjc.reader.ui.film.adapter.StillsAdapter;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.image.ImageManager;
 import com.hjc.reader.widget.TitleBar;
@@ -61,11 +62,33 @@ public class MovieDetailActivity extends BaseActivity {
     TextView tvSpecial;
     @BindView(R.id.tv_brief)
     TextView tvBrief;
+
+    @BindView(R.id.cl_actor)
+    ConstraintLayout clActor;
     @BindView(R.id.rv_role)
     RecyclerView rvRole;
 
+    @BindView(R.id.cl_box)
+    ConstraintLayout clBox;
+    @BindView(R.id.tv_today_box)
+    TextView tvTodayBox;
+    @BindView(R.id.tv_total_box)
+    TextView tvTotalBox;
+    @BindView(R.id.tv_ranking)
+    TextView tvRanking;
+
+    @BindView(R.id.cl_trailer)
+    ConstraintLayout clTrailer;
+    @BindView(R.id.iv_trailer)
+    ImageView ivTrailer;
+    @BindView(R.id.rv_stills)
+    RecyclerView rvStills;
+
     private String movieName;
     private String movieUrl;
+
+    private String trailerUrl;
+    private String trailerTitle;
 
     @Override
     public int getLayoutId() {
@@ -149,29 +172,86 @@ public class MovieDetailActivity extends BaseActivity {
                 movieUrl = bean.getRelated().getRelatedUrl();
             }
 
-            initRoleList(basicBean.getActors());
-
+            initActors(basicBean.getActors());
+            initBoxOffice(bean.getBoxOffice());
+            initTrailer(basicBean.getVideo());
+            initStills(basicBean.getStageImg());
         } else {
             ToastUtils.showShort("数据解析异常");
         }
     }
 
     /**
-     * 初始化演职员数据
+     * 初始化演员数据
      *
      * @param actorList 演职员对应bean
      */
-    private void initRoleList(List<MovieDetailBean.DataBean.BasicBean.ActorsBean> actorList) {
+    private void initActors(List<MovieDetailBean.DataBean.BasicBean.ActorsBean> actorList) {
+        if (actorList != null && actorList.size() > 0) {
+            clActor.setVisibility(View.VISIBLE);
+            LinearLayoutManager manager = new LinearLayoutManager(this);
+            manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            rvRole.setLayoutManager(manager);
+
+            RoleAdapter adapter = new RoleAdapter(actorList);
+            rvRole.setAdapter(adapter);
+        } else {
+            clActor.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 初始化票房数据
+     *
+     * @param bean 票房对应的bean
+     */
+    private void initBoxOffice(MovieDetailBean.DataBean.BoxOfficeBean bean) {
+        if (bean != null && !StringUtils.isEmpty(bean.getTotalBoxDes())) {
+            clBox.setVisibility(View.VISIBLE);
+            tvTodayBox.setText(bean.getTodayBoxDes());
+            tvTotalBox.setText(bean.getTotalBoxDes());
+            String ranking = bean.getRanking() + "";
+            tvRanking.setText(ranking);
+        } else {
+            clBox.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 初始化预告片
+     *
+     * @param bean 预告片对应的bean
+     */
+    private void initTrailer(MovieDetailBean.DataBean.BasicBean.VideoBean bean) {
+        if (bean != null && !StringUtils.isEmpty(bean.getUrl())) {
+            clTrailer.setVisibility(View.VISIBLE);
+            trailerUrl = bean.getHightUrl();
+            trailerTitle = bean.getTitle();
+            ImageManager.loadImage(ivTrailer, bean.getImg(), 3);
+        } else {
+            clTrailer.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 初始化剧照
+     *
+     * @param bean 剧照对应的bean
+     */
+    private void initStills(MovieDetailBean.DataBean.BasicBean.StageImgBean bean) {
+        List<MovieDetailBean.DataBean.BasicBean.StageImgBean.ListBean> list = bean.getList();
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvRole.setLayoutManager(manager);
+        rvStills.setLayoutManager(manager);
 
-        RoleAdapter adapter = new RoleAdapter(actorList);
-        rvRole.setAdapter(adapter);
+        StillsAdapter adapter = new StillsAdapter(list);
+        rvStills.setAdapter(adapter);
     }
 
     @Override
     public void addListeners() {
+        ivTrailer.setOnClickListener(this);
+
         titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
             @Override
             public void leftClick(View view) {
@@ -191,6 +271,10 @@ public class MovieDetailActivity extends BaseActivity {
 
     @Override
     public void onSingleClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.iv_trailer:
+                SchemeUtils.jumpToWeb(MovieDetailActivity.this, trailerUrl, trailerTitle);
+                break;
+        }
     }
 }
