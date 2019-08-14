@@ -32,9 +32,9 @@ import butterknife.BindView;
 /**
  * @Author: HJC
  * @Date: 2019/3/11 11:00
- * @Description: 网址页面
+ * @Description: 我的收藏下的网址页面
  */
-public class LinkFragment extends BaseLazyFragment {
+public class CollectLinkFragment extends BaseLazyFragment {
 
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
@@ -45,14 +45,13 @@ public class LinkFragment extends BaseLazyFragment {
 
     private int mCurrentPosition;
 
-    public static LinkFragment newInstance() {
-        LinkFragment fragment = new LinkFragment();
-        return fragment;
+    public static CollectLinkFragment newInstance() {
+        return new CollectLinkFragment();
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_link;
+        return R.layout.fragment_collect_link;
     }
 
     @Override

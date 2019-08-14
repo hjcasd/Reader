@@ -1,26 +1,40 @@
 package com.hjc.reader.ui.menu.adapter;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 
-import com.blankj.utilcode.util.ToastUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.model.response.CollectArticleBean;
-import com.trello.rxlifecycle2.LifecycleProvider;
+import com.hjc.reader.utils.image.ImageManager;
 
 import java.util.List;
 
-import io.reactivex.observers.DefaultObserver;
-
 public class ArticleAdapter extends BaseQuickAdapter<CollectArticleBean.DataBean.DatasBean, BaseViewHolder> {
+    private final int TYPE_TEXT = 1;
+    private final int TYPE_IMAGE = 2;
+
     public ArticleAdapter(@Nullable List<CollectArticleBean.DataBean.DatasBean> data) {
-        super(R.layout.item_rv_article, data);
+        super(data);
+
+        setMultiTypeDelegate(new MultiTypeDelegate<CollectArticleBean.DataBean.DatasBean>() {
+            @Override
+            protected int getItemType(CollectArticleBean.DataBean.DatasBean bean) {
+                String envelopePic = bean.getEnvelopePic();
+                if (StringUtils.isEmpty(envelopePic)) {
+                    return TYPE_TEXT;
+                } else {
+                    return TYPE_IMAGE;
+                }
+            }
+        });
+
+        getMultiTypeDelegate()
+                .registerItemType(TYPE_TEXT, R.layout.item_article_text)
+                .registerItemType(TYPE_IMAGE, R.layout.item_article_image);
     }
 
     @Override
@@ -32,59 +46,9 @@ public class ArticleAdapter extends BaseQuickAdapter<CollectArticleBean.DataBean
 
         helper.addOnClickListener(R.id.cb_collect);
 
-//        CheckBox cbCollect = helper.getView(R.id.cb_collect);
-//        int position = helper.getAdapterPosition();
-//
-//        cbCollect.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                unCollectArticle(mContext, item.getId(), item.getOriginId(), position);
-//            }
-//        });
+        if (helper.getItemViewType() == TYPE_IMAGE){
+            ImageView ivPic = helper.getView(R.id.iv_pic);
+            ImageManager.loadImage(ivPic, item.getEnvelopePic(), 0);
+        }
     }
-
-//    /**
-//     * @param context  上下文
-//     * @param id       文章id
-//     * @param originId 文章originId
-//     */
-//    private void unCollectArticle(Context context, int id, int originId, int position) {
-//        RetrofitHelper.getInstance().getWanAndroidService()
-//                .unCollectOrigin(id, originId)
-//                .compose(RxHelper.bind((LifecycleProvider) context))
-//                .subscribe(new DefaultObserver<CollectArticleBean>() {
-//                    @Override
-//                    public void onNext(CollectArticleBean collectArticleBean) {
-//                        parseUnCollectData(collectArticleBean, position);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        ToastUtils.showShort("服务器异常,请稍后重试");
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-//    }
-//
-//    /**
-//     * 解析取消收藏文章是否成功
-//     *
-//     * @param collectArticleBean 返回结果对应的bean
-//     */
-//    private void parseUnCollectData(CollectArticleBean collectArticleBean, int position) {
-//        if (collectArticleBean != null) {
-//            if (collectArticleBean.getErrorCode() == 0) {
-//                remove(position);
-//                ToastUtils.showShort("已取消收藏");
-//            } else {
-//                ToastUtils.showShort(collectArticleBean.getErrorMsg());
-//            }
-//        } else {
-//            ToastUtils.showShort("服务器异常,请稍后重试");
-//        }
-//    }
 }

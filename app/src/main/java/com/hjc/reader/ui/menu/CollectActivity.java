@@ -12,8 +12,8 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
 import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.ui.menu.child.ArticleFragment;
-import com.hjc.reader.ui.menu.child.LinkFragment;
+import com.hjc.reader.ui.menu.child.CollectArticleFragment;
+import com.hjc.reader.ui.menu.child.CollectLinkFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +58,8 @@ public class CollectActivity extends BaseActivity {
     public void initData(Bundle savedInstanceState) {
         List<Fragment> fragments = new ArrayList<>();
 
-        ArticleFragment articleFragment = ArticleFragment.newInstance();
-        LinkFragment urlFragment = LinkFragment.newInstance();
+        CollectArticleFragment articleFragment = CollectArticleFragment.newInstance();
+        CollectLinkFragment urlFragment = CollectLinkFragment.newInstance();
 
         fragments.add(articleFragment);
         fragments.add(urlFragment);

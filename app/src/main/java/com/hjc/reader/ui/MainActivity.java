@@ -181,6 +181,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.iv_search:
+                ToastUtils.showShort("正在开发中");
                 break;
 
             case R.id.iv_tab1:

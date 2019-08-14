@@ -26,9 +26,9 @@ import butterknife.BindView;
 /**
  * @Author: HJC
  * @Date: 2019/3/11 11:00
- * @Description: 文章页面
+ * @Description: 我的收藏下的文章页面
  */
-public class ArticleFragment extends BaseLazyFragment {
+public class CollectArticleFragment extends BaseLazyFragment {
 
     @BindView(R.id.smart_refresh_layout)
     SmartRefreshLayout smartRefreshLayout;
@@ -39,13 +39,13 @@ public class ArticleFragment extends BaseLazyFragment {
 
     private int mPage = 0;
 
-    public static ArticleFragment newInstance() {
-        return new ArticleFragment();
+    public static CollectArticleFragment newInstance() {
+        return new CollectArticleFragment();
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_article;
+        return R.layout.fragment_collect_article;
     }
 
     @Override
