@@ -20,5 +20,6 @@
     <color name="gray">#a4a2a2</color>
     <color name="gray_deep">#dedbdb</color>
     <color name="gray_dark">#DDDDDD</color>
+    <color name="gray_f6">#f6f6f6</color>
 
 </resources>

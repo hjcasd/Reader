@@ -28,6 +28,7 @@ import com.hjc.reader.ui.film.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
 import com.hjc.reader.ui.menu.CollectActivity;
 import com.hjc.reader.ui.menu.JokeActivity;
+import com.hjc.reader.ui.menu.ScanCodeActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.helper.AccountManager;
@@ -206,11 +207,11 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_home_page:
-                ToastUtils.showShort("项目主页");
+                SchemeUtils.jumpToWeb(MainActivity.this, "https://github.com/hjcasd/Reader", "项目主页");
                 break;
 
             case R.id.ll_scan:
-                ToastUtils.showShort("扫码下载");
+                startActivity(new Intent(MainActivity.this, ScanCodeActivity.class));
                 break;
 
             case R.id.ll_collect:
@@ -226,6 +227,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_exit:
+                AccountManager.getInstance().clear();
                 ActivityManager.finishAllActivities();
                 break;
         }
