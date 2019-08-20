@@ -1,6 +1,7 @@
 package com.hjc.reader.ui;
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -108,7 +109,7 @@ public class MainActivity extends BaseFragmentActivity {
         if (!StringUtils.isEmpty(username)) {
             tvUsername.setText(username);
         } else {
-            tvUsername.setText("请登录");
+            tvUsername.setText("登录/注册");
         }
     }
 
@@ -200,7 +201,7 @@ public class MainActivity extends BaseFragmentActivity {
             case R.id.fl_account:
                 boolean isLogin = AccountManager.getInstance().isLogin();
                 if (isLogin) {
-                    logout();
+                    showExitDialog();
                 } else {
                     SchemeUtils.jumpToLogin(MainActivity.this);
                 }
@@ -227,10 +228,21 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_exit:
-                AccountManager.getInstance().clear();
                 ActivityManager.finishAllActivities();
                 break;
         }
+    }
+
+    private void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("确认退出账号吗？");
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            logout();
+            dialog.dismiss();
+        });
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     private void logout() {
