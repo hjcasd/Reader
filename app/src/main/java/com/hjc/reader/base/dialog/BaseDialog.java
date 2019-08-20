@@ -9,9 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -130,16 +128,8 @@ public abstract class BaseDialog extends DialogFragment implements View.OnClickL
      * 显示Fragment
      */
     public void showDialog(FragmentManager fm) {
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = fm.findFragmentByTag("dialogFragment");
-        //避免重复弹窗
-        if (fragment != null) {
-            ft.remove(fragment);
-        }
         show(fm, "dialogFragment");
-        fm.executePendingTransactions();
     }
-
 
     @Override
     public void onDestroyView() {
