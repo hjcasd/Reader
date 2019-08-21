@@ -74,6 +74,10 @@
             android:name=".ui.menu.ScanCodeActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:screenOrientation="portrait" />
+
         <!--7.0文件访问权限-->
         <provider
             android:name="android.support.v4.content.FileProvider"

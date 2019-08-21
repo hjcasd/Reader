@@ -1,0 +1,232 @@
+package com.hjc.reader.ui.search;
+
+import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.blankj.utilcode.util.KeyboardUtils;
+import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hjc.reader.R;
+import com.hjc.reader.base.activity.BaseActivity;
+import com.hjc.reader.http.RetrofitHelper;
+import com.hjc.reader.http.helper.RxHelper;
+import com.hjc.reader.http.observer.BaseProgressObserver;
+import com.hjc.reader.model.response.WanListBean;
+import com.hjc.reader.ui.search.adapter.SearchAdapter;
+import com.hjc.reader.widget.SearchEditText;
+import com.nex3z.flowlayout.FlowLayout;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+
+/**
+ * @Author: HJC
+ * @Date: 2019/8/21 14:13
+ * @Description: 搜索页面
+ */
+public class SearchActivity extends BaseActivity {
+    @BindView(R.id.iv_back)
+    ImageView ivBack;
+    @BindView(R.id.et_search)
+    SearchEditText etSearch;
+    @BindView(R.id.tv_search)
+    TextView tvSearch;
+    @BindView(R.id.iv_clear_history)
+    ImageView ivClearHistory;
+    @BindView(R.id.fl_history)
+    FlowLayout flHistory;
+    @BindView(R.id.cl_history)
+    ConstraintLayout clHistory;
+    @BindView(R.id.fl_hot)
+    FlowLayout flHot;
+    @BindView(R.id.cl_hot)
+    ConstraintLayout clHot;
+    @BindView(R.id.smart_refresh_layout)
+    SmartRefreshLayout smartRefreshLayout;
+    @BindView(R.id.rv_list)
+    RecyclerView rvList;
+
+    private SearchAdapter mAdapter;
+
+    /**
+     * 页码
+     */
+    private int mPage = 0;
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_search;
+    }
+
+    @Override
+    public void initView() {
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        rvList.setLayoutManager(manager);
+
+        mAdapter = new SearchAdapter(null);
+        rvList.setAdapter(mAdapter);
+
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+    }
+
+    @Override
+    public void initData(Bundle savedInstanceState) {
+        List<String> list = new ArrayList<>();
+        for (int i = 5; i < 15; i++) {
+            list.add("标签" + i);
+        }
+        initHistoryTags(list);
+        initHotTags(list);
+    }
+
+    /**
+     * 初始化历史tag
+     *
+     * @param list 标签集合
+     */
+    private void initHistoryTags(List<String> list) {
+        flHistory.removeAllViews();
+        for (String text : list) {
+            View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
+            TextView tvTag = view.findViewById(R.id.tv_tag);
+            tvTag.setText(text);
+            flHistory.addView(tvTag);
+        }
+    }
+
+
+    /**
+     * 初始化热门tag
+     *
+     * @param list 标签集合
+     */
+    private void initHotTags(List<String> list) {
+        flHot.removeAllViews();
+        for (String text : list) {
+            View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
+            TextView tvTag = view.findViewById(R.id.tv_tag);
+            tvTag.setText(text);
+            flHot.addView(tvTag);
+        }
+    }
+
+    @Override
+    public void addListeners() {
+        ivBack.setOnClickListener(this);
+        tvSearch.setOnClickListener(this);
+        ivClearHistory.setOnClickListener(this);
+
+        etSearch.setOnSearchClickListener(new SearchEditText.OnSearchClickListener() {
+            @Override
+            public void onSearchClick(View view) {
+                mPage = 0;
+                search(true);
+            }
+
+            @Override
+            public void onSearchClear() {
+                clHistory.setVisibility(View.VISIBLE);
+                clHot.setVisibility(View.VISIBLE);
+                smartRefreshLayout.setVisibility(View.GONE);
+            }
+        });
+
+        smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
+            mPage++;
+            search(false);
+        });
+    }
+
+    @Override
+    public void onSingleClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_back:
+                KeyboardUtils.hideSoftInput(this);
+                finish();
+                break;
+
+            case R.id.tv_search:
+                mPage = 0;
+                search(true);
+                break;
+
+            case R.id.iv_clear_history:
+                ToastUtils.showShort("清空历史");
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 搜索
+     *
+     * @param isShow 是否显示loading
+     */
+    private void search(boolean isShow) {
+        String keyword = etSearch.getText().toString().trim();
+        if (StringUtils.isEmpty(keyword)) {
+            ToastUtils.showShort("请输入搜索内容");
+            return;
+        }
+        RetrofitHelper.getInstance().getWanAndroidService()
+                .search(mPage, keyword)
+                .compose(RxHelper.bind(this))
+                .subscribe(new BaseProgressObserver<WanListBean>(getSupportFragmentManager(), isShow) {
+                    @Override
+                    public void onSuccess(WanListBean result) {
+                        smartRefreshLayout.finishLoadMore();
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseListData(result);
+                            } else {
+                                ToastUtils.showShort(result.getErrorMsg());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishLoadMore();
+                    }
+                });
+    }
+
+    /**
+     * 解析搜索结果
+     *
+     * @param result 搜索对应的bean
+     */
+    private void parseListData(WanListBean result) {
+        clHistory.setVisibility(View.GONE);
+        clHot.setVisibility(View.GONE);
+        smartRefreshLayout.setVisibility(View.VISIBLE);
+
+        WanListBean.DataBean dataBean = result.getData();
+        List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
+        if (dataList != null && dataList.size() > 0) {
+            if (mPage == 0) {
+                mAdapter.setNewData(dataList);
+            } else {
+                mAdapter.addData(dataList);
+            }
+        } else {
+            if (mPage == 0) {
+                ToastUtils.showShort("暂无搜索数据");
+            } else {
+                ToastUtils.showShort("没有更多数据了");
+            }
+        }
+    }
+}

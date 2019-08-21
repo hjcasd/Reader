@@ -211,4 +211,11 @@ public interface Api {
      */
     @GET("article/list/text")
     Observable<JokeBean> getJokeList(@Query("page") int page);
+
+
+    /*     -------------------------------------搜索模块------------------------------     **/
+
+    @FormUrlEncoded
+    @POST("article/query/{page}/json")
+    Observable<WanListBean> search(@Path("page") int page, @Field("k") String k);
 }

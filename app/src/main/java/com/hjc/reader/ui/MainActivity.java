@@ -30,6 +30,7 @@ import com.hjc.reader.ui.gank.Tab2Fragment;
 import com.hjc.reader.ui.menu.CollectActivity;
 import com.hjc.reader.ui.menu.JokeActivity;
 import com.hjc.reader.ui.menu.ScanCodeActivity;
+import com.hjc.reader.ui.search.SearchActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.helper.AccountManager;
@@ -183,7 +184,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.iv_search:
-                ToastUtils.showShort("正在开发中");
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
                 break;
 
             case R.id.iv_tab1:
@@ -199,6 +200,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.fl_account:
+                drawerLayout.closeDrawer(Gravity.START);
                 boolean isLogin = AccountManager.getInstance().isLogin();
                 if (isLogin) {
                     showExitDialog();
@@ -208,14 +210,17 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_home_page:
+                drawerLayout.closeDrawer(Gravity.START);
                 SchemeUtils.jumpToWeb(MainActivity.this, "https://github.com/hjcasd/Reader", "项目主页");
                 break;
 
             case R.id.ll_scan:
+                drawerLayout.closeDrawer(Gravity.START);
                 startActivity(new Intent(MainActivity.this, ScanCodeActivity.class));
                 break;
 
             case R.id.ll_collect:
+                drawerLayout.closeDrawer(Gravity.START);
                 if (AccountManager.getInstance().isLogin()) {
                     startActivity(new Intent(this, CollectActivity.class));
                 } else {
@@ -224,6 +229,7 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.ll_joke:
+                drawerLayout.closeDrawer(Gravity.START);
                 startActivity(new Intent(this, JokeActivity.class));
                 break;
 

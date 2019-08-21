@@ -16,25 +16,25 @@ import android.view.inputmethod.InputMethodManager;
 /**
  * @Author: HJC
  * @Date: 2019/1/7 11:31
- * @Description: 带删除图标的EditText
+ * @Description: 搜索EditText
  */
-public class DeleteEditText extends AppCompatEditText implements TextWatcher, View.OnFocusChangeListener, View.OnKeyListener {
+public class SearchEditText extends AppCompatEditText implements TextWatcher, View.OnFocusChangeListener, View.OnKeyListener {
     private Drawable mClearDrawable;           //保存 EditText右侧的删除按钮
     private boolean hasFocus;                  //保存控件是否获取到焦点
 
     private OnSearchClickListener listener;
 
-    public DeleteEditText(Context context) {
+    public SearchEditText(Context context) {
         super(context);
         init();
     }
 
-    public DeleteEditText(Context context, AttributeSet attrs) {
+    public SearchEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public DeleteEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SearchEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -45,6 +45,7 @@ public class DeleteEditText extends AppCompatEditText implements TextWatcher, Vi
         setClearIconVisible(false);
 
         setOnFocusChangeListener(this);
+        setOnKeyListener(this);
         addTextChangedListener(this);
     }
 
@@ -89,6 +90,9 @@ public class DeleteEditText extends AppCompatEditText implements TextWatcher, Vi
                 boolean isInnerHeight = y > distance && y < (distance + height);
                 if (isInnerWidth && isInnerHeight) {
                     this.setText("");
+                    if (listener != null){
+                        listener.onSearchClear();
+                    }
                 }
             }
         }
@@ -113,7 +117,7 @@ public class DeleteEditText extends AppCompatEditText implements TextWatcher, Vi
     /**
      * 设置是否显示隐藏图标
      *
-     * @param visible
+     * @param visible 是否显示
      */
     private void setClearIconVisible(boolean visible) {
         Drawable right = visible ? mClearDrawable : null;
@@ -122,6 +126,7 @@ public class DeleteEditText extends AppCompatEditText implements TextWatcher, Vi
 
     public interface OnSearchClickListener {
         void onSearchClick(View view);
+        void onSearchClear();
     }
 
     public void setOnSearchClickListener(OnSearchClickListener listener) {

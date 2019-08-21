@@ -1,6 +1,7 @@
 package com.hjc.reader.ui.menu.adapter;
 
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.widget.ImageView;
 
 import com.blankj.utilcode.util.StringUtils;
@@ -39,7 +40,7 @@ public class ArticleAdapter extends BaseQuickAdapter<CollectArticleBean.DataBean
 
     @Override
     protected void convert(BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
-        helper.setText(R.id.tv_title, item.getTitle());
+        helper.setText(R.id.tv_title, Html.fromHtml(item.getTitle()));
         helper.setText(R.id.tv_time, item.getNiceDate());
         helper.setText(R.id.tv_author, item.getAuthor());
         helper.setText(R.id.tv_chapter, item.getChapterName());

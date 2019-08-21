@@ -1,13 +1,16 @@
-package com.hjc.reader.ui.wan.adapter;
+package com.hjc.reader.ui.search.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.hjc.reader.R;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
@@ -16,14 +19,33 @@ import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.helper.AccountManager;
+import com.hjc.reader.utils.image.ImageManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
-public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
+public class SearchAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
+    private final int TYPE_TEXT = 1;
+    private final int TYPE_IMAGE = 2;
 
-    public WanListAdapter(@Nullable List<WanListBean.DataBean.DatasBean> data) {
-        super(R.layout.item_rv_wan_list, data);
+    public SearchAdapter(@Nullable List<WanListBean.DataBean.DatasBean> data) {
+        super(data);
+
+        setMultiTypeDelegate(new MultiTypeDelegate<WanListBean.DataBean.DatasBean>() {
+            @Override
+            protected int getItemType(WanListBean.DataBean.DatasBean bean) {
+                String envelopePic = bean.getEnvelopePic();
+                if (StringUtils.isEmpty(envelopePic)) {
+                    return TYPE_TEXT;
+                } else {
+                    return TYPE_IMAGE;
+                }
+            }
+        });
+
+        getMultiTypeDelegate()
+                .registerItemType(TYPE_TEXT, R.layout.item_search_text)
+                .registerItemType(TYPE_IMAGE, R.layout.item_search_image);
     }
 
     @Override
@@ -33,9 +55,13 @@ public class WanListAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasB
         helper.setText(R.id.tv_author, item.getAuthor());
         helper.setText(R.id.tv_chapter, item.getChapterName());
 
+        if (helper.getItemViewType() == TYPE_IMAGE) {
+            ImageView ivPic = helper.getView(R.id.iv_pic);
+            ImageManager.loadImage(ivPic, item.getEnvelopePic(), 0);
+        }
+
         CheckBox cbCollect = helper.getView(R.id.cb_collect);
         cbCollect.setChecked(item.isCollect());
-
         cbCollect.setOnClickListener(v -> {
             //收藏或取消收藏前判断是否已登录
             if (AccountManager.getInstance().isLogin()) {
