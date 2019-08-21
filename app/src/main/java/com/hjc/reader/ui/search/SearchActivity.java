@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -264,11 +263,9 @@ public class SearchActivity extends BaseActivity {
             historySet = new HashSet<>();
             historySet.add(keyword);
             SPUtils.getInstance().put("history", historySet);
-            LogUtils.e("11111111");
         } else {
             historySet.add(keyword);
             SPUtils.getInstance().put("history", historySet);
-            LogUtils.e("22222222");
         }
         RetrofitHelper.getInstance().getWanAndroidService()
                 .search(mPage, keyword)
@@ -304,7 +301,6 @@ public class SearchActivity extends BaseActivity {
         clHot.setVisibility(View.GONE);
         smartRefreshLayout.setVisibility(View.VISIBLE);
 
-
         WanListBean.DataBean dataBean = result.getData();
         List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
         if (dataList != null && dataList.size() > 0) {
@@ -324,7 +320,7 @@ public class SearchActivity extends BaseActivity {
 
     private void showClearHistoryDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("确认清除历史记录吗？");
+        builder.setMessage("确认清除全部历史记录吗？");
         builder.setCancelable(false);
         builder.setPositiveButton("确定", (dialog, which) -> {
             SPUtils.getInstance().getStringSet("history").clear();
