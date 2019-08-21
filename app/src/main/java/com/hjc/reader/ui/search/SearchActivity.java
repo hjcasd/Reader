@@ -169,11 +169,11 @@ public class SearchActivity extends BaseActivity {
     /**
      * 初始化历史搜索tag
      *
-     * @param list 标签集合
+     * @param set 标签集合
      */
-    private void initHistoryTags(Set<String> list) {
+    private void initHistoryTags(Set<String> set) {
         flHistory.removeAllViews();
-        for (String text : list) {
+        for (String text : set) {
             View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
             TextView tvTag = view.findViewById(R.id.tv_tag);
             tvTag.setText(text);
@@ -323,7 +323,7 @@ public class SearchActivity extends BaseActivity {
         builder.setMessage("确认清除全部历史记录吗？");
         builder.setCancelable(false);
         builder.setPositiveButton("确定", (dialog, which) -> {
-            SPUtils.getInstance().getStringSet("history").clear();
+            SPUtils.getInstance().remove("history");
             clHistory.setVisibility(View.GONE);
             dialog.dismiss();
         });
