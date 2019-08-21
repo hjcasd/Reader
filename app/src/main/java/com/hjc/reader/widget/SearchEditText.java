@@ -60,6 +60,11 @@ public class SearchEditText extends AppCompatEditText implements TextWatcher, Vi
         if (hasFocus) {
             setClearIconVisible(s.length() > 0);
         }
+        if (s.length() == 0) {
+            if (listener != null) {
+                listener.onSearchClear();
+            }
+        }
     }
 
     @Override
@@ -90,7 +95,7 @@ public class SearchEditText extends AppCompatEditText implements TextWatcher, Vi
                 boolean isInnerHeight = y > distance && y < (distance + height);
                 if (isInnerWidth && isInnerHeight) {
                     this.setText("");
-                    if (listener != null){
+                    if (listener != null) {
                         listener.onSearchClear();
                     }
                 }
@@ -126,6 +131,7 @@ public class SearchEditText extends AppCompatEditText implements TextWatcher, Vi
 
     public interface OnSearchClickListener {
         void onSearchClick(View view);
+
         void onSearchClear();
     }
 

@@ -17,8 +17,10 @@ import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.http.observer.BaseProgressObserver;
+import com.hjc.reader.model.response.HotKeyBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.search.adapter.SearchAdapter;
+import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.widget.SearchEditText;
 import com.nex3z.flowlayout.FlowLayout;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -80,12 +82,77 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        getHotKeyData();
+
         List<String> list = new ArrayList<>();
         for (int i = 5; i < 15; i++) {
             list.add("标签" + i);
         }
         initHistoryTags(list);
-        initHotTags(list);
+    }
+
+    /**
+     * 获取热门搜索数据
+     */
+    private void getHotKeyData() {
+        RetrofitHelper.getInstance().getWanAndroidService()
+                .getHotKey()
+                .compose(RxHelper.bind(this))
+                .subscribe(new BaseProgressObserver<HotKeyBean>(getSupportFragmentManager()) {
+                    @Override
+                    public void onSuccess(HotKeyBean result) {
+                        if (result != null) {
+                            if (result.getErrorCode() == 0) {
+                                parseHotKeyData(result);
+                            } else {
+                                ToastUtils.showShort(result.getErrorMsg());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        super.onFailure(errorMsg);
+                        smartRefreshLayout.finishLoadMore();
+                    }
+                });
+    }
+
+    /**
+     * 解析热门搜索数据
+     *
+     * @param result 热门搜索对应的bean
+     */
+    private void parseHotKeyData(HotKeyBean result) {
+        List<HotKeyBean.DataBean> list = result.getData();
+        if (list != null && list.size() > 0) {
+            clHot.setVisibility(View.VISIBLE);
+            initHotTags(list);
+        } else {
+            clHot.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 初始化热门tag
+     *
+     * @param list 标签集合
+     */
+    private void initHotTags(List<HotKeyBean.DataBean> list) {
+        flHot.removeAllViews();
+        for (HotKeyBean.DataBean bean : list) {
+            View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
+            TextView tvTag = view.findViewById(R.id.tv_tag);
+            tvTag.setText(bean.getName());
+            flHot.addView(tvTag);
+
+            tvTag.setOnClickListener(v -> {
+                etSearch.setText(tvTag.getText().toString());
+                etSearch.requestFocus();
+                etSearch.setSelection(etSearch.getText().length());
+                search(true);
+            });
+        }
     }
 
     /**
@@ -100,22 +167,6 @@ public class SearchActivity extends BaseActivity {
             TextView tvTag = view.findViewById(R.id.tv_tag);
             tvTag.setText(text);
             flHistory.addView(tvTag);
-        }
-    }
-
-
-    /**
-     * 初始化热门tag
-     *
-     * @param list 标签集合
-     */
-    private void initHotTags(List<String> list) {
-        flHot.removeAllViews();
-        for (String text : list) {
-            View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
-            TextView tvTag = view.findViewById(R.id.tv_tag);
-            tvTag.setText(text);
-            flHot.addView(tvTag);
         }
     }
 
@@ -143,6 +194,14 @@ public class SearchActivity extends BaseActivity {
         smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
             mPage++;
             search(false);
+        });
+
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
+            WanListBean.DataBean.DatasBean bean = dataList.get(position);
+            String title = bean.getTitle();
+            String link = bean.getLink();
+            SchemeUtils.jumpToWeb(SearchActivity.this, link, title);
         });
     }
 
@@ -188,7 +247,7 @@ public class SearchActivity extends BaseActivity {
                         smartRefreshLayout.finishLoadMore();
                         if (result != null) {
                             if (result.getErrorCode() == 0) {
-                                parseListData(result);
+                                parseSearchData(result);
                             } else {
                                 ToastUtils.showShort(result.getErrorMsg());
                             }
@@ -208,7 +267,7 @@ public class SearchActivity extends BaseActivity {
      *
      * @param result 搜索对应的bean
      */
-    private void parseListData(WanListBean result) {
+    private void parseSearchData(WanListBean result) {
         clHistory.setVisibility(View.GONE);
         clHot.setVisibility(View.GONE);
         smartRefreshLayout.setVisibility(View.VISIBLE);

@@ -5,6 +5,7 @@ import com.hjc.reader.model.response.CollectArticleBean;
 import com.hjc.reader.model.response.CollectLinkBean;
 import com.hjc.reader.model.response.GankIOBean;
 import com.hjc.reader.model.response.GankRecommendBean;
+import com.hjc.reader.model.response.HotKeyBean;
 import com.hjc.reader.model.response.JokeBean;
 import com.hjc.reader.model.response.LoginBean;
 import com.hjc.reader.model.response.MovieComingBean;
@@ -215,6 +216,18 @@ public interface Api {
 
     /*     -------------------------------------搜索模块------------------------------     **/
 
+    /**
+     * 搜索热词
+     */
+    @GET("hotkey/json")
+    Observable<HotKeyBean> getHotKey();
+
+    /**
+     * 搜索
+     *
+     * @param page 页码
+     * @param k    关键词
+     */
     @FormUrlEncoded
     @POST("article/query/{page}/json")
     Observable<WanListBean> search(@Path("page") int page, @Field("k") String k);

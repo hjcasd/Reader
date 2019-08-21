@@ -64,6 +64,41 @@
 
     </android.support.constraint.ConstraintLayout>
 
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_hot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_search">
+
+        <TextView
+            android:id="@+id/tv_hot_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="热门搜索"
+            android:textColorHint="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/fl_hot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:flChildSpacing="10dp"
+            app:flRowSpacing="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_hot_tip">
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_history"
         android:layout_width="0dp"
@@ -71,7 +106,7 @@
         android:padding="15dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_search">
+        app:layout_constraintTop_toBottomOf="@id/cl_hot">
 
         <TextView
             android:id="@+id/tv_history_tip"
@@ -108,49 +143,16 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_hot"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_history">
-
-        <TextView
-            android:id="@+id/tv_hot_tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="热门搜索"
-            android:textColorHint="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.nex3z.flowlayout.FlowLayout
-            android:id="@+id/fl_hot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:flChildSpacing="10dp"
-            app:flRowSpacing="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_hot_tip">
-
-        </com.nex3z.flowlayout.FlowLayout>
-
-    </android.support.constraint.ConstraintLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/smart_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_search"
-        android:visibility="gone"
         app:srlEnableRefresh="false">
 
         <android.support.v7.widget.RecyclerView
