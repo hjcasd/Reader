@@ -1,5 +1,6 @@
 package com.hjc.reader.ui.search;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.KeyboardUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -25,8 +28,9 @@ import com.hjc.reader.widget.SearchEditText;
 import com.nex3z.flowlayout.FlowLayout;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 
@@ -83,12 +87,7 @@ public class SearchActivity extends BaseActivity {
     @Override
     public void initData(Bundle savedInstanceState) {
         getHotKeyData();
-
-        List<String> list = new ArrayList<>();
-        for (int i = 5; i < 15; i++) {
-            list.add("标签" + i);
-        }
-        initHistoryTags(list);
+        getHistoryData();
     }
 
     /**
@@ -134,7 +133,7 @@ public class SearchActivity extends BaseActivity {
     }
 
     /**
-     * 初始化热门tag
+     * 初始化热门搜索tag
      *
      * @param list 标签集合
      */
@@ -156,17 +155,37 @@ public class SearchActivity extends BaseActivity {
     }
 
     /**
-     * 初始化历史tag
+     * 获取历史搜索数据
+     */
+    private void getHistoryData() {
+        Set<String> historySet = SPUtils.getInstance().getStringSet("history");
+        if (historySet != null && historySet.size() > 0) {
+            clHistory.setVisibility(View.VISIBLE);
+            initHistoryTags(historySet);
+        } else {
+            clHistory.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 初始化历史搜索tag
      *
      * @param list 标签集合
      */
-    private void initHistoryTags(List<String> list) {
+    private void initHistoryTags(Set<String> list) {
         flHistory.removeAllViews();
         for (String text : list) {
             View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
             TextView tvTag = view.findViewById(R.id.tv_tag);
             tvTag.setText(text);
             flHistory.addView(tvTag);
+
+            tvTag.setOnClickListener(v -> {
+                etSearch.setText(tvTag.getText().toString());
+                etSearch.requestFocus();
+                etSearch.setSelection(etSearch.getText().length());
+                search(true);
+            });
         }
     }
 
@@ -186,6 +205,7 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onSearchClear() {
                 clHistory.setVisibility(View.VISIBLE);
+                getHistoryData();
                 clHot.setVisibility(View.VISIBLE);
                 smartRefreshLayout.setVisibility(View.GONE);
             }
@@ -219,7 +239,7 @@ public class SearchActivity extends BaseActivity {
                 break;
 
             case R.id.iv_clear_history:
-                ToastUtils.showShort("清空历史");
+                showClearHistoryDialog();
                 break;
 
             default:
@@ -237,6 +257,18 @@ public class SearchActivity extends BaseActivity {
         if (StringUtils.isEmpty(keyword)) {
             ToastUtils.showShort("请输入搜索内容");
             return;
+        }
+
+        Set<String> historySet = SPUtils.getInstance().getStringSet("history");
+        if (historySet == null || historySet.size() == 0) {
+            historySet = new HashSet<>();
+            historySet.add(keyword);
+            SPUtils.getInstance().put("history", historySet);
+            LogUtils.e("11111111");
+        } else {
+            historySet.add(keyword);
+            SPUtils.getInstance().put("history", historySet);
+            LogUtils.e("22222222");
         }
         RetrofitHelper.getInstance().getWanAndroidService()
                 .search(mPage, keyword)
@@ -272,6 +304,7 @@ public class SearchActivity extends BaseActivity {
         clHot.setVisibility(View.GONE);
         smartRefreshLayout.setVisibility(View.VISIBLE);
 
+
         WanListBean.DataBean dataBean = result.getData();
         List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
         if (dataList != null && dataList.size() > 0) {
@@ -287,5 +320,18 @@ public class SearchActivity extends BaseActivity {
                 ToastUtils.showShort("没有更多数据了");
             }
         }
+    }
+
+    private void showClearHistoryDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("确认清除历史记录吗？");
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            SPUtils.getInstance().getStringSet("history").clear();
+            clHistory.setVisibility(View.GONE);
+            dialog.dismiss();
+        });
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 }
