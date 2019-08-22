@@ -10,15 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjc.reader.R;
+import com.hjc.reader.application.App;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.RetrofitHelper;
 import com.hjc.reader.http.helper.RxHelper;
 import com.hjc.reader.http.observer.BaseProgressObserver;
+import com.hjc.reader.model.History;
+import com.hjc.reader.model.db.HistoryDao;
 import com.hjc.reader.model.response.HotKeyBean;
 import com.hjc.reader.model.response.WanListBean;
 import com.hjc.reader.ui.search.adapter.SearchAdapter;
@@ -27,9 +29,7 @@ import com.hjc.reader.widget.SearchEditText;
 import com.nex3z.flowlayout.FlowLayout;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 
@@ -67,6 +67,8 @@ public class SearchActivity extends BaseActivity {
      */
     private int mPage = 0;
 
+    private HistoryDao historyDao;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_search;
@@ -85,8 +87,10 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        historyDao = App.getDaoSession().getHistoryDao();
+
         getHotKeyData();
-        getHistoryData();
+        getHistory();
     }
 
     /**
@@ -106,12 +110,6 @@ public class SearchActivity extends BaseActivity {
                                 ToastUtils.showShort(result.getErrorMsg());
                             }
                         }
-                    }
-
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        super.onFailure(errorMsg);
-                        smartRefreshLayout.finishLoadMore();
                     }
                 });
     }
@@ -156,11 +154,11 @@ public class SearchActivity extends BaseActivity {
     /**
      * 获取历史搜索数据
      */
-    private void getHistoryData() {
-        Set<String> historySet = SPUtils.getInstance().getStringSet("history");
-        if (historySet != null && historySet.size() > 0) {
+    private void getHistory() {
+        List<History> historyList = historyDao.loadAll();
+        if (historyList != null && historyList.size() > 0) {
             clHistory.setVisibility(View.VISIBLE);
-            initHistoryTags(historySet);
+            initHistoryTags(historyList);
         } else {
             clHistory.setVisibility(View.GONE);
         }
@@ -169,14 +167,14 @@ public class SearchActivity extends BaseActivity {
     /**
      * 初始化历史搜索tag
      *
-     * @param set 标签集合
+     * @param list 标签集合
      */
-    private void initHistoryTags(Set<String> set) {
+    private void initHistoryTags(List<History> list) {
         flHistory.removeAllViews();
-        for (String text : set) {
+        for (History history : list) {
             View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
             TextView tvTag = view.findViewById(R.id.tv_tag);
-            tvTag.setText(text);
+            tvTag.setText(history.getName());
             flHistory.addView(tvTag);
 
             tvTag.setOnClickListener(v -> {
@@ -204,7 +202,7 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onSearchClear() {
                 clHistory.setVisibility(View.VISIBLE);
-                getHistoryData();
+                getHistory();
                 clHot.setVisibility(View.VISIBLE);
                 smartRefreshLayout.setVisibility(View.GONE);
             }
@@ -257,16 +255,7 @@ public class SearchActivity extends BaseActivity {
             ToastUtils.showShort("请输入搜索内容");
             return;
         }
-
-        Set<String> historySet = SPUtils.getInstance().getStringSet("history");
-        if (historySet == null || historySet.size() == 0) {
-            historySet = new HashSet<>();
-            historySet.add(keyword);
-            SPUtils.getInstance().put("history", historySet);
-        } else {
-            historySet.add(keyword);
-            SPUtils.getInstance().put("history", historySet);
-        }
+        saveHistory(keyword);
         RetrofitHelper.getInstance().getWanAndroidService()
                 .search(mPage, keyword)
                 .compose(RxHelper.bind(this))
@@ -318,12 +307,33 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    private void showClearHistoryDialog(){
+    /**
+     * 保存历史记录
+     *
+     * @param keyword 要保存的关键词
+     */
+    private void saveHistory(String keyword) {
+        List<History> historyList = historyDao.loadAll();
+        boolean isExit = false;
+        for (History entity : historyList) {
+            if (keyword.equals(entity.getName())) {
+                isExit = true;
+            }
+        }
+
+        if (!isExit) {
+            History history = new History();
+            history.setName(keyword);
+            historyDao.insert(history);
+        }
+    }
+
+    private void showClearHistoryDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("确认清除全部历史记录吗？");
         builder.setCancelable(false);
         builder.setPositiveButton("确定", (dialog, which) -> {
-            SPUtils.getInstance().remove("history");
+            historyDao.deleteAll();
             clHistory.setVisibility(View.GONE);
             dialog.dismiss();
         });

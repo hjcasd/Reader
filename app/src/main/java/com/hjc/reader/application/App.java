@@ -1,11 +1,14 @@
 package com.hjc.reader.application;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
 import com.hjc.reader.constant.AppConstants;
+import com.hjc.reader.model.db.DaoMaster;
+import com.hjc.reader.model.db.DaoSession;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
@@ -20,17 +23,20 @@ import java.io.IOException;
  */
 public class App extends MultiDexApplication {
 
+    private static DaoSession daoSession;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         initUtils();
         initBugly();
+        initGreenDao();
     }
 
     private void initUtils() {
         Utils.init(this);
-        if (AppConstants.isDebug){
+        if (AppConstants.isDebug) {
             LogUtils.Config config = LogUtils.getConfig();
             config.setLogSwitch(true);
             config.setGlobalTag("tag");
@@ -75,5 +81,24 @@ public class App extends MultiDexApplication {
             }
         }
         return null;
+    }
+
+
+    /**
+     * 初始化GreenDao
+     */
+    private void initGreenDao() {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "reader.db");
+        SQLiteDatabase db = helper.getWritableDatabase();
+
+        DaoMaster daoMaster = new DaoMaster(db);
+        daoSession = daoMaster.newSession();
+    }
+
+    /**
+     * 获取DaoSession
+     */
+    public static DaoSession getDaoSession() {
+        return daoSession;
     }
 }
