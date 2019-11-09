@@ -1,11 +1,11 @@
 package com.hjc.reader.ui;
 
 import android.content.Intent;
-import android.icu.text.BreakIterator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.hjc.reader.R;
 import com.hjc.reader.base.activity.BaseActivity;
 import com.hjc.reader.http.helper.RxHelper;
@@ -21,8 +21,16 @@ import io.reactivex.functions.Consumer;
 public class SplashActivity extends BaseActivity {
     @BindView(R.id.tv_time)
     TextView tvTime;
+
     private Disposable disposable1;
     private Disposable disposable2;
+
+    @Override
+    protected void initImmersionBar() {
+        ImmersionBar.with(this)
+                .fullScreen(true)
+                .init();
+    }
 
     @Override
     public int getLayoutId() {
