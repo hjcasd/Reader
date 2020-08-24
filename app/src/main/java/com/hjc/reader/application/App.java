@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * @Author: HJC
  * @Date: 2019/1/4 14:46
- * @Description: application
+ * @Description: application (v1)
  */
 public class App extends MultiDexApplication {
 
