@@ -2,33 +2,29 @@ package com.hjc.reader.ui.film;
 
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.hjc.baselib.fragment.BaseMvmFragment;
+import com.hjc.baselib.viewmodel.CommonViewModel;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
-import com.hjc.reader.base.fragment.BaseFragment;
-import com.hjc.reader.ui.film.child.HotMovieFragment;
+import com.hjc.reader.databinding.FragmentTab3Binding;
 import com.hjc.reader.ui.film.child.ComingMovieFragment;
+import com.hjc.reader.ui.film.child.HotMovieFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * @Author: HJC
  * @Date: 2019/1/21 16:10
  * @Description: 豆瓣模块
  */
-public class Tab3Fragment extends BaseFragment {
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
+public class Tab3Fragment extends BaseMvmFragment<FragmentTab3Binding, CommonViewModel> {
 
     private String[] titles = new String[]{"热映榜", "即将上映"};
 
@@ -42,8 +38,13 @@ public class Tab3Fragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
+    protected CommonViewModel getViewModel() {
+        return null;
+    }
 
+    @Override
+    protected int getBindingVariable() {
+        return 0;
     }
 
     @Override
@@ -57,13 +58,14 @@ public class Tab3Fragment extends BaseFragment {
         fragments.add(upcomingMovieFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
-        tabLayout.setupWithViewPager(viewPager);
+        mBindingView.viewPager.setAdapter(adapter);
+        mBindingView.viewPager.setOffscreenPageLimit(2);
+        mBindingView.tabLayout.setupWithViewPager(mBindingView.viewPager);
     }
 
     @Override
     public void addListeners() {
+
     }
 
     @Override

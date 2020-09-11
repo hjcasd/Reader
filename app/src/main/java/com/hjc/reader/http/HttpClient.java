@@ -1,15 +1,14 @@
 package com.hjc.reader.http;
 
-
 import android.annotation.SuppressLint;
 
+import com.hjc.baselib.http.interceptor.LogInterceptor;
+import com.hjc.reader.BuildConfig;
 import com.hjc.reader.http.Interceptor.AddCookiesInterceptor;
-import com.hjc.reader.http.Interceptor.LogInterceptor;
 import com.hjc.reader.http.Interceptor.ReceivedCookiesInterceptor;
 import com.hjc.reader.http.config.HttpConfig;
 
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
@@ -40,11 +39,13 @@ public class HttpClient {
                 .sslSocketFactory(createSSLSocketFactory(), (X509TrustManager) trustAllCerts[0])
                 .hostnameVerifier(new TrustAllHostnameVerifier())
                 .addInterceptor(new ReceivedCookiesInterceptor())
-                .addInterceptor(new AddCookiesInterceptor())
-                .addInterceptor(new LogInterceptor());
+                .addInterceptor(new AddCookiesInterceptor());
+
+        if (BuildConfig.IS_DEBUG) {
+            mBuilder.addInterceptor(new LogInterceptor());
+        }
     }
 
-    //双重检验锁单例模式
     public static HttpClient getInstance() {
         if (mHttpClient == null) {
             synchronized (HttpClient.class) {
@@ -56,10 +57,13 @@ public class HttpClient {
         return mHttpClient;
     }
 
-    public OkHttpClient.Builder getBuilder() {
+    OkHttpClient.Builder getBuilder() {
         return mBuilder;
     }
 
+    /**
+     * 设置https证书
+     */
     private SSLSocketFactory createSSLSocketFactory() {
         SSLSocketFactory sSLSocketFactory = null;
         try {
@@ -73,12 +77,14 @@ public class HttpClient {
     }
 
     private TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+        @SuppressLint("TrustAllX509TrustManager")
         @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
         }
 
+        @SuppressLint("TrustAllX509TrustManager")
         @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] chain, String authType) {
         }
 
         @Override
@@ -94,6 +100,4 @@ public class HttpClient {
             return true;
         }
     }
-
-
 }

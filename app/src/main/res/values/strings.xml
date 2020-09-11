@@ -1,11 +1,6 @@
 <resources>
     <string name="app_name">Reader</string>
 
-    <string name="tab1">tab1</string>
-    <string name="tab2">tab2</string>
-    <string name="tab3">tab3</string>
-    <string name="tab4">tab4</string>
-
     <!--权限相关-->
     <string name="message_permission_always_failed">请去设置页面申请以下权限,以便程序继续运行\n\n%1$s</string>
     <string name="message_permission_rationale">请申请以下权限,以便程序继续运行\n\n%1$s</string>
@@ -14,9 +9,16 @@
     <string name="cancel">取消</string>
     <string name="tip">Tips</string>
 
-
+    <!--动画相关-->
     <string name="transition_movie_img">transition_movie_img</string>
     <string name="transition_news_img">transition_news_img</string>
     <string name="transition_book_img">transition_book_img</string>
 
+    <string name="hot_movie_director">导演：</string>
+    <string name="hot_movie_main">主演：</string>
+    <string name="hot_movie_type">类型：</string>
+    <string name="hot_movie_score">评分：</string>
+    <string name="movie_detail_time">片长：</string>
+    <string name="movie_detail_date">上映日期：</string>
+    <string name="movie_detail_from">产地：</string>
 </resources>

@@ -1,150 +1,95 @@
 package com.hjc.reader.ui.login;
 
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.hjc.baselib.activity.BaseMvmActivity;
+import com.hjc.baselib.event.EventManager;
+import com.hjc.baselib.event.MessageEvent;
 import com.hjc.reader.R;
-import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.base.event.EventManager;
-import com.hjc.reader.base.event.MessageEvent;
 import com.hjc.reader.constant.EventCode;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.response.LoginBean;
-import com.hjc.reader.utils.helper.AccountManager;
-import com.hjc.reader.widget.TitleBar;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.ActivityLoginBinding;
+import com.hjc.reader.utils.helper.RouteManager;
+import com.hjc.reader.viewmodel.login.LoginViewModel;
 
-import butterknife.BindView;
 
 /**
  * @Author: HJC
- * @Date: 2019/2/13 15:24
+ * @Date: 2020/5/14 15:27
  * @Description: 登录页面
  */
-public class LoginActivity extends BaseActivity {
-    @BindView(R.id.title_bar)
-    TitleBar titleBar;
-    @BindView(R.id.et_username)
-    TextInputEditText etUsername;
-    @BindView(R.id.et_password)
-    TextInputEditText etPassword;
-    @BindView(R.id.btn_login)
-    Button btnLogin;
-    @BindView(R.id.tv_register)
-    TextView tvRegister;
+@Route(path = RoutePath.URL_LOGIN)
+public class LoginActivity extends BaseMvmActivity<ActivityLoginBinding, LoginViewModel> {
 
     @Override
-    public int getLayoutId() {
+    protected int getLayoutId() {
         return R.layout.activity_login;
     }
 
     @Override
-    public void initView() {
-
+    protected LoginViewModel getViewModel() {
+        return new ViewModelProvider(this).get(LoginViewModel.class);
     }
 
     @Override
-    public void initData(Bundle savedInstanceState) {
-
+    protected int getBindingVariable() {
+        return 0;
     }
 
     @Override
-    public void addListeners() {
-        btnLogin.setOnClickListener(this);
-        tvRegister.setOnClickListener(this);
+    protected void initData(@Nullable Bundle savedInstanceState) {
+        mBindingView.setLoginViewModel(mViewModel);
+    }
 
-        titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
-            @Override
-            public void leftClick(View view) {
+    @Override
+    protected void observeLiveData() {
+        mViewModel.getLoginData().observe(this, isLogin -> {
+            if (isLogin) {
                 KeyboardUtils.hideSoftInput(LoginActivity.this);
+                EventManager.sendEvent(new MessageEvent(EventCode.LOGIN_CODE));
                 finish();
-            }
-
-            @Override
-            public void rightClick(View view) {
-
             }
         });
     }
 
     @Override
-    public void onSingleClick(View v) {
+    protected void addListeners() {
+        mBindingView.setOnClickListener(this);
+
+        mBindingView.titleBar.setOnViewLeftClickListener(view -> finish());
+    }
+
+    @Override
+    protected void onSingleClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
-                login();
+                mViewModel.login();
                 break;
 
             case R.id.tv_register:
-                startActivityForResult(new Intent(this, RegisterActivity.class), 100);
+                RouteManager.jumpWithCode(this, RoutePath.URL_REGISTER, null, 100);
                 break;
         }
-    }
-
-    private void login() {
-        String username = etUsername.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
-
-        if (StringUtils.isEmpty(username)) {
-            ToastUtils.showShort("请输入用户名");
-            return;
-        }
-
-        if (username.length() < 6) {
-            ToastUtils.showShort("用户名长度至少为6位");
-            return;
-        }
-
-        if (StringUtils.isEmpty(password)) {
-            ToastUtils.showShort("请输入密码");
-            return;
-        }
-
-        if (password.length() < 6) {
-            ToastUtils.showShort("密码长度至少为6位");
-            return;
-        }
-
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .login(username, password)
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<LoginBean>(getSupportFragmentManager()) {
-                    @Override
-                    public void onSuccess(LoginBean result) {
-                        if (result != null) {
-                            if (result.getErrorCode() == 0){
-                                ToastUtils.showShort("登录成功");
-                                KeyboardUtils.hideSoftInput(LoginActivity.this);
-
-                                AccountManager.getInstance().init(true, result.getData().getUsername());
-                                EventManager.sendEvent(new MessageEvent(EventCode.C));
-                                finish();
-                            }else{
-                                ToastUtils.showShort(result.getErrorMsg());
-                            }
-                        } else {
-                            ToastUtils.showShort("登录失败,请稍后重试");
-                        }
-                    }
-                });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && data != null) {
+
+        if (requestCode == 100 && resultCode == 1000 && data != null) {
             String username = data.getStringExtra("username");
             String password = data.getStringExtra("password");
-            etUsername.setText(username);
-            etPassword.setText(password);
+
+            mBindingView.etUsername.setText(username);
+            mBindingView.etPassword.setText(password);
         }
     }
 }

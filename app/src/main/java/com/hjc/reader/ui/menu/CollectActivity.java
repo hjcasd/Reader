@@ -1,37 +1,33 @@
 package com.hjc.reader.ui.menu;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.gyf.barlibrary.ImmersionBar;
+import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.Fragment;
+
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.gyf.immersionbar.ImmersionBar;
+import com.hjc.baselib.activity.BaseMvmActivity;
+import com.hjc.baselib.viewmodel.CommonViewModel;
 import com.hjc.reader.R;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
-import com.hjc.reader.base.activity.BaseActivity;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.ActivityCollectBinding;
 import com.hjc.reader.ui.menu.child.CollectArticleFragment;
 import com.hjc.reader.ui.menu.child.CollectLinkFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * @Author: HJC
  * @Date: 2019/3/11 10:58
  * @Description: 我的收藏页面
  */
-public class CollectActivity extends BaseActivity {
-    @BindView(R.id.tool_bar)
-    Toolbar toolBar;
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
+@Route(path = RoutePath.URL_COLLECT)
+public class CollectActivity extends BaseMvmActivity<ActivityCollectBinding, CommonViewModel> {
 
     private String[] titles = new String[]{"文章", "网址"};
 
@@ -41,13 +37,25 @@ public class CollectActivity extends BaseActivity {
     }
 
     @Override
+    protected CommonViewModel getViewModel() {
+        return null;
+    }
+
+    @Override
+    protected int getBindingVariable() {
+        return 0;
+    }
+
+    @Override
     protected void initImmersionBar() {
-        ImmersionBar.with(this).titleBar(toolBar).init();
+        ImmersionBar.with(this)
+                .titleBar(mBindingView.toolBar)
+                .init();
     }
 
     @Override
     public void initView() {
-        setSupportActionBar(toolBar);
+        setSupportActionBar(mBindingView.toolBar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -65,19 +73,14 @@ public class CollectActivity extends BaseActivity {
         fragments.add(urlFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getSupportFragmentManager(), fragments, titles);
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
-        tabLayout.setupWithViewPager(viewPager);
+        mBindingView.viewPager.setAdapter(adapter);
+        mBindingView.viewPager.setOffscreenPageLimit(3);
+        mBindingView.tabLayout.setupWithViewPager(mBindingView.viewPager);
     }
 
     @Override
     public void addListeners() {
-        toolBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mBindingView.toolBar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override

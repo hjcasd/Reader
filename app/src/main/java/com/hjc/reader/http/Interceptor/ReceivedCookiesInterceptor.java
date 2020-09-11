@@ -2,9 +2,6 @@ package com.hjc.reader.http.Interceptor;
 
 import android.text.TextUtils;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
-import com.hjc.reader.constant.AppConstants;
 import com.hjc.reader.utils.helper.AccountManager;
 
 import java.io.IOException;

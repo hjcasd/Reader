@@ -1,22 +1,36 @@
 package com.hjc.reader.ui.menu.adapter;
 
-import android.support.annotation.Nullable;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.model.response.CollectLinkBean;
+import com.hjc.reader.bean.response.CollectLinkBean;
+import com.hjc.reader.databinding.ItemLinkBinding;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class LinkAdapter extends BaseQuickAdapter<CollectLinkBean.DataBean, BaseViewHolder> {
-    public LinkAdapter(@Nullable List<CollectLinkBean.DataBean> data) {
-        super(R.layout.item_rv_link, data) ;
+
+    public LinkAdapter() {
+        super(R.layout.item_link) ;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, CollectLinkBean.DataBean item) {
-        helper.setText(R.id.tv_name, item.getName());
-        helper.setText(R.id.tv_link, item.getLink());
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
+
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, CollectLinkBean.DataBean item) {
+        if (item == null) {
+            return;
+        }
+
+        ItemLinkBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setLinkBean(item);
+        }
     }
 }

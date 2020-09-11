@@ -1,19 +1,18 @@
 package com.hjc.reader.application;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.multidex.MultiDexApplication;
-import android.text.TextUtils;
+import androidx.multidex.MultiDexApplication;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
-import com.hjc.reader.constant.AppConstants;
-import com.hjc.reader.model.db.DaoMaster;
-import com.hjc.reader.model.db.DaoSession;
-import com.tencent.bugly.crashreport.CrashReport;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import com.hjc.baselib.loadsir.EmptyCallback;
+import com.hjc.baselib.loadsir.ErrorCallback;
+import com.hjc.baselib.loadsir.LoadingCallback;
+import com.hjc.baselib.loadsir.ShimmerCallback;
+import com.hjc.baselib.loadsir.TimeoutCallback;
+import com.hjc.reader.BuildConfig;
+import com.hjc.webviewlib.X5WebUtils;
+import com.kingja.loadsir.core.LoadSir;
 
 
 /**
@@ -23,82 +22,48 @@ import java.io.IOException;
  */
 public class App extends MultiDexApplication {
 
-    private static DaoSession daoSession;
-
     @Override
     public void onCreate() {
         super.onCreate();
 
         initUtils();
-        initBugly();
-        initGreenDao();
+        initLoadSir();
+        initARouter();
+        X5WebUtils.init(this);
+//        BuglyUtils.init(this);
     }
 
+
+    /**
+     * 初始化工具类
+     */
     private void initUtils() {
         Utils.init(this);
-        if (AppConstants.isDebug) {
-            LogUtils.Config config = LogUtils.getConfig();
-            config.setLogSwitch(true);
-            config.setGlobalTag("tag");
+
+        LogUtils.Config config = LogUtils.getConfig();
+        config.setLogSwitch(BuildConfig.IS_DEBUG);
+        config.setGlobalTag("tag");
+    }
+
+    private void initLoadSir() {
+        LoadSir.beginBuilder()
+                .addCallback(new LoadingCallback())
+                .addCallback(new ErrorCallback())
+                .addCallback(new EmptyCallback())
+                .addCallback(new TimeoutCallback())
+                .addCallback(new ShimmerCallback())
+                .setDefaultCallback(LoadingCallback.class)
+                .commit();
+    }
+
+    /**
+     * 初始化路由
+     */
+    private void initARouter() {
+        if (BuildConfig.IS_DEBUG) {
+            ARouter.openLog();     // 打印日志
+            ARouter.openDebug();   // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
         }
-    }
-
-    private void initBugly() {
-        // 获取当前包名
-        String packageName = getPackageName();
-        // 获取当前进程名
-        String processName = getProcessName(android.os.Process.myPid());
-        // 设置是否为上报进程
-        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
-        strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        CrashReport.initCrashReport(this, "e0a1ba856b", true, strategy);
-    }
-
-    /**
-     * 获取进程号对应的进程名
-     *
-     * @param pid 进程号
-     * @return 进程名
-     */
-    private static String getProcessName(int pid) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader("/proc/" + pid + "/cmdline"));
-            String processName = reader.readLine();
-            if (!TextUtils.isEmpty(processName)) {
-                processName = processName.trim();
-            }
-            return processName;
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * 初始化GreenDao
-     */
-    private void initGreenDao() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "reader.db");
-        SQLiteDatabase db = helper.getWritableDatabase();
-
-        DaoMaster daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-    }
-
-    /**
-     * 获取DaoSession
-     */
-    public static DaoSession getDaoSession() {
-        return daoSession;
+        ARouter.init(this); // 尽可能早，推荐在Application中初始化
     }
 }

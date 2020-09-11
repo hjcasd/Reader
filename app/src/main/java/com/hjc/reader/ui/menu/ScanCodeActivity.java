@@ -6,18 +6,19 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.hjc.baselib.activity.BaseMvmActivity;
+import com.hjc.baselib.http.RxSchedulers;
+import com.hjc.baselib.viewmodel.CommonViewModel;
 import com.hjc.reader.R;
-import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.http.helper.RxSchedulers;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.ActivityScanCodeBinding;
 import com.hjc.reader.utils.AppUtils;
-import com.hjc.reader.widget.TitleBar;
 
-import butterknife.BindView;
 import cn.bingoogolapple.qrcode.core.BGAQRCodeUtil;
 import cn.bingoogolapple.qrcode.zxing.QRCodeDecoder;
 import cn.bingoogolapple.qrcode.zxing.QRCodeEncoder;
@@ -29,11 +30,8 @@ import io.reactivex.observers.DefaultObserver;
  * @Date: 2019/8/19 17:44
  * @Description: 扫码下载页面
  */
-public class ScanCodeActivity extends BaseActivity {
-    @BindView(R.id.title_bar)
-    TitleBar titleBar;
-    @BindView(R.id.iv_logo)
-    ImageView ivLogo;
+@Route(path = RoutePath.URL_SCAN_CODE)
+public class ScanCodeActivity extends BaseMvmActivity<ActivityScanCodeBinding, CommonViewModel> {
 
     @Override
     public int getLayoutId() {
@@ -41,21 +39,25 @@ public class ScanCodeActivity extends BaseActivity {
     }
 
     @Override
-    public void initView() {
+    protected CommonViewModel getViewModel() {
+        return null;
+    }
 
+    @Override
+    protected int getBindingVariable() {
+        return 0;
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        generateWithLogo();
+        generateQrCodeWithLogo();
     }
 
     /**
      * 生成带logo的二维码
      */
-    private void generateWithLogo() {
-        Observable
-                .just("https://www.pgyer.com/nyQL")
+    private void generateQrCodeWithLogo() {
+        Observable.just("https://www.pgyer.com/nyQL")
                 .map(s -> {
                     Bitmap logoBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_logo);
                     return QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(ScanCodeActivity.this, 180),
@@ -66,7 +68,7 @@ public class ScanCodeActivity extends BaseActivity {
                     @Override
                     public void onNext(Bitmap bitmap) {
                         if (bitmap != null) {
-                            ivLogo.setImageBitmap(bitmap);
+                            mBindingView.ivLogo.setImageBitmap(bitmap);
                         } else {
                             ToastUtils.showShort("生成带logo的二维码失败");
                         }
@@ -86,32 +88,21 @@ public class ScanCodeActivity extends BaseActivity {
 
     @Override
     public void addListeners() {
-        ivLogo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                recognition();
-                return false;
-            }
+        mBindingView.ivLogo.setOnLongClickListener(v -> {
+            recognitionQrCode();
+            return false;
         });
 
-        titleBar.setOnViewClickListener(new TitleBar.onViewClick() {
-            @Override
-            public void leftClick(View view) {
-                finish();
-            }
-
-            @Override
-            public void rightClick(View view) {
-
-            }
+        mBindingView.titleBar.setOnViewLeftClickListener(view -> {
+            finish();
         });
     }
 
     /**
      * 识别二维码
      */
-    private void recognition() {
-        Drawable drawable = ivLogo.getDrawable();
+    private void recognitionQrCode() {
+        Drawable drawable = mBindingView.ivLogo.getDrawable();
         Observable
                 .just(drawable)
                 .map(drawable1 -> {
@@ -125,7 +116,6 @@ public class ScanCodeActivity extends BaseActivity {
                         if (StringUtils.isEmpty(s)) {
                             ToastUtils.showShort("解析二维码失败");
                         } else {
-
                             AppUtils.openLink(ScanCodeActivity.this, s);
                         }
                     }

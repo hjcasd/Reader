@@ -1,20 +1,35 @@
 package com.hjc.reader.ui.gank.adapter;
 
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
+import com.hjc.reader.databinding.ItemFilterBinding;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class FilterAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+
     public FilterAdapter(@Nullable List<String> data) {
-        super(R.layout.item_rv_filter, data);
+        super(R.layout.item_filter, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, String item) {
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
+
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, String item) {
+        if (item == null) {
+            return;
+        }
+
         int imageResId;
         switch (item) {
             case "全部":
@@ -37,11 +52,11 @@ public class FilterAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
                 imageResId = R.mipmap.icon_filter_web;
                 break;
 
-            case "休息视频":
+            case "后端":
                 imageResId = R.mipmap.icon_filter_video;
                 break;
 
-            case "拓展资源":
+            case "推荐":
                 imageResId = R.mipmap.icon_filter_extra;
                 break;
 
@@ -49,7 +64,11 @@ public class FilterAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
                 imageResId = R.mipmap.icon_filter_all;
                 break;
         }
-        helper.setText(R.id.tv_type_name, item);
-        helper.setImageResource(R.id.iv_pic, imageResId);
+
+        ItemFilterBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setTitle(item);
+            binding.ivPic.setImageResource(imageResId);
+        }
     }
 }

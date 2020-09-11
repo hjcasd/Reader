@@ -1,36 +1,26 @@
 package com.hjc.reader.ui.wan.child;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.blankj.utilcode.util.ToastUtils;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hjc.baselib.fragment.BaseMvmLazyFragment;
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseLazyFragment;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.response.WanNavigationBean;
+import com.hjc.reader.databinding.FragmentNavigationBinding;
 import com.hjc.reader.ui.wan.adapter.NavigationAdapter;
 import com.hjc.reader.ui.wan.adapter.NavigationContentAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
+import com.hjc.reader.viewmodel.wan.NavigationViewModel;
 
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
  * @Description: 导航数据页面
  */
-public class NavigationFragment extends BaseLazyFragment {
-
-    @BindView(R.id.rv_navigation)
-    RecyclerView rvNavigation;
-    @BindView(R.id.rv_navigation_content)
-    RecyclerView rvNavigationContent;
+public class NavigationFragment extends BaseMvmLazyFragment<FragmentNavigationBinding, NavigationViewModel> {
 
     private NavigationAdapter mNavigationAdapter;
     private NavigationContentAdapter mNavigationContentAdapter;
@@ -49,84 +39,93 @@ public class NavigationFragment extends BaseLazyFragment {
     }
 
     @Override
+    protected NavigationViewModel getViewModel() {
+        return new ViewModelProvider(this).get(NavigationViewModel.class);
+    }
+
+    @Override
+    protected int getBindingVariable() {
+        return 0;
+    }
+
+    @Override
     public void initView() {
+        setLoadSir(mBindingView.clRoot);
+
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
-        rvNavigation.setLayoutManager(manager);
-        mNavigationAdapter = new NavigationAdapter(null);
-        rvNavigation.setAdapter(mNavigationAdapter);
+        mBindingView.rvNavigation.setLayoutManager(manager);
+        mNavigationAdapter = new NavigationAdapter();
+        mBindingView.rvNavigation.setAdapter(mNavigationAdapter);
+        mNavigationAdapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.AlphaIn);
 
         contentManager = new LinearLayoutManager(mContext);
-        rvNavigationContent.setLayoutManager(contentManager);
-        mNavigationContentAdapter = new NavigationContentAdapter(null);
-        rvNavigationContent.setAdapter(mNavigationContentAdapter);
+        mBindingView.rvNavigationContent.setLayoutManager(contentManager);
+        mNavigationContentAdapter = new NavigationContentAdapter();
+        mBindingView.rvNavigationContent.setAdapter(mNavigationContentAdapter);
+        mNavigationContentAdapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.AlphaIn);
     }
 
     @Override
     public void initData() {
-        getListData();
+        mViewModel.loadNavigationList(true);
     }
 
-    /**
-     * 获取导航数据
-     */
-    private void getListData() {
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .getNavigationList()
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<WanNavigationBean>(getChildFragmentManager()) {
-                    @Override
-                    public void onSuccess(WanNavigationBean result) {
-                        if (result != null) {
-                            if (result.getErrorCode() == 0) {
-                                parseListData(result);
-                            } else {
-                                ToastUtils.showShort(result.getErrorMsg());
-                            }
-                        }
-                    }
-                });
-    }
+    @Override
+    protected void observeLiveData() {
+        mViewModel.getNavigationLiveData().observe(this, data -> {
+            mNavigationAdapter.setNewInstance(data);
+            selectItem(0);
+        });
 
-    /**
-     * 解析导航数据
-     *
-     * @param wanNavigationBean 导航数据对应的bean
-     */
-    private void parseListData(WanNavigationBean wanNavigationBean) {
-        List<WanNavigationBean.DataBean> dataList = wanNavigationBean.getData();
-        List<String> chapterList = new ArrayList<>();
-        if (dataList != null && dataList.size() > 0) {
-            for (WanNavigationBean.DataBean bean : dataList) {
-                chapterList.add(bean.getName());
-            }
-            mNavigationAdapter.setNewData(chapterList);
-            mNavigationAdapter.setSelection(0);
-            mNavigationContentAdapter.setNewData(dataList);
-        }
+        mViewModel.getNavigationContentLiveData().observe(this, data -> {
+            mNavigationContentAdapter.setNewInstance(data);
+        });
     }
 
     @Override
     public void addListeners() {
         //点击侧边栏菜单,滑动到指定位置
-        mNavigationAdapter.setOnSelectListener(position -> contentManager.scrollToPositionWithOffset(position, 0));
+        mNavigationAdapter.setOnSelectListener(position -> {
+            selectItem(position);
+            contentManager.scrollToPositionWithOffset(position, 0);
+        });
 
         //侧边栏菜单随右边列表一起滚动
-        rvNavigationContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mBindingView.rvNavigationContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstPosition = contentManager.findFirstVisibleItemPosition();
                 if (oldPosition != firstPosition) {
-                    rvNavigation.smoothScrollToPosition(firstPosition);
-                    mNavigationAdapter.setSelection(firstPosition);
-                    oldPosition = firstPosition;
+                    mBindingView.rvNavigation.smoothScrollToPosition(firstPosition);
+                    selectItem(firstPosition);
                 }
             }
         });
     }
 
+    /**
+     * 选中左边标题
+     * @param position 位置索引
+     */
+    private void selectItem(int position) {
+        if (position < 0 || mNavigationAdapter.getData().size() <= position) {
+            return;
+        }
+        mNavigationAdapter.getData().get(oldPosition).setSelected(false);
+        mNavigationAdapter.notifyItemChanged(oldPosition);
+        oldPosition = position;
+        mNavigationAdapter.getData().get(position).setSelected(true);
+        mNavigationAdapter.notifyItemChanged(position);
+    }
+
     @Override
     public void onSingleClick(View v) {
 
+    }
+
+    @Override
+    protected void onRetryBtnClick(View v) {
+        mViewModel.loadNavigationList(true);
     }
 }

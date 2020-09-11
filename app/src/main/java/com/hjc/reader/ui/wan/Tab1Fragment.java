@@ -2,15 +2,16 @@ package com.hjc.reader.ui.wan;
 
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.hjc.baselib.fragment.BaseMvmFragment;
+import com.hjc.baselib.viewmodel.CommonViewModel;
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseFragment;
 import com.hjc.reader.adapter.MyViewPagerAdapter;
+import com.hjc.reader.databinding.FragmentTab1Binding;
 import com.hjc.reader.ui.wan.child.NavigationFragment;
 import com.hjc.reader.ui.wan.child.TreeFragment;
 import com.hjc.reader.ui.wan.child.WanFragment;
@@ -18,24 +19,16 @@ import com.hjc.reader.ui.wan.child.WanFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * @Author: HJC
  * @Date: 2019/1/21 16:03
  * @Description: 玩安卓模块
  */
-public class Tab1Fragment extends BaseFragment {
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
-
-    private String titles[] = new String[]{"玩安卓", "知识体系", "导航数据"};
+public class Tab1Fragment extends BaseMvmFragment<FragmentTab1Binding, CommonViewModel> {
+    private String[] titles = new String[]{"玩安卓", "知识体系", "导航数据"};
 
     public static Tab1Fragment newInstance() {
-        Tab1Fragment fragment = new Tab1Fragment();
-        return fragment;
+        return new Tab1Fragment();
     }
 
     @Override
@@ -44,8 +37,13 @@ public class Tab1Fragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
+    protected CommonViewModel getViewModel() {
+        return null;
+    }
 
+    @Override
+    protected int getBindingVariable() {
+        return 0;
     }
 
     @Override
@@ -61,9 +59,9 @@ public class Tab1Fragment extends BaseFragment {
         fragments.add(navigationFragment);
 
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments, titles);
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
-        tabLayout.setupWithViewPager(viewPager);
+        mBindingView.viewPager.setAdapter(adapter);
+        mBindingView.viewPager.setOffscreenPageLimit(3);
+        mBindingView.tabLayout.setupWithViewPager(mBindingView.viewPager);
     }
 
     @Override

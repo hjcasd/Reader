@@ -1,73 +1,43 @@
 package com.hjc.reader.ui.search;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProvider;
+
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hjc.baselib.activity.BaseMvmFragmentActivity;
+import com.hjc.baselib.event.EventManager;
+import com.hjc.baselib.event.MessageEvent;
+import com.hjc.baselib.widget.text.DeleteEditText;
 import com.hjc.reader.R;
-import com.hjc.reader.application.App;
-import com.hjc.reader.base.activity.BaseActivity;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.History;
-import com.hjc.reader.model.db.HistoryDao;
-import com.hjc.reader.model.response.HotKeyBean;
-import com.hjc.reader.model.response.WanListBean;
-import com.hjc.reader.ui.search.adapter.SearchAdapter;
-import com.hjc.reader.utils.SchemeUtils;
-import com.hjc.reader.widget.SearchEditText;
-import com.nex3z.flowlayout.FlowLayout;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.hjc.reader.constant.EventCode;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.ActivitySearchBinding;
+import com.hjc.reader.ui.search.child.SearchHistoryFragment;
+import com.hjc.reader.ui.search.child.SearchResultFragment;
+import com.hjc.reader.viewmodel.search.SearchViewModel;
 
-import java.util.List;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.BindView;
+import java.util.Objects;
+
 
 /**
  * @Author: HJC
  * @Date: 2019/8/21 14:13
  * @Description: 搜索页面
  */
-public class SearchActivity extends BaseActivity {
-    @BindView(R.id.iv_back)
-    ImageView ivBack;
-    @BindView(R.id.et_search)
-    SearchEditText etSearch;
-    @BindView(R.id.tv_search)
-    TextView tvSearch;
-    @BindView(R.id.iv_clear_history)
-    ImageView ivClearHistory;
-    @BindView(R.id.fl_history)
-    FlowLayout flHistory;
-    @BindView(R.id.cl_history)
-    ConstraintLayout clHistory;
-    @BindView(R.id.fl_hot)
-    FlowLayout flHot;
-    @BindView(R.id.cl_hot)
-    ConstraintLayout clHot;
-    @BindView(R.id.smart_refresh_layout)
-    SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.rv_list)
-    RecyclerView rvList;
+@Route(path = RoutePath.URL_SEARCH)
+public class SearchActivity extends BaseMvmFragmentActivity<ActivitySearchBinding, SearchViewModel> {
 
-    private SearchAdapter mAdapter;
+    private SearchHistoryFragment mSearchHistoryFragment;
+    private SearchResultFragment mSearchResultFragment;
 
-    /**
-     * 页码
-     */
-    private int mPage = 0;
-
-    private HistoryDao historyDao;
 
     @Override
     public int getLayoutId() {
@@ -75,151 +45,46 @@ public class SearchActivity extends BaseActivity {
     }
 
     @Override
-    public void initView() {
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        rvList.setLayoutManager(manager);
+    protected SearchViewModel getViewModel() {
+        return new ViewModelProvider(this).get(SearchViewModel.class);
+    }
 
-        mAdapter = new SearchAdapter(null);
-        rvList.setAdapter(mAdapter);
-
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+    @Override
+    protected int getBindingVariable() {
+        return 0;
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        historyDao = App.getDaoSession().getHistoryDao();
+        EventManager.register(this);
 
-        getHotKeyData();
-        getHistory();
-    }
+        mSearchHistoryFragment = SearchHistoryFragment.newInstance();
+        mSearchResultFragment = SearchResultFragment.newInstance();
 
-    /**
-     * 获取热门搜索数据
-     */
-    private void getHotKeyData() {
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .getHotKey()
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<HotKeyBean>(getSupportFragmentManager()) {
-                    @Override
-                    public void onSuccess(HotKeyBean result) {
-                        if (result != null) {
-                            if (result.getErrorCode() == 0) {
-                                parseHotKeyData(result);
-                            } else {
-                                ToastUtils.showShort(result.getErrorMsg());
-                            }
-                        }
-                    }
-                });
-    }
-
-    /**
-     * 解析热门搜索数据
-     *
-     * @param result 热门搜索对应的bean
-     */
-    private void parseHotKeyData(HotKeyBean result) {
-        List<HotKeyBean.DataBean> list = result.getData();
-        if (list != null && list.size() > 0) {
-            clHot.setVisibility(View.VISIBLE);
-            initHotTags(list);
-        } else {
-            clHot.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * 初始化热门搜索tag
-     *
-     * @param list 标签集合
-     */
-    private void initHotTags(List<HotKeyBean.DataBean> list) {
-        flHot.removeAllViews();
-        for (HotKeyBean.DataBean bean : list) {
-            View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
-            TextView tvTag = view.findViewById(R.id.tv_tag);
-            tvTag.setText(bean.getName());
-            flHot.addView(tvTag);
-
-            tvTag.setOnClickListener(v -> {
-                etSearch.setText(tvTag.getText().toString());
-                etSearch.requestFocus();
-                etSearch.setSelection(etSearch.getText().length());
-                search(true);
-            });
-        }
-    }
-
-    /**
-     * 获取历史搜索数据
-     */
-    private void getHistory() {
-        List<History> historyList = historyDao.loadAll();
-        if (historyList != null && historyList.size() > 0) {
-            clHistory.setVisibility(View.VISIBLE);
-            initHistoryTags(historyList);
-        } else {
-            clHistory.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * 初始化历史搜索tag
-     *
-     * @param list 标签集合
-     */
-    private void initHistoryTags(List<History> list) {
-        flHistory.removeAllViews();
-        for (History history : list) {
-            View view = View.inflate(SearchActivity.this, R.layout.view_navigation_tag, null);
-            TextView tvTag = view.findViewById(R.id.tv_tag);
-            tvTag.setText(history.getName());
-            flHistory.addView(tvTag);
-
-            tvTag.setOnClickListener(v -> {
-                etSearch.setText(tvTag.getText().toString());
-                etSearch.requestFocus();
-                etSearch.setSelection(etSearch.getText().length());
-                search(true);
-            });
-        }
+        showFragment(mSearchHistoryFragment);
     }
 
     @Override
     public void addListeners() {
-        ivBack.setOnClickListener(this);
-        tvSearch.setOnClickListener(this);
-        ivClearHistory.setOnClickListener(this);
+        mBindingView.ivBack.setOnClickListener(this);
+        mBindingView.tvSearch.setOnClickListener(this);
 
-        etSearch.setOnSearchClickListener(new SearchEditText.OnSearchClickListener() {
+        mBindingView.etSearch.setOnSearchClickListener(new DeleteEditText.OnSearchClickListener() {
             @Override
             public void onSearchClick(View view) {
-                mPage = 0;
-                search(true);
+                search();
             }
 
             @Override
             public void onSearchClear() {
-                clHistory.setVisibility(View.VISIBLE);
-                getHistory();
-                clHot.setVisibility(View.VISIBLE);
-                smartRefreshLayout.setVisibility(View.GONE);
+                showFragment(mSearchHistoryFragment);
             }
         });
+    }
 
-        smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
-            mPage++;
-            search(false);
-        });
-
-        mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            List<WanListBean.DataBean.DatasBean> dataList = adapter.getData();
-            WanListBean.DataBean.DatasBean bean = dataList.get(position);
-            String title = bean.getTitle();
-            String link = bean.getLink();
-            SchemeUtils.jumpToWeb(SearchActivity.this, link, title);
-        });
+    @Override
+    protected int getFragmentContentId() {
+        return R.id.fl_content;
     }
 
     @Override
@@ -231,113 +96,45 @@ public class SearchActivity extends BaseActivity {
                 break;
 
             case R.id.tv_search:
-                mPage = 0;
-                search(true);
-                break;
-
-            case R.id.iv_clear_history:
-                showClearHistoryDialog();
-                break;
-
-            default:
+                search();
                 break;
         }
     }
 
     /**
      * 搜索
-     *
-     * @param isShow 是否显示loading
      */
-    private void search(boolean isShow) {
-        String keyword = etSearch.getText().toString().trim();
+    private void search() {
+        String keyword = Objects.requireNonNull(mBindingView.etSearch.getText()).toString().trim();
         if (StringUtils.isEmpty(keyword)) {
-            ToastUtils.showShort("请输入搜索内容");
+            ToastUtils.showShort("请输入关键字");
             return;
         }
-        saveHistory(keyword);
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .search(mPage, keyword)
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<WanListBean>(getSupportFragmentManager(), isShow) {
-                    @Override
-                    public void onSuccess(WanListBean result) {
-                        smartRefreshLayout.finishLoadMore();
-                        if (result != null) {
-                            if (result.getErrorCode() == 0) {
-                                parseSearchData(result);
-                            } else {
-                                ToastUtils.showShort(result.getErrorMsg());
-                            }
-                        }
-                    }
+        KeyboardUtils.hideSoftInput(this);
+        mViewModel.saveHistoryData(keyword);
 
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        super.onFailure(errorMsg);
-                        smartRefreshLayout.finishLoadMore();
-                    }
-                });
+        EventManager.sendStickyEvent(new MessageEvent(EventCode.SEARCH_RESULT, keyword));
+        showFragment(mSearchResultFragment);
     }
 
     /**
-     * 解析搜索结果
-     *
-     * @param result 搜索对应的bean
+     * 点击历史搜索标签或者热门搜索标签回调
      */
-    private void parseSearchData(WanListBean result) {
-        clHistory.setVisibility(View.GONE);
-        clHot.setVisibility(View.GONE);
-        smartRefreshLayout.setVisibility(View.VISIBLE);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handlerEvent(MessageEvent<String> messageEvent) {
+        if (messageEvent.getCode() == EventCode.CLICK_TAG) {
+            String keyword = messageEvent.getData();
+            mBindingView.etSearch.setText(keyword);
+            mBindingView.etSearch.requestFocus();
+            mBindingView.etSearch.setSelection(keyword.length());
 
-        WanListBean.DataBean dataBean = result.getData();
-        List<WanListBean.DataBean.DatasBean> dataList = dataBean.getDatas();
-        if (dataList != null && dataList.size() > 0) {
-            if (mPage == 0) {
-                mAdapter.setNewData(dataList);
-            } else {
-                mAdapter.addData(dataList);
-            }
-        } else {
-            if (mPage == 0) {
-                ToastUtils.showShort("暂无搜索数据");
-            } else {
-                ToastUtils.showShort("没有更多数据了");
-            }
+            search();
         }
     }
 
-    /**
-     * 保存历史记录
-     *
-     * @param keyword 要保存的关键词
-     */
-    private void saveHistory(String keyword) {
-        List<History> historyList = historyDao.loadAll();
-        boolean isExit = false;
-        for (History entity : historyList) {
-            if (keyword.equals(entity.getName())) {
-                isExit = true;
-            }
-        }
-
-        if (!isExit) {
-            History history = new History();
-            history.setName(keyword);
-            historyDao.insert(history);
-        }
-    }
-
-    private void showClearHistoryDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("确认清除全部历史记录吗？");
-        builder.setCancelable(false);
-        builder.setPositiveButton("确定", (dialog, which) -> {
-            historyDao.deleteAll();
-            clHistory.setVisibility(View.GONE);
-            dialog.dismiss();
-        });
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.show();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventManager.unregister(this);
     }
 }

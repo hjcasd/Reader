@@ -9,6 +9,11 @@ package com.hjc.reader.http.config;
 public class URLConfig {
 
     /**
+     * 登录url
+     */
+    public static final String URL_LOGIN = "bffq/common/v1/appLogin";
+
+    /**
      * 玩安卓URL
      * http://www.wanandroid.com/
      */
@@ -49,5 +54,4 @@ public class URLConfig {
 
     //检查版本更新
     public static final String URL_CHECK_VERSION = "ifs/services/bffq/v1/appVersion";
-
 }

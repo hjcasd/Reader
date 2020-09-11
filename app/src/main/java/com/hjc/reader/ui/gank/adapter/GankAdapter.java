@@ -1,169 +1,117 @@
 package com.hjc.reader.ui.gank.adapter;
 
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.annotation.SuppressLint;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
-import com.chad.library.adapter.base.util.MultiTypeDelegate;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+
+import com.chad.library.adapter.base.BaseDelegateMultiAdapter;
+import com.chad.library.adapter.base.delegate.BaseMultiTypeDelegate;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.ui.image.adapter.ImageAdapter;
-import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.utils.image.ImageManager;
+import com.hjc.reader.adapter.ImageAdapter;
+import com.hjc.reader.bean.response.GankDayBean;
+import com.hjc.reader.databinding.ItemGankImageOneBinding;
+import com.hjc.reader.databinding.ItemGankImageThreeBinding;
+import com.hjc.reader.databinding.ItemGankTextBinding;
 
-import java.text.SimpleDateFormat;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class GankAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseViewHolder> {
-    private final int TYPE_TEXT = 1;
-    private final int TYPE_IMAGE_ONE = 2;
-    private final int TYPE_IMAGE_THREE = 3;
+public class GankAdapter extends BaseDelegateMultiAdapter<GankDayBean, BaseViewHolder> {
 
-    public GankAdapter(@Nullable List<GankIOBean.ResultsBean> data) {
-        super(data);
-
-        setMultiTypeDelegate(new MultiTypeDelegate<GankIOBean.ResultsBean>() {
-            @Override
-            protected int getItemType(GankIOBean.ResultsBean resultsBean) {
-                List<String> images = resultsBean.getImages();
-                if (images == null || images.size() == 0) {
-                    return TYPE_TEXT;
-                }
-                if (images.size() >= 1 && images.size() < 3) {
-                    return TYPE_IMAGE_ONE;
-                }
-                return TYPE_IMAGE_THREE;
-            }
-        });
-
-        getMultiTypeDelegate()
-                .registerItemType(TYPE_TEXT, R.layout.item_rv_gank_text)
-                .registerItemType(TYPE_IMAGE_ONE, R.layout.item_rv_gank_image_one)
-                .registerItemType(TYPE_IMAGE_THREE, R.layout.item_rv_gank_image_three);
+    public GankAdapter() {
+        super();
+        setMultiTypeDelegate(new GankMultiTypeDelegate());
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, GankIOBean.ResultsBean item) {
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
+
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, GankDayBean item) {
+        if (item == null) {
+            return;
+        }
         switch (helper.getItemViewType()) {
-            case TYPE_TEXT:
+            case GankDayBean.TYPE_TEXT:
                 initType1(helper, item);
                 break;
 
-            case TYPE_IMAGE_ONE:
+            case GankDayBean.TYPE_IMAGE_ONE:
                 initType2(helper, item);
                 break;
 
-            case TYPE_IMAGE_THREE:
+            case GankDayBean.TYPE_IMAGE_THREE:
                 initType3(helper, item);
                 break;
         }
     }
 
-    private void initType1(BaseViewHolder helper, GankIOBean.ResultsBean item) {
-        TextView tvTitle = helper.getView(R.id.tv_title);
-        TextView tvAuthor = helper.getView(R.id.tv_author);
-        TextView tvTime = helper.getView(R.id.tv_time);
-
-        tvTitle.setText(item.getDesc());
-        tvAuthor.setText(item.getWho());
-        String translateTime = getTranslateTime(item.getPublishedAt());
-        tvTime.setText(translateTime);
-    }
-
-    private void initType2(BaseViewHolder helper, GankIOBean.ResultsBean item) {
-        TextView tvTitle = helper.getView(R.id.tv_title);
-        TextView tvAuthor = helper.getView(R.id.tv_author);
-        TextView tvTime = helper.getView(R.id.tv_time);
-        ImageView ivPic = helper.getView(R.id.iv_pic);
-
-        tvTitle.setText(item.getDesc());
-        tvAuthor.setText(item.getWho());
-        String translateTime = getTranslateTime(item.getPublishedAt());
-        tvTime.setText(translateTime);
-        ImageManager.loadImage(ivPic, item.getImages().get(0), 0);
-    }
-
-    private void initType3(BaseViewHolder helper, GankIOBean.ResultsBean item) {
-        TextView tvTitle = helper.getView(R.id.tv_title);
-        TextView tvAuthor = helper.getView(R.id.tv_author);
-        TextView tvTime = helper.getView(R.id.tv_time);
-        RecyclerView rvPic = helper.getView(R.id.rv_pic);
-
-        tvTitle.setText(item.getDesc());
-        tvAuthor.setText(item.getWho());
-        String translateTime = getTranslateTime(item.getPublishedAt());
-        tvTime.setText(translateTime);
-
-        GridLayoutManager manager = new GridLayoutManager(mContext, 3);
-        rvPic.setLayoutManager(manager);
-
-        List<String> imgList = new ArrayList<>();
-        //多个取前3个
-        for(int i = 0; i < 3 ; i++){
-            imgList.add(item.getImages().get(i));
+    private void initType1(BaseViewHolder helper, GankDayBean item) {
+        ItemGankTextBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setGankDayBean(item);
         }
-        ImageAdapter adapter = new ImageAdapter(imgList);
-        rvPic.setAdapter(adapter);
-
-        //解决嵌套RecyclerView时,当点击item内部的RecyclerView后,外部RecyclerView的点击事件不生效的问题
-        rvPic.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return helper.itemView.onTouchEvent(event);
-            }
-        });
     }
 
-    public String getTranslateTime(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        // 在主页面中设置当天时间
-        Date nowTime = new Date();
-        String currDate = sdf.format(nowTime);
-        long currentMilliseconds = nowTime.getTime();// 当前日期的毫秒值
-        long timeMilliseconds;
-        Date date;
-        try {
-            // 将给定的字符串中的日期提取出来
-            date = sdf.parse(time);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return time;
+    private void initType2(BaseViewHolder helper, GankDayBean item) {
+        ItemGankImageOneBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setGankDayBean(item);
         }
-        if (date != null) {
-            timeMilliseconds = date.getTime();
-            long timeDifferent = currentMilliseconds - timeMilliseconds;
+    }
 
-            if (timeDifferent < 60000) {// 一分钟之内
+    @SuppressLint("ClickableViewAccessibility")
+    private void initType3(BaseViewHolder helper, GankDayBean item) {
+        ItemGankImageThreeBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setGankDayBean(item);
 
-                return "刚刚";
+            GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
+            binding.rvPic.setLayoutManager(manager);
+
+            List<String> imgList = new ArrayList<>();
+            //多个取前3个
+            for (int i = 0; i < 3; i++) {
+                imgList.add(item.getImages().get(i));
             }
-            if (timeDifferent < 3600000) {// 一小时之内
-                long longMinute = timeDifferent / 60000;
-                int minute = (int) (longMinute % 100);
-                return minute + "分钟之前";
-            }
-            long l = 24 * 60 * 60 * 1000; // 每天的毫秒数
-            if (timeDifferent < l) {// 小于一天
-                long longHour = timeDifferent / 3600000;
-                int hour = (int) (longHour % 100);
-                return hour + "小时之前";
-            }
-            if (timeDifferent >= l) {
-                String currYear = currDate.substring(0, 4);
-                String year = time.substring(0, 4);
-                if (!year.equals(currYear)) {
-                    return time.substring(0, 10);
+            ImageAdapter adapter = new ImageAdapter(imgList);
+            binding.rvPic.setAdapter(adapter);
+
+            //解决嵌套RecyclerView时,当点击item内部的RecyclerView后,外部RecyclerView的点击事件不生效的问题
+            binding.rvPic.setOnTouchListener((v, event) -> helper.itemView.onTouchEvent(event));
+        }
+    }
+
+
+    // 代理类
+    final static class GankMultiTypeDelegate extends BaseMultiTypeDelegate<GankDayBean> {
+
+        public GankMultiTypeDelegate() {
+            // 绑定 item 类型
+            addItemType(GankDayBean.TYPE_TEXT, R.layout.item_gank_text);
+            addItemType(GankDayBean.TYPE_IMAGE_ONE, R.layout.item_gank_image_one);
+            addItemType(GankDayBean.TYPE_IMAGE_THREE, R.layout.item_gank_image_three);
+        }
+
+        @Override
+        public int getItemType(@NotNull List<? extends GankDayBean> data, int position) {
+            GankDayBean bean = data.get(position);
+            List<String> images = bean.getImages();
+            if (images == null || images.size() == 0) {
+                return GankDayBean.TYPE_TEXT;
+            } else {
+                if (images.size() < 3) {
+                    return GankDayBean.TYPE_IMAGE_ONE;
+                } else {
+                    return GankDayBean.TYPE_IMAGE_THREE;
                 }
-                return time.substring(5, 10);
             }
         }
-        return time;
     }
 }

@@ -1,45 +1,36 @@
 package com.hjc.reader.ui.menu.child;
 
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.app.AlertDialog;
 import android.view.View;
 
-import com.blankj.utilcode.util.ToastUtils;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hjc.baselib.event.EventManager;
+import com.hjc.baselib.event.MessageEvent;
+import com.hjc.baselib.fragment.BaseMvmLazyFragment;
 import com.hjc.reader.R;
-import com.hjc.reader.base.event.MessageEvent;
-import com.hjc.reader.base.event.EventManager;
-import com.hjc.reader.base.fragment.BaseLazyFragment;
+import com.hjc.reader.bean.response.CollectLinkBean;
 import com.hjc.reader.constant.EventCode;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.response.CollectArticleBean;
-import com.hjc.reader.model.response.CollectLinkBean;
+import com.hjc.reader.databinding.FragmentCollectLinkBinding;
 import com.hjc.reader.ui.menu.adapter.LinkAdapter;
-import com.hjc.reader.utils.SchemeUtils;
-import com.hjc.reader.widget.dialog.EditLinkDialog;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.hjc.reader.utils.helper.RouteManager;
+import com.hjc.reader.viewmodel.menu.CollectLinkViewModel;
+import com.hjc.reader.widget.EditLinkDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * @Author: HJC
  * @Date: 2019/3/11 11:00
  * @Description: 我的收藏下的网址页面
  */
-public class CollectLinkFragment extends BaseLazyFragment {
-
-    @BindView(R.id.smart_refresh_layout)
-    SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.rv_url)
-    RecyclerView rvUrl;
+public class CollectLinkFragment extends BaseMvmLazyFragment<FragmentCollectLinkBinding, CollectLinkViewModel> {
 
     private LinkAdapter mAdapter;
 
@@ -55,72 +46,60 @@ public class CollectLinkFragment extends BaseLazyFragment {
     }
 
     @Override
+    protected CollectLinkViewModel getViewModel() {
+        return new ViewModelProvider(this).get(CollectLinkViewModel.class);
+    }
+
+    @Override
+    protected int getBindingVariable() {
+        return 0;
+    }
+
+    @Override
     public void initView() {
+        setLoadSir(mBindingView.smartRefreshLayout);
+
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
-        rvUrl.setLayoutManager(manager);
+        mBindingView.rvLink.setLayoutManager(manager);
 
-        mAdapter = new LinkAdapter(null);
-        rvUrl.setAdapter(mAdapter);
+        mAdapter = new LinkAdapter();
+        mBindingView.rvLink.setAdapter(mAdapter);
 
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
+        mAdapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight);
     }
 
     @Override
     public void initData() {
         EventManager.register(this);
-        getLinkList(true);
+
+        mViewModel.loadCollectLinkList(true);
     }
 
-    /**
-     * 获取收藏的网址列表
-     *
-     * @param isShow 是否显示loading
-     */
-    private void getLinkList(boolean isShow) {
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .getLinkList()
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<CollectLinkBean>(getChildFragmentManager(), isShow) {
-                    @Override
-                    public void onSuccess(CollectLinkBean result) {
-                        smartRefreshLayout.finishRefresh();
-                        if (result != null) {
-                            parseLinkList(result);
-                        } else {
-                            ToastUtils.showShort("服务器异常,请稍后重试");
-                        }
-                    }
+    @Override
+    protected void observeLiveData() {
+        mViewModel.getCollectLinkLiveData().observe(this, data -> {
+            mBindingView.smartRefreshLayout.finishRefresh();
 
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        super.onFailure(errorMsg);
-                        smartRefreshLayout.finishRefresh();
-                    }
-                });
-    }
+            if (data != null){
+                mAdapter.setNewInstance(data);
+            }
+        });
 
-    /**
-     * 解析收藏的网址列表数据
-     *
-     * @param collectLinkBean 网址列表对应的bean
-     */
-    private void parseLinkList(CollectLinkBean collectLinkBean) {
-        List<CollectLinkBean.DataBean> dataList = collectLinkBean.getData();
-        if (dataList != null && dataList.size() > 0) {
-            mAdapter.setNewData(dataList);
-        } else {
-            ToastUtils.showShort("暂无收藏,快去收藏吧");
-        }
+        mViewModel.getPositionLiveData().observe(this, position -> {
+            mAdapter.removeAt(position);
+        });
     }
 
     @Override
     public void addListeners() {
-        smartRefreshLayout.setOnRefreshListener(refreshLayout -> getLinkList(false));
+        mBindingView.smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
+            mViewModel.loadCollectLinkList(false);
+        });
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
             List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
             CollectLinkBean.DataBean bean = dataList.get(position);
-            SchemeUtils.jumpToWeb(mContext, bean.getLink(), bean.getName());
+            RouteManager.jumpToWeb(bean.getName(), bean.getLink());
         });
 
         mAdapter.setOnItemLongClickListener((adapter, view, position) -> {
@@ -138,7 +117,7 @@ public class CollectLinkFragment extends BaseLazyFragment {
                         break;
 
                     case 1:
-                        deleteLink(bean.getId(), position);
+                        mViewModel.deleteLink(bean.getId(), position);
                         break;
 
                     default:
@@ -150,48 +129,27 @@ public class CollectLinkFragment extends BaseLazyFragment {
         });
     }
 
+    @Override
+    protected void onRetryBtnClick(View v) {
+        mViewModel.loadCollectLinkList(true);
+    }
+
+    @Override
+    public void onSingleClick(View v) {
+
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handlerEvent(MessageEvent<CollectLinkBean.DataBean> messageEvent) {
-        if (messageEvent.getCode() == EventCode.D) {
+        if (messageEvent.getCode() == EventCode.EDIT_LINK_CODE) {
             CollectLinkBean.DataBean srcBean = messageEvent.getData();
             List<CollectLinkBean.DataBean> dataList = mAdapter.getData();
             CollectLinkBean.DataBean desBean = dataList.get(mCurrentPosition);
 
             desBean.setName(srcBean.getName());
             desBean.setLink(srcBean.getLink());
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(mCurrentPosition);
         }
-    }
-
-    /**
-     * 删除收藏的网址
-     *
-     * @param id 网址id
-     */
-    private void deleteLink(int id, int position) {
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .deleteLink(id)
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<CollectArticleBean>(getChildFragmentManager(), true) {
-                    @Override
-                    public void onSuccess(CollectArticleBean result) {
-                        if (result != null) {
-                            if (result.getErrorCode() == 0) {
-                                mAdapter.remove(position);
-                                ToastUtils.showShort("删除网址成功");
-                            } else {
-                                ToastUtils.showShort(result.getErrorMsg());
-                            }
-                        } else {
-                            ToastUtils.showShort("服务器异常,请稍后重试");
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void onSingleClick(View v) {
-
     }
 
     @Override

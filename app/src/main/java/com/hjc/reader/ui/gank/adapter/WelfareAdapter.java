@@ -1,25 +1,36 @@
 package com.hjc.reader.ui.gank.adapter;
 
-import android.support.annotation.Nullable;
-import android.widget.ImageView;
+import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.utils.image.ImageManager;
+import com.hjc.reader.bean.response.GankDayBean;
+import com.hjc.reader.databinding.ItemWelfareBinding;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class WelfareAdapter extends BaseQuickAdapter<GankIOBean.ResultsBean, BaseViewHolder> {
-    public WelfareAdapter(@Nullable List<GankIOBean.ResultsBean> data) {
-        super(R.layout.item_rv_welfare, data);
+public class WelfareAdapter extends BaseQuickAdapter<GankDayBean, BaseViewHolder> {
+
+    public WelfareAdapter() {
+        super(R.layout.item_welfare);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, GankIOBean.ResultsBean item) {
-        ImageView ivPic = helper.getView(R.id.iv_pic);
-        ImageManager.loadImage(ivPic, item.getUrl(), 1);
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
+
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, GankDayBean item) {
+        if (item == null) {
+            return;
+        }
+
+        ItemWelfareBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setGankDayBean(item);
+        }
 
 //        瀑布流布局
 //        int position = helper.getAdapterPosition();

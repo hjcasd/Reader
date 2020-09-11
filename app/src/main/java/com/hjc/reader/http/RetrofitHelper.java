@@ -33,10 +33,6 @@ public class RetrofitHelper {
     private Api create(String type) {
         String baseUrl;
         switch (type) {
-            case HttpConfig.URL_WAN_ANDROID:
-                baseUrl = HttpConfig.URL_WAN_ANDROID;
-                break;
-
             case HttpConfig.URL_GANKIO:
                 baseUrl = HttpConfig.URL_GANKIO;
                 break;
@@ -47,10 +43,6 @@ public class RetrofitHelper {
 
             case HttpConfig.URL_M_TIME_TICKET:
                 baseUrl = HttpConfig.URL_M_TIME_TICKET;
-                break;
-
-            case HttpConfig.URL_QSBK:
-                baseUrl = HttpConfig.URL_QSBK;
                 break;
 
             default:
@@ -84,7 +76,4 @@ public class RetrofitHelper {
         return create(HttpConfig.URL_WAN_ANDROID);
     }
 
-    public Api getQSBKService() {
-        return create(HttpConfig.URL_QSBK);
-    }
 }

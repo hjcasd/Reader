@@ -1,22 +1,26 @@
 package com.hjc.reader.http;
 
 
-import com.hjc.reader.model.response.CollectArticleBean;
-import com.hjc.reader.model.response.CollectLinkBean;
-import com.hjc.reader.model.response.GankIOBean;
-import com.hjc.reader.model.response.GankRecommendBean;
-import com.hjc.reader.model.response.HotKeyBean;
-import com.hjc.reader.model.response.JokeBean;
-import com.hjc.reader.model.response.LoginBean;
-import com.hjc.reader.model.response.MovieComingBean;
-import com.hjc.reader.model.response.MovieDetailBean;
-import com.hjc.reader.model.response.MovieHotBean;
-import com.hjc.reader.model.response.WanBannerBean;
-import com.hjc.reader.model.response.WanListBean;
-import com.hjc.reader.model.response.WanNavigationBean;
-import com.hjc.reader.model.response.WanTreeBean;
+import com.hjc.baselib.http.bean.BaseResponse;
+import com.hjc.reader.bean.response.CollectArticleBean;
+import com.hjc.reader.bean.response.CollectLinkBean;
+import com.hjc.reader.bean.response.GankIOBean;
+import com.hjc.reader.bean.response.GankRecommendBean;
+import com.hjc.reader.bean.response.HotKeyBean;
+import com.hjc.reader.bean.response.LoginBean;
+import com.hjc.reader.bean.response.MovieComingBean;
+import com.hjc.reader.bean.response.MovieDetailBean;
+import com.hjc.reader.bean.response.MovieHotBean;
+import com.hjc.reader.bean.response.WanBannerBean;
+import com.hjc.reader.bean.response.WanListBean;
+import com.hjc.reader.bean.response.WanNavigationBean;
+import com.hjc.reader.bean.response.WanTreeBean;
+import com.hjc.reader.http.bean.LoginReq;
+import com.hjc.reader.http.bean.LoginResp;
+import com.hjc.reader.http.config.URLConfig;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -30,6 +34,11 @@ import retrofit2.http.Query;
  * @Description: Retrofit接口请求
  */
 public interface Api {
+
+    //登录
+    @POST(URLConfig.URL_LOGIN)
+    Observable<BaseResponse<LoginResp>> login(@Body LoginReq req);
+
 
     /*     -------------------------------------玩安卓模块------------------------------        **/
 
@@ -161,22 +170,28 @@ public interface Api {
     /*     -------------------------------------干货模块------------------------------            **/
 
     /**
-     * 分类数据: http://gank.io/api/data/数据类型/请求个数/第几页
-     *
-     * @param type:福利  | Android | iOS | 休息视频 | 拓展资源 | 前端 | all
-     * @param prePage: 请求个数，大于0
-     * @param page:    页码，从1开始
-     *                 eg: http://gank.io/api/data/Android/10/1
+     * 每日数据： http://gank.io/api/day/年/月/日
+     * eg:http://gank.io/api/day/2016/11/24
      */
-    @GET("data/{type}/{pre_page}/{page}")
-    Observable<GankIOBean> getGankIoData(@Path("type") String type, @Path("pre_page") int prePage, @Path("page") int page);
+    @GET("day/{year}/{month}/{day}")
+    Observable<GankRecommendBean> getRecommendData(@Path("year") String year, @Path("month") String month, @Path("day") String day);
 
 
     /**
-     * 获取最新一天的干货数据(每日推荐)
+     * 分类数据: http://gank.io/api/data/数据类型/请求个数/第几页
+     * 数据类型： 福利 | Android | iOS | 休息视频 | 拓展资源 | 前端 | all
+     * 请求个数： 数字，大于0
+     * 第几页：数字，大于0
+     * eg: http://gank.io/api/data/Android/10/1
+     * // 分类api
+     * https://gank.io/api/v2/categories/<category_type>
+     * https://gank.io/api/v2/categories/Article
+     * // 分类数据api
+     * https://gank.io/api/v2/data/category/<category>/type/<type>/page/<page>/count/<count>
+     * // 旧：@GET("data/{type}/{pre_page}/{page}")
      */
-    @GET("today")
-    Observable<GankRecommendBean> getRecommendData();
+    @GET("v2/data/category/{category}/type/{type}/page/{page}/count/{count}")
+    Observable<GankIOBean> getGankIoData(@Path("category") String category, @Path("type") String type, @Path("page") int page, @Path("count") int count);
 
 
     /*     -------------------------------------时光网电影模块------------------------------     **/
@@ -202,16 +217,6 @@ public interface Api {
     @GET("movie/detail.api?locationId=561")
     Observable<MovieDetailBean> getDetailFilm(@Query("movieId") int movieId);
 
-
-    /*     -------------------------------------糗事百科模块------------------------------       **/
-
-    /**
-     * 获取段子列表
-     *
-     * @param page 页码，从1开始
-     */
-    @GET("article/list/text")
-    Observable<JokeBean> getJokeList(@Query("page") int page);
 
 
     /*     -------------------------------------搜索模块------------------------------     **/

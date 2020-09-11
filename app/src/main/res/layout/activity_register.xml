@@ -1,95 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.hjc.reader.widget.TitleBar
-        android:id="@+id/title_bar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:leftImage="@mipmap/icon_back"
-        app:titleColor="@color/white"
-        app:titleSize="20sp"
-        app:titleText="账号注册">
+    <data>
 
-    </com.hjc.reader.widget.TitleBar>
+        <variable
+            name="registerViewModel"
+            type="com.hjc.reader.viewmodel.login.RegisterViewModel" />
 
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="40dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar">
+    </data>
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_username"
-            android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.hjc.baselib.widget.bar.TitleBar
+            android:id="@+id/title_bar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="请输入用户名"
-            android:inputType="text"
-            android:textSize="14sp" />
+            android:background="@color/app_color"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:leftImage="@mipmap/icon_back"
+            app:titleColor="@color/white"
+            app:titleSize="20sp"
+            app:titleText="注册">
 
-    </android.support.design.widget.TextInputLayout>
+        </com.hjc.baselib.widget.bar.TitleBar>
 
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/til_username"
-        app:layout_constraintRight_toRightOf="@id/til_username"
-        app:layout_constraintTop_toBottomOf="@id/til_username">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_username"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="请输入密码"
-            android:inputType="textPassword"
-            android:textSize="14sp" />
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_bar">
 
-    </android.support.design.widget.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入用户名"
+                android:inputType="text"
+                android:text="@={registerViewModel.usernameData}"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_confirm_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/til_password"
-        app:layout_constraintRight_toRightOf="@id/til_password"
-        app:layout_constraintTop_toBottomOf="@id/til_password">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_confirm_password"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="请输入确认密码"
-            android:inputType="textPassword"
-            android:textSize="14sp" />
+            app:layout_constraintLeft_toLeftOf="@id/til_username"
+            app:layout_constraintRight_toRightOf="@id/til_username"
+            app:layout_constraintTop_toBottomOf="@id/til_username">
 
-    </android.support.design.widget.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:text="@={registerViewModel.passwordData}"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <Button
-        android:id="@+id/btn_register"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/selector_btn_login"
-        android:text="注册"
-        android:textColor="@color/white"
-        app:layout_constraintLeft_toLeftOf="@id/til_password"
-        app:layout_constraintRight_toRightOf="@id/til_password"
-        app:layout_constraintTop_toBottomOf="@id/til_confirm_password" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_confirm_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/til_password"
+            app:layout_constraintRight_toRightOf="@id/til_password"
+            app:layout_constraintTop_toBottomOf="@id/til_password">
 
-</android.support.constraint.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入确认密码"
+                android:inputType="textPassword"
+                android:text="@={registerViewModel.confirmData}"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/btn_register"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/selector_btn_login"
+            android:onClick="@{onClickListener}"
+            android:text="注册"
+            android:textColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="@id/til_password"
+            app:layout_constraintRight_toRightOf="@id/til_password"
+            app:layout_constraintTop_toBottomOf="@id/til_confirm_password" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

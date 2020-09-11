@@ -2,84 +2,54 @@ package com.hjc.reader.ui;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.blankj.utilcode.util.StringUtils;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ToastUtils;
-import com.gyf.barlibrary.ImmersionBar;
+import com.gyf.immersionbar.ImmersionBar;
+import com.hjc.baselib.activity.BaseMvmFragmentActivity;
+import com.hjc.baselib.event.EventManager;
+import com.hjc.baselib.event.MessageEvent;
+import com.hjc.baselib.utils.helper.ActivityManager;
+import com.hjc.baselib.utils.permission.PermissionCallBack;
+import com.hjc.baselib.utils.permission.PermissionManager;
 import com.hjc.reader.R;
-import com.hjc.reader.base.activity.BaseFragmentActivity;
-import com.hjc.reader.base.event.EventManager;
-import com.hjc.reader.base.event.MessageEvent;
+import com.hjc.reader.bean.response.LoginBean;
 import com.hjc.reader.constant.EventCode;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.response.LoginBean;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.ActivityMainBinding;
 import com.hjc.reader.ui.film.Tab3Fragment;
 import com.hjc.reader.ui.gank.Tab2Fragment;
-import com.hjc.reader.ui.menu.CollectActivity;
-import com.hjc.reader.ui.menu.JokeActivity;
-import com.hjc.reader.ui.menu.ScanCodeActivity;
-import com.hjc.reader.ui.search.SearchActivity;
 import com.hjc.reader.ui.wan.Tab1Fragment;
-import com.hjc.reader.utils.SchemeUtils;
 import com.hjc.reader.utils.helper.AccountManager;
-import com.hjc.reader.utils.helper.ActivityManager;
-import com.hjc.reader.utils.permission.PermissionCallBack;
-import com.hjc.reader.utils.permission.PermissionManager;
+import com.hjc.reader.utils.helper.RouteManager;
+import com.hjc.reader.viewmodel.MainViewModel;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.BindView;
-
-public class MainActivity extends BaseFragmentActivity {
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-
-    @BindView(R.id.iv_menu)
-    ImageView ivMenu;
-    @BindView(R.id.iv_search)
-    ImageView ivSearch;
-
-    @BindView(R.id.iv_tab1)
-    ImageView ivTab1;
-    @BindView(R.id.iv_tab2)
-    ImageView ivTab2;
-    @BindView(R.id.iv_tab3)
-    ImageView ivTab3;
-
-    @BindView(R.id.fl_account)
-    FrameLayout flAccount;
-    @BindView(R.id.tv_username)
-    TextView tvUsername;
-    @BindView(R.id.ll_home_page)
-    LinearLayout llHomePage;
-    @BindView(R.id.ll_scan)
-    LinearLayout llScan;
-    @BindView(R.id.ll_collect)
-    LinearLayout llCollect;
-    @BindView(R.id.ll_joke)
-    LinearLayout llJoke;
-    @BindView(R.id.ll_exit)
-    LinearLayout llExit;
+/**
+ * @Author: HJC
+ * @Date: 2020/8/24 15:58
+ * @Description: 主界面
+ */
+@Route(path = RoutePath.URL_MAIN)
+public class MainActivity extends BaseMvmFragmentActivity<ActivityMainBinding, MainViewModel> {
 
     private Tab1Fragment mTab1Fragment;
     private Tab2Fragment mTab2Fragment;
     private Tab3Fragment mTab3Fragment;
 
     @Override
-    public int getLayoutId() {
+    protected int getLayoutId() {
         return R.layout.activity_main;
     }
 
@@ -91,12 +61,19 @@ public class MainActivity extends BaseFragmentActivity {
     }
 
     @Override
-    public void initView() {
-
+    protected MainViewModel getViewModel() {
+        return new ViewModelProvider(this).get(MainViewModel.class);
     }
 
     @Override
-    public void initData(Bundle savedInstanceState) {
+    protected int getBindingVariable() {
+        return 0;
+    }
+
+    @Override
+    protected void initData(@Nullable Bundle savedInstanceState) {
+        mBindingView.setMainViewModel(mViewModel);
+
         EventManager.register(this);
         requestPermission();
 
@@ -106,12 +83,7 @@ public class MainActivity extends BaseFragmentActivity {
 
         setCurrentItem(0);
 
-        String username = AccountManager.getInstance().getUsername();
-        if (!StringUtils.isEmpty(username)) {
-            tvUsername.setText(username);
-        } else {
-            tvUsername.setText("登录/注册");
-        }
+        mViewModel.setUserName();
     }
 
     /**
@@ -119,7 +91,7 @@ public class MainActivity extends BaseFragmentActivity {
      */
     private void requestPermission() {
         PermissionManager manager = new PermissionManager(this);
-        manager.requestStoragePermission(new PermissionCallBack() {
+        manager.requestPermissionInActivity(new PermissionCallBack() {
             @Override
             public void onGranted() {
                 ToastUtils.showShort("申请存储权限成功");
@@ -129,26 +101,44 @@ public class MainActivity extends BaseFragmentActivity {
             public void onDenied() {
                 ToastUtils.showShort("申请存储权限失败");
             }
-        });
+        }, Permission.Group.STORAGE);
     }
 
+    /**
+     * 切换页面
+     *
+     * @param position 位置
+     */
+    private void setCurrentItem(int position) {
+        boolean isOne = false;
+        boolean isTwo = false;
+        boolean isThree = false;
+        switch (position) {
+            case 1:
+                isTwo = true;
+                showFragment(mTab2Fragment);
+                break;
+            case 2:
+                isThree = true;
+                showFragment(mTab3Fragment);
+                break;
+            default:
+                isOne = true;
+                showFragment(mTab1Fragment);
+                break;
+        }
+        mBindingView.ivTab1.setSelected(isOne);
+        mBindingView.ivTab2.setSelected(isTwo);
+        mBindingView.ivTab3.setSelected(isThree);
+    }
+
+
     @Override
-    public void addListeners() {
-        ivMenu.setOnClickListener(this);
-        ivSearch.setOnClickListener(this);
+    protected void addListeners() {
+        mBindingView.setOnClickListener(this);
+        mBindingView.drawerLeft.setOnClickListener(this);
 
-        ivTab1.setOnClickListener(this);
-        ivTab2.setOnClickListener(this);
-        ivTab3.setOnClickListener(this);
-
-        flAccount.setOnClickListener(this);
-        llHomePage.setOnClickListener(this);
-        llScan.setOnClickListener(this);
-        llCollect.setOnClickListener(this);
-        llJoke.setOnClickListener(this);
-        llExit.setOnClickListener(this);
-
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+        mBindingView.drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View view, float v) {
 
@@ -156,12 +146,12 @@ public class MainActivity extends BaseFragmentActivity {
 
             @Override
             public void onDrawerOpened(@NonNull View view) {
-                ObjectAnimator.ofFloat(ivMenu, "rotation", 0f, -180f).setDuration(1000).start();
+                ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", 0f, -180f).setDuration(1000).start();
             }
 
             @Override
             public void onDrawerClosed(@NonNull View view) {
-                ObjectAnimator.ofFloat(ivMenu, "rotation", -180f, 0f).setDuration(1000).start();
+                ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", -180f, 0f).setDuration(1000).start();
             }
 
             @Override
@@ -177,14 +167,14 @@ public class MainActivity extends BaseFragmentActivity {
     }
 
     @Override
-    public void onSingleClick(View v) {
+    protected void onSingleClick(View v) {
         switch (v.getId()) {
             case R.id.iv_menu:
-                drawerLayout.openDrawer(Gravity.START);
+                mBindingView.drawerLayout.openDrawer(GravityCompat.START);
                 break;
 
             case R.id.iv_search:
-                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                RouteManager.jump(RoutePath.URL_SEARCH);
                 break;
 
             case R.id.iv_tab1:
@@ -200,37 +190,32 @@ public class MainActivity extends BaseFragmentActivity {
                 break;
 
             case R.id.fl_account:
-                drawerLayout.closeDrawer(Gravity.START);
+                mBindingView.drawerLayout.closeDrawer(GravityCompat.START);
                 boolean isLogin = AccountManager.getInstance().isLogin();
                 if (isLogin) {
                     showExitDialog();
                 } else {
-                    SchemeUtils.jumpToLogin(MainActivity.this);
+                    RouteManager.jump(RoutePath.URL_LOGIN);
                 }
                 break;
 
             case R.id.ll_home_page:
-                drawerLayout.closeDrawer(Gravity.START);
-                SchemeUtils.jumpToWeb(MainActivity.this, "https://github.com/hjcasd/Reader", "项目主页");
+                mBindingView.drawerLayout.closeDrawer(GravityCompat.START);
+                RouteManager.jumpToWeb("项目主页", "https://github.com/hjcasd/Reader");
                 break;
 
             case R.id.ll_scan:
-                drawerLayout.closeDrawer(Gravity.START);
-                startActivity(new Intent(MainActivity.this, ScanCodeActivity.class));
+                mBindingView.drawerLayout.closeDrawer(GravityCompat.START);
+                RouteManager.jump(RoutePath.URL_SCAN_CODE);
                 break;
 
             case R.id.ll_collect:
-                drawerLayout.closeDrawer(Gravity.START);
+                mBindingView.drawerLayout.closeDrawer(GravityCompat.START);
                 if (AccountManager.getInstance().isLogin()) {
-                    startActivity(new Intent(this, CollectActivity.class));
+                    RouteManager.jump(RoutePath.URL_COLLECT);
                 } else {
-                    SchemeUtils.jumpToLogin(MainActivity.this);
+                    RouteManager.jump(RoutePath.URL_LOGIN);
                 }
-                break;
-
-            case R.id.ll_joke:
-                drawerLayout.closeDrawer(Gravity.START);
-                startActivity(new Intent(this, JokeActivity.class));
                 break;
 
             case R.id.ll_exit:
@@ -244,62 +229,11 @@ public class MainActivity extends BaseFragmentActivity {
         builder.setMessage("确认退出账号吗？");
         builder.setCancelable(false);
         builder.setPositiveButton("确定", (dialog, which) -> {
-            logout();
+            mViewModel.logout();
             dialog.dismiss();
         });
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.show();
-    }
-
-    private void logout() {
-        RetrofitHelper.getInstance().getWanAndroidService()
-                .logout()
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<LoginBean>(getSupportFragmentManager()) {
-                    @Override
-                    public void onSuccess(LoginBean result) {
-                        if (result != null) {
-                            ToastUtils.showShort("退出账号成功");
-                            tvUsername.setText("请登录");
-
-                            AccountManager.getInstance().clear();
-                        } else {
-                            ToastUtils.showShort("退出账号失败,请稍后重试");
-                        }
-                    }
-                });
-    }
-
-    /**
-     * 切换页面
-     *
-     * @param position 位置
-     */
-    private void setCurrentItem(int position) {
-        boolean isOne = false;
-        boolean isTwo = false;
-        boolean isThree = false;
-        switch (position) {
-            case 0:
-                isOne = true;
-                showFragment(mTab1Fragment);
-                break;
-            case 1:
-                isTwo = true;
-                showFragment(mTab2Fragment);
-                break;
-            case 2:
-                isThree = true;
-                showFragment(mTab3Fragment);
-                break;
-            default:
-                isOne = true;
-                showFragment(mTab1Fragment);
-                break;
-        }
-        ivTab1.setSelected(isOne);
-        ivTab2.setSelected(isTwo);
-        ivTab3.setSelected(isThree);
     }
 
     @Override
@@ -314,9 +248,10 @@ public class MainActivity extends BaseFragmentActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handlerEvent(MessageEvent<LoginBean> messageEvent) {
-        if (messageEvent.getCode() == EventCode.C) {
+        if (messageEvent.getCode() == EventCode.LOGIN_CODE) {
             String username = AccountManager.getInstance().getUsername();
-            tvUsername.setText(username);
+            mBindingView.drawerLeft.tvUsername.setText(username);
         }
     }
+
 }

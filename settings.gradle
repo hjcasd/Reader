@@ -1,1 +1,3 @@
+include ':WebViewLib'
+include ':BaseLib'
 include ':app'

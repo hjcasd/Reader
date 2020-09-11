@@ -1,34 +1,35 @@
 package com.hjc.reader.ui.film.child;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.app.Activity;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.blankj.utilcode.util.ToastUtils;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hjc.baselib.fragment.BaseMvmLazyFragment;
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseLazyFragment;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.response.MovieComingBean;
+import com.hjc.reader.bean.response.MovieComingBean;
+import com.hjc.reader.bean.response.MovieItemBean;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.FragmentComingMovieBinding;
 import com.hjc.reader.ui.film.adapter.ComingMovieAdapter;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.hjc.reader.utils.helper.RouteManager;
+import com.hjc.reader.viewmodel.film.ComingMovieViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * @Author: HJC
  * @Date: 2019/2/13 11:29
  * @Description: 即将上映电影页面
  */
-public class ComingMovieFragment extends BaseLazyFragment {
-    @BindView(R.id.smart_refresh_layout)
-    SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.rv_list)
-    RecyclerView rvList;
+public class ComingMovieFragment extends BaseMvmLazyFragment<FragmentComingMovieBinding, ComingMovieViewModel> {
 
     private ComingMovieAdapter mAdapter;
 
@@ -42,66 +43,76 @@ public class ComingMovieFragment extends BaseLazyFragment {
     }
 
     @Override
+    protected ComingMovieViewModel getViewModel() {
+        return new ViewModelProvider(this).get(ComingMovieViewModel.class);
+    }
+
+    @Override
+    protected int getBindingVariable() {
+        return 0;
+    }
+
+    @Override
     public void initView() {
+        setLoadSir(mBindingView.smartRefreshLayout);
+
         GridLayoutManager manager = new GridLayoutManager(mContext, 3);
-        rvList.setLayoutManager(manager);
+        mBindingView.rvList.setLayoutManager(manager);
 
         mAdapter = new ComingMovieAdapter(null);
-        rvList.setAdapter(mAdapter);
+        mBindingView.rvList.setAdapter(mAdapter);
 
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        mAdapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInBottom);
     }
 
     @Override
     public void initData() {
-        getComingMovieData(true);
+        mViewModel.loadComingMovieData(true);
     }
 
-    /**
-     * 获取即将上映电影数据
-     *
-     * @param isShow 是否显示loading
-     */
-    private void getComingMovieData(boolean isShow) {
-        RetrofitHelper.getInstance().getMTimeService()
-                .getComingFilm()
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<MovieComingBean>(getChildFragmentManager(), isShow) {
-                    @Override
-                    public void onSuccess(MovieComingBean result) {
-                        smartRefreshLayout.finishRefresh();
-                        if (result != null) {
-                            parseTopData(result);
-                        } else {
-                            ToastUtils.showShort("未获取到数据");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        super.onFailure(errorMsg);
-                        smartRefreshLayout.finishRefresh();
-                    }
-                });
-    }
-
-    /**
-     * 解析即将上映电影数据
-     *
-     * @param result 电影数据对应的bean
-     */
-    private void parseTopData(MovieComingBean result) {
-        List<MovieComingBean.ComingItemBean> movieList = result.getMoviecomings();
-        if (movieList != null) {
-            mAdapter.setNewData(movieList);
-        } else {
-            ToastUtils.showShort("数据解析异常");
-        }
+    @Override
+    protected void observeLiveData() {
+        mViewModel.getComingMovieLiveData().observe(this, data -> {
+            mBindingView.smartRefreshLayout.finishRefresh();
+            mAdapter.setNewInstance(data);
+        });
     }
 
     @Override
     public void addListeners() {
-        smartRefreshLayout.setOnRefreshListener(refreshLayout -> getComingMovieData(false));
+        mBindingView.smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
+            mViewModel.loadComingMovieData(false);
+        });
+
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<MovieComingBean.ComingItemBean> dataList = mAdapter.getData();
+            MovieComingBean.ComingItemBean bean = dataList.get(position);
+
+            ImageView ivCover = view.findViewById(R.id.iv_cover);
+
+            MovieItemBean movieItemBean = new MovieItemBean();
+            movieItemBean.setId(bean.getId());
+            movieItemBean.setDN(bean.getDirector());
+            movieItemBean.setTCn(bean.getTitle());
+            movieItemBean.setMovieType(bean.getType());
+            movieItemBean.setImg(bean.getImage());
+            String actor1 = bean.getActor1();
+            String actor2 = bean.getActor2();
+            if (!TextUtils.isEmpty(actor2)) {
+                actor1 = actor1 + " / " + actor2;
+            }
+            movieItemBean.setActors(actor1);
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("bean", movieItemBean);
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, ivCover, mContext.getResources().getString(R.string.transition_movie_img));
+            RouteManager.jumpWithScene(mContext, RoutePath.URL_MOVIE_DETAIL, bundle, compat);
+        });
+    }
+
+    @Override
+    protected void onRetryBtnClick(View v) {
+        mViewModel.loadComingMovieData(true);
     }
 
     @Override

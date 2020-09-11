@@ -16,12 +16,33 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
+        android:maxAspectRatio="2.4"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:roundIcon="@mipmap/ic_logo"
+        android:resizeableActivity="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,UnusedAttribute">
+
+
+        <!--适配通用刘海屏-->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
+
+        <!--适配华为刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+
+        <!--适配小米刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+
+
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +55,7 @@
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait" />
 
+
         <activity
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait" />
@@ -43,31 +65,15 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.image.GalleyActivity"
-            android:theme="@style/TransparentTheme" />
-
-        <activity
-            android:name=".ui.image.ShowImageActivity"
+            android:name=".ui.web.WebActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.WebActivity"
+            android:name=".ui.wan.activity.TagActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.wan.child.TagListActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.film.child.MovieDetailActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.menu.CollectActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.menu.JokeActivity"
+            android:name=".ui.film.activity.MovieDetailActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -75,12 +81,17 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.menu.CollectActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.search.SearchActivity"
             android:screenOrientation="portrait" />
 
-        <!--7.0文件访问权限-->
+
+        <!--============================================文件访问权限=========================================-->
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="com.hjc.reader.utils.MyFileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -90,5 +101,6 @@
         </provider>
 
     </application>
+
 
 </manifest>

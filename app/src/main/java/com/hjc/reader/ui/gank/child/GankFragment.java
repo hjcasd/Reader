@@ -1,25 +1,24 @@
 package com.hjc.reader.ui.gank.child;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ToastUtils;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.hjc.baselib.fragment.BaseMvmLazyFragment;
 import com.hjc.reader.R;
-import com.hjc.reader.base.fragment.BaseLazyFragment;
-import com.hjc.reader.http.RetrofitHelper;
-import com.hjc.reader.http.helper.RxHelper;
-import com.hjc.reader.http.observer.BaseProgressObserver;
-import com.hjc.reader.model.response.GankIOBean;
+import com.hjc.reader.bean.response.GankDayBean;
+import com.hjc.reader.databinding.FragmentGankBinding;
 import com.hjc.reader.ui.gank.adapter.FilterAdapter;
 import com.hjc.reader.ui.gank.adapter.GankAdapter;
-import com.hjc.reader.utils.SchemeUtils;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.hjc.reader.utils.helper.RouteManager;
+import com.hjc.reader.viewmodel.gank.GankViewModel;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
@@ -27,19 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
  * @Description: 干货定制页面
  */
-public class GankFragment extends BaseLazyFragment {
-
-    @BindView(R.id.smart_refresh_layout)
-    SmartRefreshLayout smartRefreshLayout;
-    @BindView(R.id.rv_gank)
-    RecyclerView rvGank;
+public class GankFragment extends BaseMvmLazyFragment<FragmentGankBinding, GankViewModel> {
 
     private TextView tvTypeName;
     private LinearLayout llFilter;
@@ -47,7 +40,7 @@ public class GankFragment extends BaseLazyFragment {
     private GankAdapter mAdapter;
 
     private int page = 1;
-    private String type = "all";
+    private String type = "All";
 
     public static GankFragment newInstance() {
         return new GankFragment();
@@ -59,106 +52,90 @@ public class GankFragment extends BaseLazyFragment {
     }
 
     @Override
+    protected GankViewModel getViewModel() {
+        return new ViewModelProvider(this).get(GankViewModel.class);
+    }
+
+    @Override
+    protected int getBindingVariable() {
+        return 0;
+    }
+
+    @Override
     public void initView() {
+        setLoadSir(mBindingView.smartRefreshLayout);
+
         View headerView = View.inflate(mContext, R.layout.layout_header_filter, null);
         tvTypeName = headerView.findViewById(R.id.tv_type_name);
         llFilter = headerView.findViewById(R.id.ll_filter);
 
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
-        rvGank.setLayoutManager(manager);
+        mBindingView.rvGank.setLayoutManager(manager);
 
-        mAdapter = new GankAdapter(null);
-        rvGank.setAdapter(mAdapter);
+        mAdapter = new GankAdapter();
+        mBindingView.rvGank.setAdapter(mAdapter);
 
         mAdapter.addHeaderView(headerView);
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
+
+        mAdapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight);
     }
 
     @Override
     public void initData() {
-        getGankData(true);
+        mViewModel.loadGankList(type, page, true);
     }
 
-    /**
-     * 获取分类数据
-     *
-     * @param isShow 是否显示loading
-     */
-    private void getGankData(boolean isShow) {
-        RetrofitHelper.getInstance().getGankIOService()
-                .getGankIoData(type, 20, page)
-                .compose(RxHelper.bind(this))
-                .subscribe(new BaseProgressObserver<GankIOBean>(getChildFragmentManager(), isShow) {
-                    @Override
-                    public void onSuccess(GankIOBean result) {
-                        smartRefreshLayout.finishRefresh();
-                        smartRefreshLayout.finishLoadMore();
-                        if (result != null) {
-                            parseWelfareData(result);
-                        } else {
-                            ToastUtils.showShort("未获取到数据");
-                        }
-                    }
+    @Override
+    protected void observeLiveData() {
+        mViewModel.getGankLiveData().observe(this, data -> {
+            mBindingView.smartRefreshLayout.finishRefresh();
+            mBindingView.smartRefreshLayout.finishLoadMore();
 
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        super.onFailure(errorMsg);
-                        smartRefreshLayout.finishRefresh();
-                        smartRefreshLayout.finishLoadMore();
-                    }
-                });
-    }
-
-    /**
-     * 解析分类数据
-     *
-     * @param gankIOBean 分类对应的bean
-     */
-    private void parseWelfareData(GankIOBean gankIOBean) {
-        List<GankIOBean.ResultsBean> resultList = gankIOBean.getResults();
-        if (resultList != null && resultList.size() > 0) {
-            if (page == 1) {
-                mAdapter.setNewData(resultList);
-            } else {
-                mAdapter.addData(resultList);
+            if (data != null){
+                if (page == 1) {
+                    mAdapter.setNewInstance(data);
+                } else {
+                    mAdapter.addData(data);
+                }
             }
-        }
+        });
     }
 
     @Override
     public void addListeners() {
         llFilter.setOnClickListener(this);
 
-        smartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+        mBindingView.smartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
-                getGankData(false);
+                mViewModel.loadGankList(type, page, false);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page = 1;
-                getGankData(false);
+                mViewModel.loadGankList(type, page, false);
             }
         });
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            List<GankIOBean.ResultsBean> dataList = adapter.getData();
-            GankIOBean.ResultsBean bean = dataList.get(position);
-            SchemeUtils.jumpToWeb(mContext, bean.getUrl(), bean.getDesc());
+            List<GankDayBean> dataList = mAdapter.getData();
+            GankDayBean bean = dataList.get(position);
+            RouteManager.jumpToWeb(bean.getDesc(), bean.getUrl());
         });
     }
 
     @Override
-    public void onSingleClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_filter:
-                showFilterDialog();
-                break;
+    protected void onRetryBtnClick(View v) {
+        page = 1;
+        mViewModel.loadGankList(type, page, true);
+    }
 
-            default:
-                break;
+    @Override
+    public void onSingleClick(View v) {
+        if (v.getId() == R.id.ll_filter) {
+            showFilterDialog();
         }
     }
 
@@ -175,7 +152,7 @@ public class GankFragment extends BaseLazyFragment {
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
         rvFilter.setLayoutManager(manager);
 
-        String[] titles = new String[]{"全部", "Android", "IOS", "App", "前端", "休息视频", "拓展资源"};
+        String[] titles = new String[]{"全部", "Android", "IOS", "App", "前端", "后端", "推荐"};
         List<String> list = new ArrayList<>(Arrays.asList(titles));
 
         FilterAdapter adapter = new FilterAdapter(list);
@@ -185,7 +162,7 @@ public class GankFragment extends BaseLazyFragment {
             bottomSheetDialog.dismiss();
             switch (position) {
                 case 0:
-                    type = "all";
+                    type = "All";
                     break;
 
                 case 1:
@@ -197,28 +174,25 @@ public class GankFragment extends BaseLazyFragment {
                     break;
 
                 case 3:
-                    type = "App";
+                    type = "app";
                     break;
 
                 case 4:
-                    type = "前端";
+                    type = "frontend";
                     break;
 
                 case 5:
-                    type = "休息视频";
+                    type = "backend";
                     break;
 
                 case 6:
-                    type = "拓展资源";
-                    break;
-
-                default:
-                    type = "all";
+                    type = "promote";
                     break;
             }
             tvTypeName.setText(titles[position]);
-            smartRefreshLayout.autoRefresh();
+            mBindingView.smartRefreshLayout.autoRefresh();
         });
+
         bottomSheetDialog.show();
     }
 }

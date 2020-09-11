@@ -1,49 +1,44 @@
 package com.hjc.reader.ui.wan.adapter;
 
-import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.TextView;
+import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
+import com.hjc.reader.bean.response.WanNavigationBean;
+import com.hjc.reader.databinding.ItemNavigationBinding;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class NavigationAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class NavigationAdapter extends BaseQuickAdapter<WanNavigationBean.DataBean, BaseViewHolder> {
     private OnSelectListener listener;
-    private int selectedPosition = -1;
 
-    public NavigationAdapter(@Nullable List<String> data) {
-        super(R.layout.item_rv_navigation, data);
+    public NavigationAdapter() {
+        super(R.layout.item_navigation);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, String item) {
-        TextView tvChapter = helper.getView(R.id.tv_chapter);
-        tvChapter.setText(item);
-
-        int position = helper.getAdapterPosition();
-        if (selectedPosition == position) {
-            tvChapter.setSelected(true);
-        } else {
-            tvChapter.setSelected(false);
-        }
-
-        if (listener != null) {
-            tvChapter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setSelection(position);
-                    listener.onSelected(position);
-                }
-            });
-        }
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
     }
 
-    public void setSelection(int position) {
-        this.selectedPosition = position;
-        notifyDataSetChanged();
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, WanNavigationBean.DataBean item) {
+        if (item == null) {
+            return;
+        }
+
+        ItemNavigationBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setNavigationBean(item);
+            binding.tvChapter.setSelected(item.isSelected());
+
+            if (listener != null) {
+                binding.tvChapter.setOnClickListener(v -> {
+                    listener.onSelected(helper.getAdapterPosition());
+                });
+            }
+        }
     }
 
     public interface OnSelectListener {

@@ -1,55 +1,83 @@
 package com.hjc.reader.ui.menu.adapter;
 
-import android.support.annotation.Nullable;
-import android.text.Html;
-import android.widget.ImageView;
+import androidx.databinding.DataBindingUtil;
 
 import com.blankj.utilcode.util.StringUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
-import com.chad.library.adapter.base.util.MultiTypeDelegate;
+import com.chad.library.adapter.base.BaseDelegateMultiAdapter;
+import com.chad.library.adapter.base.delegate.BaseMultiTypeDelegate;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.model.response.CollectArticleBean;
-import com.hjc.reader.utils.image.ImageManager;
+import com.hjc.reader.bean.response.CollectArticleBean;
+import com.hjc.reader.databinding.ItemArticleImageBinding;
+import com.hjc.reader.databinding.ItemArticleTextBinding;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ArticleAdapter extends BaseQuickAdapter<CollectArticleBean.DataBean.DatasBean, BaseViewHolder> {
-    private final int TYPE_TEXT = 1;
-    private final int TYPE_IMAGE = 2;
 
-    public ArticleAdapter(@Nullable List<CollectArticleBean.DataBean.DatasBean> data) {
-        super(data);
+public class ArticleAdapter extends BaseDelegateMultiAdapter<CollectArticleBean.DataBean.DatasBean, BaseViewHolder> {
+    private static final int TYPE_TEXT = 1;
+    private static final int TYPE_IMAGE = 2;
 
-        setMultiTypeDelegate(new MultiTypeDelegate<CollectArticleBean.DataBean.DatasBean>() {
-            @Override
-            protected int getItemType(CollectArticleBean.DataBean.DatasBean bean) {
-                String envelopePic = bean.getEnvelopePic();
-                if (StringUtils.isEmpty(envelopePic)) {
-                    return TYPE_TEXT;
-                } else {
-                    return TYPE_IMAGE;
-                }
-            }
-        });
-
-        getMultiTypeDelegate()
-                .registerItemType(TYPE_TEXT, R.layout.item_article_text)
-                .registerItemType(TYPE_IMAGE, R.layout.item_article_image);
+    public ArticleAdapter() {
+        super();
+        setMultiTypeDelegate(new CollectMultiTypeDelegate());
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
-        helper.setText(R.id.tv_title, Html.fromHtml(item.getTitle()));
-        helper.setText(R.id.tv_time, item.getNiceDate());
-        helper.setText(R.id.tv_author, item.getAuthor());
-        helper.setText(R.id.tv_chapter, item.getChapterName());
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
 
-        helper.addOnClickListener(R.id.cb_collect);
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
+        if (item == null) {
+            return;
+        }
+        switch (helper.getItemViewType()) {
+            case TYPE_TEXT:
+                initType1(helper, item);
+                break;
 
-        if (helper.getItemViewType() == TYPE_IMAGE){
-            ImageView ivPic = helper.getView(R.id.iv_pic);
-            ImageManager.loadImage(ivPic, item.getEnvelopePic(), 0);
+            case TYPE_IMAGE:
+                initType2(helper, item);
+                break;
+        }
+    }
+
+    private void initType1(BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
+        ItemArticleTextBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setCollectBean(item);
+        }
+    }
+
+    private void initType2(BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
+        ItemArticleImageBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setCollectBean(item);
+        }
+    }
+
+    // 代理类
+    final static class CollectMultiTypeDelegate extends BaseMultiTypeDelegate<CollectArticleBean.DataBean.DatasBean> {
+
+        public CollectMultiTypeDelegate() {
+            // 绑定 item 类型
+            addItemType(TYPE_TEXT, R.layout.item_article_text);
+            addItemType(TYPE_IMAGE, R.layout.item_article_image);
+        }
+
+        @Override
+        public int getItemType(@NotNull List<? extends CollectArticleBean.DataBean.DatasBean> data, int position) {
+            CollectArticleBean.DataBean.DatasBean bean = data.get(position);
+            String envelopePic = bean.getEnvelopePic();
+            if (StringUtils.isEmpty(envelopePic)) {
+                return TYPE_TEXT;
+            } else {
+                return TYPE_IMAGE;
+            }
         }
     }
 }

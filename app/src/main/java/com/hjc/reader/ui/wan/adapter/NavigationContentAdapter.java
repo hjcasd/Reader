@@ -1,32 +1,45 @@
 package com.hjc.reader.ui.wan.adapter;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.model.response.WanNavigationBean;
-import com.hjc.reader.utils.SchemeUtils;
+import com.hjc.reader.bean.response.WanNavigationBean;
+import com.hjc.reader.databinding.ItemNavigationContentBinding;
+import com.hjc.reader.utils.helper.RouteManager;
 import com.nex3z.flowlayout.FlowLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class NavigationContentAdapter extends BaseQuickAdapter<WanNavigationBean.DataBean, BaseViewHolder> {
-    public NavigationContentAdapter(@Nullable List<WanNavigationBean.DataBean> data) {
-        super(R.layout.item_rv_navigation_content, data);
+    public NavigationContentAdapter() {
+        super(R.layout.item_navigation_content);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, WanNavigationBean.DataBean item) {
-        String name = item.getName();
-        helper.setText(R.id.tv_chapter_name, name);
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
 
-        FlowLayout flowLayout = helper.getView(R.id.flow_layout);
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, WanNavigationBean.DataBean item) {
+        if (item == null) {
+            return;
+        }
 
-        List<WanNavigationBean.DataBean.ArticlesBean> articleList = item.getArticles();
-        initTags(articleList, flowLayout);
+        ItemNavigationContentBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setNavigationBean(item);
+
+            List<WanNavigationBean.DataBean.ArticlesBean> articleList = item.getArticles();
+            initTags(articleList, binding.flowLayout);
+        }
     }
 
     /**
@@ -38,17 +51,12 @@ public class NavigationContentAdapter extends BaseQuickAdapter<WanNavigationBean
     private void initTags(List<WanNavigationBean.DataBean.ArticlesBean> tagList, FlowLayout flLabels) {
         flLabels.removeAllViews();
         for (WanNavigationBean.DataBean.ArticlesBean bean : tagList) {
-            View view = View.inflate(mContext, R.layout.view_navigation_tag, null);
+            View view = View.inflate(getContext(), R.layout.view_navigation_tag, null);
             TextView tvTag = view.findViewById(R.id.tv_tag);
             tvTag.setText(bean.getTitle());
             flLabels.addView(tvTag);
 
-            tvTag.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    SchemeUtils.jumpToWeb(mContext, bean.getLink(), bean.getTitle());
-                }
-            });
+            tvTag.setOnClickListener(v -> RouteManager.jumpToWeb(bean.getTitle(), bean.getLink()));
         }
     }
 }

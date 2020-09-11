@@ -1,32 +1,47 @@
 package com.hjc.reader.ui.wan.adapter;
 
-import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
-import com.hjc.reader.model.response.WanTreeBean;
-import com.hjc.reader.ui.wan.child.TagListActivity;
+import com.hjc.reader.bean.response.WanTreeBean;
+import com.hjc.reader.constant.RoutePath;
+import com.hjc.reader.databinding.ItemTreeBinding;
+import com.hjc.reader.utils.helper.RouteManager;
 import com.nex3z.flowlayout.FlowLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class TreeListAdapter extends BaseQuickAdapter<WanTreeBean.DataBean, BaseViewHolder> {
-    public TreeListAdapter(@Nullable List<WanTreeBean.DataBean> data) {
-        super(R.layout.item_rv_tree, data);
+    public TreeListAdapter() {
+        super(R.layout.item_tree);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, WanTreeBean.DataBean item) {
-        String name = item.getName();
-        helper.setText(R.id.tv_title, name);
+    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+        DataBindingUtil.bind(viewHolder.itemView);
+    }
 
-        FlowLayout flowLayout = helper.getView(R.id.flow_layout);
-        List<WanTreeBean.DataBean.ChildrenBean> childrenList = item.getChildren();
-        initTags(childrenList, flowLayout);
+    @Override
+    protected void convert(@NotNull BaseViewHolder helper, WanTreeBean.DataBean item) {
+        if (item == null) {
+            return;
+        }
+
+        ItemTreeBinding binding = helper.getBinding();
+        if (binding != null) {
+            binding.setWanTreeBean(item);
+
+            List<WanTreeBean.DataBean.ChildrenBean> childrenList = item.getChildren();
+            initTags(childrenList, binding.flowLayout);
+        }
     }
 
     /**
@@ -38,21 +53,16 @@ public class TreeListAdapter extends BaseQuickAdapter<WanTreeBean.DataBean, Base
     private void initTags(List<WanTreeBean.DataBean.ChildrenBean> tagList, FlowLayout flLabels) {
         flLabels.removeAllViews();
         for (WanTreeBean.DataBean.ChildrenBean bean : tagList) {
-            View view = View.inflate(mContext, R.layout.view_tree_tag, null);
+            View view = View.inflate(getContext(), R.layout.view_tree_tag, null);
             TextView tvTag = view.findViewById(R.id.tv_tag);
             tvTag.setText(bean.getName());
             flLabels.addView(tvTag);
 
-            tvTag.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String name = bean.getName();
-                    int id = bean.getId();
-                    Intent intent = new Intent(mContext, TagListActivity.class);
-                    intent.putExtra("name", name);
-                    intent.putExtra("id", id);
-                    mContext.startActivity(intent);
-                }
+            tvTag.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putString("name", bean.getName());
+                bundle.putInt("id", bean.getId());
+                RouteManager.jumpWithBundle(RoutePath.URL_TAG, bundle);
             });
         }
     }
