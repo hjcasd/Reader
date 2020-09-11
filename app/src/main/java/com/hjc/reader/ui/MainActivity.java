@@ -74,8 +74,8 @@ public class MainActivity extends BaseFragmentActivity {
     @BindView(R.id.ll_exit)
     LinearLayout llExit;
 
-    private Tab2Fragment mTab2Fragment;
     private Tab1Fragment mTab1Fragment;
+    private Tab2Fragment mTab2Fragment;
     private Tab3Fragment mTab3Fragment;
 
     @Override
