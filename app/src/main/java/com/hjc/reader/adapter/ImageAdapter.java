@@ -7,9 +7,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.databinding.ItemImageBinding;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 public class ImageAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
@@ -19,12 +16,12 @@ public class ImageAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@Nullable BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, String item) {
+    protected void convert(@Nullable BaseViewHolder helper, String item) {
         if (item == null) {
             return;
         }

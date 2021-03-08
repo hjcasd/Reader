@@ -1,5 +1,6 @@
 package com.hjc.reader.ui.search.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import com.blankj.utilcode.util.StringUtils;
@@ -11,7 +12,6 @@ import com.hjc.reader.bean.response.WanListBean;
 import com.hjc.reader.databinding.ItemSearchImageBinding;
 import com.hjc.reader.databinding.ItemSearchTextBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ public class SearchAdapter extends BaseDelegateMultiAdapter<WanListBean.DataBean
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, WanListBean.DataBean.DatasBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, WanListBean.DataBean.DatasBean item) {
         if (item == null) {
             return;
         }
@@ -69,7 +69,7 @@ public class SearchAdapter extends BaseDelegateMultiAdapter<WanListBean.DataBean
         }
 
         @Override
-        public int getItemType(@NotNull List<? extends WanListBean.DataBean.DatasBean> data, int position) {
+        public int getItemType(@NonNull List<? extends WanListBean.DataBean.DatasBean> data, int position) {
             WanListBean.DataBean.DatasBean bean = data.get(position);
             String envelopePic = bean.getEnvelopePic();
             if (StringUtils.isEmpty(envelopePic)) {

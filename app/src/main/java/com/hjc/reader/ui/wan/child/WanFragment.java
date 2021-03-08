@@ -123,7 +123,7 @@ public class WanFragment extends BaseMvmLazyFragment<FragmentWanBinding, WanView
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPage = 1;
+                mPage = 0;
                 mViewModel.loadArticleList(mPage, false);
             }
         });

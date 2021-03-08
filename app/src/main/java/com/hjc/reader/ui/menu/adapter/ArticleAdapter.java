@@ -1,5 +1,6 @@
 package com.hjc.reader.ui.menu.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import com.blankj.utilcode.util.StringUtils;
@@ -11,7 +12,6 @@ import com.hjc.reader.bean.response.CollectArticleBean;
 import com.hjc.reader.databinding.ItemArticleImageBinding;
 import com.hjc.reader.databinding.ItemArticleTextBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -26,12 +26,12 @@ public class ArticleAdapter extends BaseDelegateMultiAdapter<CollectArticleBean.
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, CollectArticleBean.DataBean.DatasBean item) {
         if (item == null) {
             return;
         }
@@ -70,7 +70,7 @@ public class ArticleAdapter extends BaseDelegateMultiAdapter<CollectArticleBean.
         }
 
         @Override
-        public int getItemType(@NotNull List<? extends CollectArticleBean.DataBean.DatasBean> data, int position) {
+        public int getItemType(@NonNull List<? extends CollectArticleBean.DataBean.DatasBean> data, int position) {
             CollectArticleBean.DataBean.DatasBean bean = data.get(position);
             String envelopePic = bean.getEnvelopePic();
             if (StringUtils.isEmpty(envelopePic)) {

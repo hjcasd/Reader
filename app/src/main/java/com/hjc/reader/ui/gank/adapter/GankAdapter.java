@@ -2,6 +2,7 @@ package com.hjc.reader.ui.gank.adapter;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -15,7 +16,6 @@ import com.hjc.reader.databinding.ItemGankImageOneBinding;
 import com.hjc.reader.databinding.ItemGankImageThreeBinding;
 import com.hjc.reader.databinding.ItemGankTextBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +28,12 @@ public class GankAdapter extends BaseDelegateMultiAdapter<GankDayBean, BaseViewH
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, GankDayBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, GankDayBean item) {
         if (item == null) {
             return;
         }
@@ -100,7 +100,7 @@ public class GankAdapter extends BaseDelegateMultiAdapter<GankDayBean, BaseViewH
         }
 
         @Override
-        public int getItemType(@NotNull List<? extends GankDayBean> data, int position) {
+        public int getItemType(@NonNull List<? extends GankDayBean> data, int position) {
             GankDayBean bean = data.get(position);
             List<String> images = bean.getImages();
             if (images == null || images.size() == 0) {

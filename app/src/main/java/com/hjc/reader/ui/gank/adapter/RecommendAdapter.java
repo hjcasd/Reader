@@ -3,6 +3,7 @@ package com.hjc.reader.ui.gank.adapter;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -20,7 +21,6 @@ import com.hjc.reader.databinding.ItemGankTextBinding;
 import com.hjc.reader.databinding.ItemGankTitleBinding;
 import com.hjc.reader.utils.AppUtils;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +33,12 @@ public class RecommendAdapter extends BaseDelegateMultiAdapter<GankDayBean, Base
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, GankDayBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, GankDayBean item) {
         if (item == null) {
             return;
         }
@@ -149,7 +149,7 @@ public class RecommendAdapter extends BaseDelegateMultiAdapter<GankDayBean, Base
         }
 
         @Override
-        public int getItemType(@NotNull List<? extends GankDayBean> data, int position) {
+        public int getItemType(@NonNull List<? extends GankDayBean> data, int position) {
             GankDayBean bean = data.get(position);
             String title = bean.getTitle();
             if (!StringUtils.isEmpty(title)) {

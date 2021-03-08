@@ -1,6 +1,7 @@
 package com.hjc.reader.ui.gank.adapter;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
@@ -9,7 +10,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjc.reader.R;
 import com.hjc.reader.databinding.ItemFilterBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -20,12 +20,12 @@ public class FilterAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, String item) {
+    protected void convert(@NonNull BaseViewHolder helper, String item) {
         if (item == null) {
             return;
         }

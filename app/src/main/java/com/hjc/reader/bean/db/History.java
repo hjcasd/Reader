@@ -1,9 +1,9 @@
 package com.hjc.reader.bean.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import org.jetbrains.annotations.NotNull;
 
 @Entity
 public class History {
@@ -28,7 +28,7 @@ public class History {
         this.name = name;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "History{" +

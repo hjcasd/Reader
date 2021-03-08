@@ -1,6 +1,7 @@
 package com.hjc.reader.ui.menu.adapter;
 
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -9,7 +10,6 @@ import com.hjc.reader.R;
 import com.hjc.reader.bean.response.CollectLinkBean;
 import com.hjc.reader.databinding.ItemLinkBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 public class LinkAdapter extends BaseQuickAdapter<CollectLinkBean.DataBean, BaseViewHolder> {
 
@@ -18,12 +18,12 @@ public class LinkAdapter extends BaseQuickAdapter<CollectLinkBean.DataBean, Base
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, CollectLinkBean.DataBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, CollectLinkBean.DataBean item) {
         if (item == null) {
             return;
         }

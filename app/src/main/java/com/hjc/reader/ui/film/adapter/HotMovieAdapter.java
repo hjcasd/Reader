@@ -1,5 +1,6 @@
 package com.hjc.reader.ui.film.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
@@ -9,7 +10,6 @@ import com.hjc.reader.R;
 import com.hjc.reader.bean.response.MovieItemBean;
 import com.hjc.reader.databinding.ItemHotMovieBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -20,12 +20,12 @@ public class HotMovieAdapter extends BaseQuickAdapter<MovieItemBean, BaseViewHol
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, MovieItemBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, MovieItemBean item) {
         if (item == null) {
             return;
         }

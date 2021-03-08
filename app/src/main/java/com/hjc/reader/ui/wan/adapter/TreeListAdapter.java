@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -15,7 +16,6 @@ import com.hjc.reader.databinding.ItemTreeBinding;
 import com.hjc.reader.utils.helper.RouteManager;
 import com.nex3z.flowlayout.FlowLayout;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ public class TreeListAdapter extends BaseQuickAdapter<WanTreeBean.DataBean, Base
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, WanTreeBean.DataBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, WanTreeBean.DataBean item) {
         if (item == null) {
             return;
         }

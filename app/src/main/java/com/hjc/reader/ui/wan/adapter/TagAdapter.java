@@ -1,6 +1,7 @@
 package com.hjc.reader.ui.wan.adapter;
 
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -9,7 +10,6 @@ import com.hjc.reader.R;
 import com.hjc.reader.bean.response.WanListBean;
 import com.hjc.reader.databinding.ItemTagBinding;
 
-import org.jetbrains.annotations.NotNull;
 
 public class TagAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean, BaseViewHolder> {
     public TagAdapter() {
@@ -17,12 +17,12 @@ public class TagAdapter extends BaseQuickAdapter<WanListBean.DataBean.DatasBean,
     }
 
     @Override
-    protected void onItemViewHolderCreated(@NotNull BaseViewHolder viewHolder, int viewType) {
+    protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder helper, WanListBean.DataBean.DatasBean item) {
+    protected void convert(@NonNull BaseViewHolder helper, WanListBean.DataBean.DatasBean item) {
         if (item == null) {
             return;
         }
