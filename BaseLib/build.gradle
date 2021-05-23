@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion  19
-        targetSdkVersion 29
+        minSdkVersion  21
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -67,7 +68,7 @@ dependencies {
     api 'com.yanzhenjie:permission:2.0.3'
 
     //工具类
-    api 'com.blankj:utilcodex:1.30.5'
+    api 'com.blankj:utilcodex:1.30.6'
 
     //沉浸式
     api 'com.gyf.immersionbar:immersionbar:3.0.0'
