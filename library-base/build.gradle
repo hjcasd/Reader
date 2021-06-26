@@ -1,0 +1,88 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+def config = rootProject.ext.android
+def lib = rootProject.ext.dependencies
+
+android {
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
+    }
+
+    buildTypes {
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        dataBinding = true
+    }
+}
+
+dependencies {
+    testImplementation lib.junit
+    androidTestImplementation lib.test_junit
+    androidTestImplementation lib.espresso_core
+
+    api lib.appcompat
+    api lib.constraintlayout
+    api lib.recyclerview
+    api lib.material
+    api lib.multidex
+
+    // Kotlin
+    api lib.core_ktx
+    api lib.kotlin_stdlib
+    api lib.lifecycle_viewmodel_ktx
+    api lib.kotlinx_coroutines_android
+
+    // JetPack
+    api lib.lifecycle_runtime
+    api lib.lifecycle_extensions
+    api lib.lifecycle_viewmodel
+    api lib.lifecycle_livedata
+
+    // 路由
+    api lib.arouter_api
+    kapt lib.arouter_compiler
+
+    // 工具类
+    api lib.utilcodex
+
+    // 沉浸式
+    api lib.immersionbar
+
+    // 状态布局
+    api lib.loadsir
+
+}

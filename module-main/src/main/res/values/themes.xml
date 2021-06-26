@@ -1,0 +1,22 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="SplashTheme" parent="BaseAppTheme">
+        <item name="android:windowBackground">@drawable/main_shape_bg_splash</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--不让windowBackground延申到navigation bar区域-->
+<!--        <item name="android:windowDrawsSystemBarBackgrounds">false</item>-->
+    </style>
+
+    <!--我的收藏 - 标题收起时的字体颜色-->
+    <style name="collapsing_title_style_collapsed" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/base_white</item>
+    </style>
+
+    <!--我的收藏 - 标题展开时的字体颜色-->
+    <style name="collapsing_title_style_expanded" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/base_white</item>
+
+    </style>
+</resources>

@@ -1,0 +1,100 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+def config = rootProject.ext.android
+def lib = rootProject.ext.dependencies
+
+android {
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            buildConfigField ('boolean', 'IS_DEBUG', "true")
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField ('boolean', 'IS_DEBUG', "false")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        dataBinding = true
+    }
+}
+
+dependencies {
+    testImplementation lib.junit
+    androidTestImplementation lib.test_junit
+    androidTestImplementation lib.espresso_core
+
+    // 路由
+    kapt lib.arouter_compiler
+
+    // Json
+    api lib.gson
+
+    // 消息
+    api lib.eventbus
+
+    // Glide
+    api lib.glide
+    annotationProcessor lib.glide_compiler
+    api lib.glide_transformations
+
+    // 权限
+    api lib.permissionx
+
+    // 列表
+    api lib.BaseRecyclerViewAdapterHelper
+
+    // 刷新
+    api lib.refresh_layout_kernel
+    api lib.refresh_header_classics
+    api lib.refresh_footer_classics
+
+    // Bugly
+    api lib.crashreport
+    api lib.nativecrashreport
+
+    // 图片浏览
+    api lib.Transferee
+    api lib.GlideImageLoader
+
+    api project(path: ':library-base')
+    api project(path: ':library-net')
+    api project(path: ':library-web')
+    api project(path: ':library-widget')
+}

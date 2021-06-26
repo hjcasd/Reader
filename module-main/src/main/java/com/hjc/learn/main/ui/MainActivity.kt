@@ -1,0 +1,161 @@
+package com.hjc.learn.main.ui
+
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.os.Bundle
+import android.view.View
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
+import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.hjc.learn.main.R
+import com.hjc.learn.main.databinding.MainActivityBinding
+import com.hjc.learn.main.ui.fragment.DrawerFragment
+import com.hjc.learn.main.ui.fragment.MainFragment
+import com.hjc.learn.main.viewmodel.MainViewModel
+import com.hjc.library_base.activity.BaseFragmentActivity
+import com.hjc.library_base.utils.ActivityHelper
+import com.hjc.library_common.event.EventManager
+import com.hjc.library_common.event.MessageEvent
+import com.hjc.library_common.global.AppConstants
+import com.hjc.library_common.global.EventCode
+import com.hjc.library_common.router.RouteManager
+import com.hjc.library_common.router.RoutePath
+import com.hjc.library_net.utils.AccountHelper
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+
+/**
+ * @Author: HJC
+ * @Date: 2020/8/24 15:58
+ * @Description: 主界面
+ */
+@Route(path = RoutePath.Main.MAIN)
+class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() {
+
+    private var flag = 0
+
+    override fun getLayoutId(): Int {
+        return R.layout.main_activity
+    }
+
+    override fun createViewModel(): MainViewModel {
+        return ViewModelProvider(this)[MainViewModel::class.java]
+    }
+
+    override fun initData(savedInstanceState: Bundle?) {
+        EventManager.register(this)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fl_main, MainFragment.newInstance())
+            .add(R.id.fl_drawer, DrawerFragment.newInstance())
+            .commit()
+    }
+
+    override fun addListeners() {
+        mBindingView.drawerLayout.addDrawerListener(object : DrawerListener {
+            override fun onDrawerSlide(view: View, v: Float) {}
+
+            override fun onDrawerOpened(view: View) {
+                EventManager.sendEvent(MessageEvent(EventCode.DRAWER_OPENED, null))
+            }
+
+            override fun onDrawerClosed(view: View) {
+                EventManager.sendEvent(MessageEvent(EventCode.DRAWER_CLOSED, null))
+                when (flag) {
+                    1 -> {
+                        flag = 0
+                        if (AccountHelper.isLogin) {
+                            showLogoutDialog()
+                        } else {
+                            RouteManager.jump(RoutePath.Login.LOGIN)
+                        }
+                    }
+
+                    2 -> {
+                        flag = 0
+                        RouteManager.jumpToWeb("项目主页", AppConstants.READER_URL)
+                    }
+
+                    3 -> {
+                        flag = 0
+                        RouteManager.jump(RoutePath.Main.SCAN)
+                    }
+
+                    4 -> {
+                        flag = 0
+                        RouteManager.jump(RoutePath.Main.COLLECT)
+                    }
+
+                    5 -> {
+                        flag = 0
+                        showExitDialog()
+                    }
+                }
+            }
+
+            override fun onDrawerStateChanged(i: Int) {}
+        })
+    }
+
+    override fun onSingleClick(v: View?) {
+
+    }
+
+    override fun getFragmentContentId(): Int {
+        return 0
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventManager.unregister(this)
+    }
+
+    /**
+     * 退出登录dialog
+     */
+    private fun showLogoutDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("确认退出账号吗？")
+        builder.setCancelable(false)
+        builder.setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
+            mViewModel?.logout()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(
+            "取消"
+        ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+        builder.show()
+    }
+
+    /**
+     * 退出应用弹框
+     */
+    private fun showExitDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("确认退出应用吗？")
+        builder.setCancelable(false)
+        builder.setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+            ActivityHelper.finishAllActivities()
+        }
+        builder.setNegativeButton(
+            "取消"
+        ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+        builder.show()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun handlerEvent(messageEvent: MessageEvent<Int>) {
+        if (messageEvent.getCode() === EventCode.CLOSE_DRAWER) {
+            mBindingView.drawerLayout.closeDrawer(GravityCompat.START)
+            messageEvent.getData()?.let {
+                flag = it
+            }
+
+        } else if (messageEvent.getCode() === EventCode.OPEN_DRAWER) {
+            mBindingView.drawerLayout.openDrawer(GravityCompat.START)
+        }
+    }
+
+}

@@ -1,0 +1,107 @@
+ext {
+
+    android = [
+            minSdkVersion    : 21,
+            targetSdkVersion : 30,
+            compileSdkVersion: 30,
+            buildToolsVersion: "30.0.3",
+            versionCode      : 1,
+            versionName      : "1.0",
+    ]
+
+    app = [
+            DEV_BASE_URL : '"https://www.wanandroid.com"',
+            TEST_BASE_URL: '"https://www.wanandroid.com"',
+            PROD_BASE_URL: '"https://www.wanandroid.com"',
+
+            IS_DEBUG     : true,
+    ]
+
+    dependencies = [
+            //Test
+            junit                        : 'junit:junit:4.13.1',
+            test_junit                   : 'androidx.test.ext:junit:1.1.2',
+            espresso_core                : 'androidx.test.espresso:espresso-core:3.3.0',
+
+            //Android
+            appcompat                    : 'androidx.appcompat:appcompat:1.2.0',
+            constraintlayout             : 'androidx.constraintlayout:constraintlayout:2.0.4',
+            recyclerview                 : 'androidx.recyclerview:recyclerview:1.1.0',
+            material                     : 'com.google.android.material:material:1.2.1',
+
+            //JetPack
+            lifecycle_runtime            : 'androidx.lifecycle:lifecycle-runtime:2.2.0',
+            lifecycle_extensions         : 'androidx.lifecycle:lifecycle-extensions:2.2.0',
+            lifecycle_viewmodel          : 'androidx.lifecycle:lifecycle-viewmodel:2.2.0',
+            lifecycle_viewmodel_ktx      : 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0',
+            lifecycle_livedata           : 'androidx.lifecycle:lifecycle-livedata:2.2.0',
+            room_runtime               : 'androidx.room:room-runtime:2.2.5',
+            room_compiler              : 'androidx.room:room-compiler:2.2.5',
+
+            //分包处理
+            multidex                     : 'androidx.multidex:multidex:2.0.1',
+
+            //Kotlin
+            core_ktx                     : "androidx.core:core-ktx:1.3.2",
+            kotlin_stdlib                : "org.jetbrains.kotlin:kotlin-stdlib:1.4.21",
+            kotlinx_coroutines_android   : "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9",
+
+            //Gson
+            gson                         : 'com.google.code.gson:gson:2.8.6',
+
+            //Retrofit
+            retrofit                     : 'com.squareup.retrofit2:retrofit:2.9.0',
+            converter_gson               : 'com.squareup.retrofit2:converter-gson:2.9.0',
+
+            //RxJava
+            rxjava                       : 'io.reactivex.rxjava2:rxjava:2.2.19',
+            rxandroid                    : 'io.reactivex.rxjava2:rxandroid:2.1.1',
+
+            //图片处理框架
+            glide                        : 'com.github.bumptech.glide:glide:4.11.0',
+            glide_compiler               : 'com.github.bumptech.glide:compiler:4.11.0',
+            glide_transformations        : 'jp.wasabeef:glide-transformations:4.3.0',
+
+            //路由
+            arouter_api                  : 'com.alibaba:arouter-api:1.5.1',
+            arouter_compiler             : 'com.alibaba:arouter-compiler:1.5.1',
+
+            //事件
+            eventbus                     : 'org.greenrobot:eventbus:3.2.0',
+
+            //权限
+            permissionx                  : 'com.permissionx.guolindev:permissionx:1.4.0',
+
+            //工具类
+            utilcodex                    : 'com.blankj:utilcodex:1.30.5',
+
+            //沉浸式
+            immersionbar                 : 'com.gyf.immersionbar:immersionbar:3.0.0',
+
+            //页面状态
+            loadsir                      : "com.kingja.loadsir:loadsir:1.3.8",
+
+            //Banner
+            banner                       : "com.youth.banner:banner:2.1.0",
+
+            //Bugly
+            crashreport                  : 'com.tencent.bugly:crashreport:3.2.1',
+            nativecrashreport            : 'com.tencent.bugly:nativecrashreport:3.7.1',
+
+            //列表适配器
+            BaseRecyclerViewAdapterHelper: 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6',
+
+            //刷新
+            refresh_layout_kernel        : 'com.scwang.smart:refresh-layout-kernel:2.0.3',
+            refresh_header_classics      : 'com.scwang.smart:refresh-header-classics:2.0.3',
+            refresh_footer_classics      : 'com.scwang.smart:refresh-footer-classics:2.0.3',
+
+            //图片浏览
+            Transferee                   : 'com.github.Hitomis.transferee:Transferee:1.6.1',
+            GlideImageLoader             : 'com.github.Hitomis.transferee:GlideImageLoader:1.6.1',
+
+            //Zxing二维码
+            bga_qrcode_zxing             : 'cn.bingoogolapple:bga-qrcode-zxing:1.3.6',
+    ]
+
+}

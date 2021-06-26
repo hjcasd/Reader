@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="editLinkViewModel"
+            type="com.hjc.learn.main.viewmodel.collect.EditLinkViewModel" />
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_shape_bg_round_white"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/main_link_edit"
+            android:textColor="@color/base_black"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/main_link_input_name"
+            android:inputType="text"
+            android:lines="2"
+            android:text="@={editLinkViewModel.nameData}"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@id/tv_title"
+            app:layout_constraintRight_toRightOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+
+        <EditText
+            android:id="@+id/et_link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/main_link_input_url"
+            android:lines="2"
+            android:text="@={editLinkViewModel.linkData}"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@id/tv_title"
+            app:layout_constraintRight_toRightOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/et_name" />
+
+
+        <TextView
+            android:id="@+id/tv_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="@{onClickListener}"
+            android:padding="5dp"
+            android:text="@string/main_link_finish"
+            android:textColor="@color/base_color"
+            android:textSize="14sp"
+            app:layout_constraintRight_toRightOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/et_link" />
+
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="@{onClickListener}"
+            android:padding="5dp"
+            android:text="@string/main_link_cancel"
+            android:textColor="@color/base_color"
+            android:textSize="14sp"
+            app:layout_constraintRight_toLeftOf="@id/tv_complete"
+            app:layout_constraintTop_toTopOf="@id/tv_complete" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

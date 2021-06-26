@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="login_red">#ff0000</color>
+    <color name="login_red_deep">#faebeb</color>
+    <color name="login_red_dark">#d81e06</color>
+</resources>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="collectBean"
+            type="com.hjc.library_net.model.WanCollectArticleBean" />
+
+        <import type="android.text.Html" />
+
+        <import type="com.blankj.utilcode.util.StringUtils" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="10dp">
+
+
+            <ImageView
+                android:id="@+id/iv_pic"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                app:imageUrl="@{collectBean.envelopePic}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:placeholder="@{@drawable/main_img_default}" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textStyle="bold"
+                android:text="@{Html.fromHtml(collectBean.title)}"
+                android:textColor="@color/base_black"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@id/iv_pic"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/iv_pic" />
+
+            <TextView
+                android:id="@+id/tv_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:text='@{!StringUtils.isEmpty(collectBean.author) ? collectBean.author : collectBean.shareUser}'
+                android:textColor="@color/base_gray_dark"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/cb_collect"
+                app:layout_constraintLeft_toRightOf="@id/iv_pic" />
+
+            <CheckBox
+                android:id="@+id/cb_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/main_selector_cb_collect"
+                android:checked="true"
+                app:layout_constraintBottom_toBottomOf="@id/iv_pic"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/iv_pic" />
+
+            <TextView
+                android:id="@+id/tv_chapter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@{collectBean.chapterName}"
+                android:textColor="@color/base_gray_dark"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toRightOf="@id/iv_pic"
+                app:layout_constraintTop_toBottomOf="@id/cb_collect" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@{collectBean.niceDate}"
+                android:textColor="@color/base_gray_dark"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_chapter"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>
