@@ -17,7 +17,7 @@ import com.hjc.library_common.router.path.RouteWanPath
  * @Date: 2019/1/21 11:30
  * @Description: 知识体系页面
  */
-@Route(path = RouteWanPath.URL_FRAGMENT_TREE)
+@Route(path = RouteWanPath.Fragment.URL_TREE)
 class TreeFragment : BaseLazyFragment<WanFragmentTreeBinding, TreeViewModel>() {
 
     private lateinit var mAdapter: TreeAdapter

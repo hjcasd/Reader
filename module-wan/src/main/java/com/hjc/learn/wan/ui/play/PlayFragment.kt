@@ -27,7 +27,7 @@ import com.youth.banner.transformer.ZoomOutPageTransformer
  * @Date: 2019/1/21 11:29
  * @Description: 玩安卓页面
  */
-@Route(path = RouteWanPath.URL_FRAGMENT_PLAY)
+@Route(path = RouteWanPath.Fragment.URL_PLAY)
 class PlayFragment : BaseLazyFragment<WanFragmentPlayBinding, PlayViewModel>() {
 
     private lateinit var banner: Banner<*, *>

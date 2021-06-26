@@ -28,7 +28,7 @@ class LoginInterceptor : IInterceptor {
         if (!AccountHelper.isLogin) {
             when (path) {
                 // 拦截登录
-                RouteMainPath.URL_ACTIVITY_COLLECT -> {
+                RouteMainPath.Activity.URL_COLLECT -> {
                     val bundle = postcard.extras
                     bundle.putString(GlobalKey.ROUTER_PATH, path)
 

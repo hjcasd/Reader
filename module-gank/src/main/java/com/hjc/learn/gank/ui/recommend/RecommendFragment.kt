@@ -23,7 +23,7 @@ import java.util.*
  * @Date: 2019/1/21 11:29
  * @Description: 每日推荐页面
  */
-@Route(path = RouteGankPath.URL_FRAGMENT_RECOMMEND)
+@Route(path = RouteGankPath.Fragment.URL_RECOMMEND)
 class RecommendFragment : BaseLazyFragment<GankFragmentRecommendBinding, RecommendViewModel>() {
 
     private lateinit var mAdapter: RecommendAdapter

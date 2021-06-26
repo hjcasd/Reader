@@ -24,7 +24,7 @@ import com.hjc.library_net.model.WanSearchBean
  * @Date: 2020/9/11 10:55
  * @Description: 搜索记录页面
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_SEARCH_HISTORY)
+@Route(path = RouteMainPath.Fragment.URL_SEARCH_HISTORY)
 class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, SearchHistoryViewModel>() {
 
     override fun getLayoutId(): Int {

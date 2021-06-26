@@ -27,7 +27,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2021/2/2 20:39
  * @Description: 测试fragment
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_MAIN)
+@Route(path = RouteMainPath.Fragment.URL_MAIN_FRAGMENT)
 class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
 
     private lateinit var mTab1Fragment: Fragment
@@ -52,9 +52,9 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
-        mTab1Fragment = ARouter.getInstance().build(RouteWanPath.URL_FRAGMENT_WAN).navigation() as Fragment
-        mTab2Fragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_GANK).navigation() as Fragment
-        mTab3Fragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_TEST).navigation() as Fragment
+        mTab1Fragment = ARouter.getInstance().build(RouteWanPath.Fragment.URL_WAN_FRAGMENT).navigation() as Fragment
+        mTab2Fragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_GANK_FRAGMENT).navigation() as Fragment
+        mTab3Fragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_TEST).navigation() as Fragment
 
         setCurrentItem(0)
     }
@@ -102,7 +102,7 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
             R.id.iv_tab3 -> setCurrentItem(2)
 
             R.id.iv_search -> {
-                RouteManager.jump(RouteMainPath.URL_ACTIVITY_SEARCH)
+                RouteManager.jump(RouteMainPath.Activity.URL_SEARCH)
             }
         }
     }

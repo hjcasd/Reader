@@ -9,48 +9,54 @@ object RouteMainPath {
 
     private const val MODULE_MAIN = "/module_main"
 
-    //=========================================Activity========================================
+    // Activity
+    object Activity{
 
-    // Splash页面
-    const val URL_ACTIVITY_SPLASH = "$MODULE_MAIN/activity/splash"
+        // MainActivity
+        const val URL_MAIN_ACTIVITY = "$MODULE_MAIN/activity/main"
 
-    // MainActivity
-    const val URL_ACTIVITY_MAIN = "$MODULE_MAIN/activity/main"
+        // Splash页面
+        const val URL_SPLASH = "$MODULE_MAIN/activity/splash"
 
-    // Web页面
-    const val URL_ACTIVITY_WEB = "$MODULE_MAIN/activity/web"
+        // Web页面
+        const val URL_WEB = "$MODULE_MAIN/activity/web"
 
-    // 扫码页面
-    const val URL_ACTIVITY_SCAN = "$MODULE_MAIN/activity/scan"
+        // 扫码页面
+        const val URL_SCAN = "$MODULE_MAIN/activity/scan"
 
-    // 收藏页面
-    const val URL_ACTIVITY_COLLECT = "$MODULE_MAIN/activity/collect"
+        // 收藏页面
+        const val URL_COLLECT = "$MODULE_MAIN/activity/collect"
 
-    // 搜索页面
-    const val URL_ACTIVITY_SEARCH = "$MODULE_MAIN/activity/search"
+        // 搜索页面
+        const val URL_SEARCH = "$MODULE_MAIN/activity/search"
+
+    }
 
 
-    //=========================================Fragment========================================
+    // Fragment
+    object Fragment{
 
-    // MainFragment
-    const val URL_FRAGMENT_MAIN = "$MODULE_MAIN/fragment/main"
+        // MainFragment
+        const val URL_MAIN_FRAGMENT = "$MODULE_MAIN/fragment/main"
 
-    // DrawerFragment
-    const val URL_FRAGMENT_DRAWER = "$MODULE_MAIN/fragment/drawer"
+        // DrawerFragment
+        const val URL_DRAWER = "$MODULE_MAIN/fragment/drawer"
 
-    // TestFragment
-    const val URL_FRAGMENT_TEST = "$MODULE_MAIN/fragment/test"
+        // TestFragment
+        const val URL_TEST = "$MODULE_MAIN/fragment/test"
 
-    // CollectArticleFragment
-    const val URL_FRAGMENT_COLLECT_ARTICLE = "$MODULE_MAIN/fragment/collect/article"
+        // CollectArticleFragment
+        const val URL_COLLECT_ARTICLE = "$MODULE_MAIN/fragment/collect/article"
 
-    // CollectLinkFragment
-    const val URL_FRAGMENT_COLLECT_LINK = "$MODULE_MAIN/fragment/collect/link"
+        // CollectLinkFragment
+        const val URL_COLLECT_LINK = "$MODULE_MAIN/fragment/collect/link"
 
-    // SearchHistoryFragment
-    const val URL_FRAGMENT_SEARCH_HISTORY = "$MODULE_MAIN/fragment/search/history"
+        // SearchHistoryFragment
+        const val URL_SEARCH_HISTORY = "$MODULE_MAIN/fragment/search/history"
 
-    // SearchResultFragment
-    const val URL_FRAGMENT_SEARCH_RESULT = "$MODULE_MAIN/fragment/search/result"
+        // SearchResultFragment
+        const val URL_SEARCH_RESULT = "$MODULE_MAIN/fragment/search/result"
+
+    }
 
 }

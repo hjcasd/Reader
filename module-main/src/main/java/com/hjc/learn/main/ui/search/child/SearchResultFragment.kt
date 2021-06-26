@@ -28,7 +28,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2020/9/11 10:55
  * @Description: 搜索结果页面
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_SEARCH_RESULT)
+@Route(path = RouteMainPath.Fragment.URL_SEARCH_RESULT)
 class SearchResultFragment : BaseFragment<MainFragmentSearchResultBinding, SearchResultViewModel>() {
 
     private lateinit var mAdapter: SearchAdapter

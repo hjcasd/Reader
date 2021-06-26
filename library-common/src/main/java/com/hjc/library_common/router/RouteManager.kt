@@ -110,7 +110,7 @@ object RouteManager {
             return
         }
         ARouter.getInstance()
-            .build(RouteMainPath.URL_ACTIVITY_WEB)
+            .build(RouteMainPath.Activity.URL_WEB)
             .withString("title", title)
             .withString("url", url)
             .navigation()

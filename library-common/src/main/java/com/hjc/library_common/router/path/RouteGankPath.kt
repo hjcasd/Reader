@@ -9,24 +9,31 @@ object RouteGankPath {
 
     private const val MODULE_GANK = "/module_gank"
 
-    //=========================================Activity========================================
 
-    // GankActivity
-    const val URL_ACTIVITY_GANK = "$MODULE_GANK/activity/gank"
+    // Activity
+    object Activity{
+
+        // GankActivity
+        const val URL_GANK_ACTIVITY = "$MODULE_GANK/activity/gank"
+
+    }
 
 
-    //=========================================Fragment========================================
+    // Fragment
+    object Fragment{
 
-    // GankFragment
-    const val URL_FRAGMENT_GANK = "$MODULE_GANK/fragment/gank"
+        // GankFragment
+        const val URL_GANK_FRAGMENT = "$MODULE_GANK/fragment/gank"
 
-    // RecommendFragment
-    const val URL_FRAGMENT_RECOMMEND = "$MODULE_GANK/fragment/recommend"
+        // RecommendFragment
+        const val URL_RECOMMEND = "$MODULE_GANK/fragment/recommend"
 
-    // WelfareFragment
-    const val URL_FRAGMENT_WELFARE = "$MODULE_GANK/fragment/welfare"
+        // WelfareFragment
+        const val URL_WELFARE = "$MODULE_GANK/fragment/welfare"
 
-    // CustomFragment
-    const val URL_FRAGMENT_CUSTOM= "$MODULE_GANK/fragment/custom"
+        // CustomFragment
+        const val URL_CUSTOM= "$MODULE_GANK/fragment/custom"
+
+    }
 
 }

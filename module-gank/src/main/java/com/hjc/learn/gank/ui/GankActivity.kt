@@ -17,7 +17,7 @@ import com.hjc.library_common.viewmodel.CommonViewModel
  * @Date: 2021/2/23 16:18
  * @Description: 干货模块主界面
  */
-@Route(path = RouteGankPath.URL_ACTIVITY_GANK)
+@Route(path = RouteGankPath.Activity.URL_GANK_ACTIVITY)
 class GankActivity : BaseActivity<GankActivityBinding, CommonViewModel>() {
 
     override fun getLayoutId(): Int {
@@ -35,7 +35,7 @@ class GankActivity : BaseActivity<GankActivityBinding, CommonViewModel>() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        val fragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_GANK).navigation() as Fragment
+        val fragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_GANK_FRAGMENT).navigation() as Fragment
         supportFragmentManager.beginTransaction()
             .add(R.id.fl_gank, fragment)
             .commit()

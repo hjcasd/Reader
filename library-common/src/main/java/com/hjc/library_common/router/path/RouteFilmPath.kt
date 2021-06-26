@@ -9,15 +9,22 @@ object RouteFilmPath {
 
     private const val MODULE_FILM = "/module_senior"
 
-    //=========================================Activity========================================
 
-    // FilmActivity
-    const val URL_ACTIVITY_FILM = "$MODULE_FILM/activity/film"
+    // Activity
+    object Activity{
+
+        // FilmActivity
+        const val URL_FILM_ACTIVITY = "$MODULE_FILM/activity/film"
+
+    }
 
 
-    //=========================================Fragment========================================
+    // Fragment
+    object Fragment{
 
-    // FilmFragment
-    const val URL_FRAGMENT_FILM = "$MODULE_FILM/fragment/film"
+        // FilmFragment
+        const val URL_FILM_FRAGMENT = "$MODULE_FILM/fragment/film"
+
+    }
 
 }

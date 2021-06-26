@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2021/2/2 20:39
  * @Description: 测试fragment
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_DRAWER)
+@Route(path = RouteMainPath.Fragment.URL_DRAWER)
 class DrawerFragment : BaseFragment<MainFragmentDrawerBinding, DrawerViewModel>() {
 
     override fun getLayoutId(): Int {

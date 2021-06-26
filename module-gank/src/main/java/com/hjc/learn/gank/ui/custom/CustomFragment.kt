@@ -26,7 +26,7 @@ import java.util.*
  * @Date: 2019/1/21 11:29
  * @Description: 干货定制页面
  */
-@Route(path = RouteGankPath.URL_FRAGMENT_CUSTOM)
+@Route(path = RouteGankPath.Fragment.URL_CUSTOM)
 class CustomFragment : BaseLazyFragment<GankFragmentCustomBinding, GankViewModel>() {
 
     private lateinit var tvTypeName: TextView

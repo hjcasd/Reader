@@ -20,7 +20,7 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
  * @Date: 2019/3/11 11:00
  * @Description: 我的收藏下的文章页面
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_COLLECT_ARTICLE)
+@Route(path = RouteMainPath.Fragment.URL_COLLECT_ARTICLE)
 class CollectArticleFragment : BaseLazyFragment<MainFragmentCollectArticleBinding, CollectArticleViewModel>() {
 
     private lateinit var mAdapter: ArticleAdapter

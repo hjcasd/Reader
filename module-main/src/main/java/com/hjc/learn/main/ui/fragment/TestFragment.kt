@@ -14,7 +14,7 @@ import com.hjc.library_common.viewmodel.CommonViewModel
  * @Date: 2021/2/2 20:39
  * @Description: 测试fragment
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_TEST)
+@Route(path = RouteMainPath.Fragment.URL_TEST)
 class TestFragment : BaseFragment<MainFragmentTestBinding, CommonViewModel>() {
 
     override fun getLayoutId(): Int {

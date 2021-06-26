@@ -22,7 +22,7 @@ import java.util.*
  * @Date: 2019/3/11 10:58
  * @Description: 我的收藏页面
  */
-@Route(path = RouteMainPath.URL_ACTIVITY_COLLECT)
+@Route(path = RouteMainPath.Activity.URL_COLLECT)
 class CollectActivity : BaseActivity<MainActivityCollectBinding, CommonViewModel>() {
 
     private val titles = arrayOf("文章", "网址")
@@ -50,8 +50,8 @@ class CollectActivity : BaseActivity<MainActivityCollectBinding, CommonViewModel
     override fun initData(savedInstanceState: Bundle?) {
         val fragments: MutableList<Fragment> = ArrayList()
 
-        val collectArticleFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_COLLECT_ARTICLE).navigation() as Fragment
-        val collectLinkFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_COLLECT_LINK).navigation() as Fragment
+        val collectArticleFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_COLLECT_ARTICLE).navigation() as Fragment
+        val collectLinkFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_COLLECT_LINK).navigation() as Fragment
 
         fragments.add(collectArticleFragment)
         fragments.add(collectLinkFragment)

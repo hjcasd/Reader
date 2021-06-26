@@ -24,7 +24,7 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
  * @Date: 2020/8/27 17:13
  * @Description: 知识体系tag下文章列表页面
  */
-@Route(path = RouteWanPath.URL_ACTIVITY_TAG)
+@Route(path = RouteWanPath.Activity.URL_TAG)
 class TagActivity : BaseActivity<WanActivityTagBinding, TagViewModel>() {
 
     private lateinit var mAdapter: TagAdapter

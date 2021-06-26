@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
  * @Date: 2021/1/8 9:44
  * @Description: 启动页
  */
-@Route(path = RouteMainPath.URL_ACTIVITY_SPLASH)
+@Route(path = RouteMainPath.Activity.URL_SPLASH)
 class SplashActivity : BaseActivity<MainActivitySplashBinding, CommonViewModel>() {
 
     private var disposable1: Disposable? = null
@@ -71,7 +71,7 @@ class SplashActivity : BaseActivity<MainActivitySplashBinding, CommonViewModel>(
      * 跳转到首页
      */
     private fun toMain() {
-        RouteManager.jump(RouteMainPath.URL_ACTIVITY_MAIN)
+        RouteManager.jump(RouteMainPath.Activity.URL_MAIN_ACTIVITY)
         finish()
     }
 

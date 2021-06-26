@@ -26,7 +26,7 @@ import java.util.*
  * @Date: 2019/1/21 11:29
  * @Description: 福利社区页面
  */
-@Route(path = RouteGankPath.URL_FRAGMENT_WELFARE)
+@Route(path = RouteGankPath.Fragment.URL_WELFARE)
 class WelfareFragment : BaseLazyFragment<GankFragmentWelfareBinding, WelfareViewModel>() {
 
     private lateinit var mAdapter: WelfareAdapter

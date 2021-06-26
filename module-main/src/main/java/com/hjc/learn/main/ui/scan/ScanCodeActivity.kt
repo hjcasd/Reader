@@ -29,7 +29,7 @@ import io.reactivex.observers.DefaultObserver
  * @Date: 2019/8/19 17:44
  * @Description: 扫码下载页面
  */
-@Route(path = RouteMainPath.URL_ACTIVITY_SCAN)
+@Route(path = RouteMainPath.Activity.URL_SCAN)
 class ScanCodeActivity : BaseActivity<MainActivityScanCodeBinding, CommonViewModel>() {
 
     override fun getLayoutId(): Int {

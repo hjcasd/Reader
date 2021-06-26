@@ -27,7 +27,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2019/3/11 11:00
  * @Description: 我的收藏下的网址页面
  */
-@Route(path = RouteMainPath.URL_FRAGMENT_COLLECT_LINK)
+@Route(path = RouteMainPath.Fragment.URL_COLLECT_LINK)
 class CollectLinkFragment : BaseLazyFragment<MainFragmentCollectLinkBinding, CollectLinkViewModel>() {
 
     private lateinit var mAdapter: LinkAdapter

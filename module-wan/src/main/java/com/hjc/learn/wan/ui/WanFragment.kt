@@ -21,7 +21,7 @@ import java.util.*
  * @Date: 2019/1/21 11:29
  * @Description: 玩安卓fragment
  */
-@Route(path = RouteWanPath.URL_FRAGMENT_WAN)
+@Route(path = RouteWanPath.Fragment.URL_WAN_FRAGMENT)
 class WanFragment : BaseFragment<WanFragmentBinding, CommonViewModel>() {
 
     private val titles = arrayOf("玩安卓", "知识体系", "导航数据")
@@ -37,9 +37,9 @@ class WanFragment : BaseFragment<WanFragmentBinding, CommonViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         val fragments = ArrayList<Fragment>()
 
-        val playFragment =  ARouter.getInstance().build(RouteWanPath.URL_FRAGMENT_PLAY).navigation() as Fragment
-        val treeFragment =  ARouter.getInstance().build(RouteWanPath.URL_FRAGMENT_TREE).navigation() as Fragment
-        val navigationFragment =  ARouter.getInstance().build(RouteWanPath.URL_FRAGMENT_NAVIGATION).navigation() as Fragment
+        val playFragment =  ARouter.getInstance().build(RouteWanPath.Fragment.URL_PLAY).navigation() as Fragment
+        val treeFragment =  ARouter.getInstance().build(RouteWanPath.Fragment.URL_TREE).navigation() as Fragment
+        val navigationFragment =  ARouter.getInstance().build(RouteWanPath.Fragment.URL_NAVIGATION).navigation() as Fragment
 
         fragments.add(playFragment)
         fragments.add(treeFragment)

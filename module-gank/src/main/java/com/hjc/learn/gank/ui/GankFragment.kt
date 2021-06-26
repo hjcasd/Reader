@@ -21,7 +21,7 @@ import java.util.*
  * @Date: 2019/1/21 16:10
  * @Description: 干货模块fragment
  */
-@Route(path = RouteGankPath.URL_FRAGMENT_GANK)
+@Route(path = RouteGankPath.Fragment.URL_GANK_FRAGMENT)
 class GankFragment : BaseFragment<GankFragmentBinding, CommonViewModel>() {
 
     private val titles = arrayOf("每日推荐", "福利社区", "干货定制")
@@ -37,9 +37,9 @@ class GankFragment : BaseFragment<GankFragmentBinding, CommonViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         val fragments = ArrayList<Fragment>()
 
-        val recommendFragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_RECOMMEND).navigation() as Fragment
-        val welfareFragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_WELFARE).navigation() as Fragment
-        val customFragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_CUSTOM).navigation() as Fragment
+        val recommendFragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_RECOMMEND).navigation() as Fragment
+        val welfareFragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_WELFARE).navigation() as Fragment
+        val customFragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_CUSTOM).navigation() as Fragment
 
         fragments.add(recommendFragment)
         fragments.add(welfareFragment)

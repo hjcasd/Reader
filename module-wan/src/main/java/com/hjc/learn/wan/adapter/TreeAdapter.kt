@@ -54,7 +54,7 @@ class TreeAdapter(data: MutableList<WanSystemBean>?) :
                 val bundle = Bundle()
                 bundle.putString("name", bean.name)
                 bundle.putInt("id", bean.id)
-                RouteManager.jumpWithBundle(RouteWanPath.URL_ACTIVITY_TAG, bundle)
+                RouteManager.jumpWithBundle(RouteWanPath.Activity.URL_TAG, bundle)
             }
         }
     }

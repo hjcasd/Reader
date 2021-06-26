@@ -19,7 +19,7 @@ import com.hjc.library_common.router.path.RouteWanPath
  * @Date: 2019/1/21 11:29
  * @Description: 导航数据页面
  */
-@Route(path = RouteWanPath.URL_FRAGMENT_NAVIGATION)
+@Route(path = RouteWanPath.Fragment.URL_NAVIGATION)
 class NavigationFragment : BaseLazyFragment<WanFragmentNavigationBinding, NavigationViewModel>() {
 
     private lateinit var mNavigationAdapter: NavigationAdapter

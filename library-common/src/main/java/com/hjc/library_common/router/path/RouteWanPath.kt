@@ -9,27 +9,34 @@ object RouteWanPath {
 
     private const val MODULE_WAN = "/module_wan"
 
-    //=========================================Activity========================================
 
-    // WanActivity
-    const val URL_ACTIVITY_WAN = "$MODULE_WAN/activity/wan"
+    // Activity
+    object Activity{
 
-    // TagActivity
-    const val URL_ACTIVITY_TAG = "$MODULE_WAN/activity/tag"
+        // WanActivity
+        const val URL_WAN_ACTIVITY = "$MODULE_WAN/activity/wan"
+
+        // TagActivity
+        const val URL_TAG = "$MODULE_WAN/activity/tag"
+
+    }
 
 
-    //=========================================Fragment========================================
+    // Fragment
+    object Fragment{
 
-    // WanFragment
-    const val URL_FRAGMENT_WAN = "$MODULE_WAN/fragment/wan"
+        // WanFragment
+        const val URL_WAN_FRAGMENT = "$MODULE_WAN/fragment/wan"
 
-    // WanFragment
-    const val URL_FRAGMENT_NAVIGATION = "$MODULE_WAN/fragment/navigation"
+        // WanFragment
+        const val URL_NAVIGATION = "$MODULE_WAN/fragment/navigation"
 
-    // WanFragment
-    const val URL_FRAGMENT_PLAY= "$MODULE_WAN/fragment/play"
+        // WanFragment
+        const val URL_PLAY= "$MODULE_WAN/fragment/play"
 
-    // WanFragment
-    const val URL_FRAGMENT_TREE = "$MODULE_WAN/fragment/tree"
+        // WanFragment
+        const val URL_TREE = "$MODULE_WAN/fragment/tree"
+
+    }
 
 }

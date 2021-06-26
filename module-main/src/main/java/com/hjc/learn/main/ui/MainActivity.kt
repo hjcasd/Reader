@@ -34,7 +34,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2020/8/24 15:58
  * @Description: 主界面
  */
-@Route(path = RouteMainPath.URL_ACTIVITY_MAIN)
+@Route(path = RouteMainPath.Activity.URL_MAIN_ACTIVITY)
 class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() {
 
     private var flag = 0
@@ -50,8 +50,8 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
-        val mainFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_MAIN).navigation() as Fragment
-        val drawerFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_DRAWER).navigation() as Fragment
+        val mainFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_MAIN_FRAGMENT).navigation() as Fragment
+        val drawerFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_DRAWER).navigation() as Fragment
 
         supportFragmentManager.beginTransaction()
             .add(R.id.fl_main, mainFragment)
@@ -86,12 +86,12 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
 
                     3 -> {
                         flag = 0
-                        RouteManager.jump(RouteMainPath.URL_ACTIVITY_SCAN)
+                        RouteManager.jump(RouteMainPath.Activity.URL_SCAN)
                     }
 
                     4 -> {
                         flag = 0
-                        RouteManager.jump(RouteMainPath.URL_ACTIVITY_COLLECT)
+                        RouteManager.jump(RouteMainPath.Activity.URL_COLLECT)
                     }
 
                     5 -> {

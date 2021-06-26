@@ -17,7 +17,7 @@ import com.hjc.library_common.viewmodel.CommonViewModel
  * @Date: 2021/2/22 14:47
  * @Description: 玩安卓模块主界面
  */
-@Route(path = RouteWanPath.URL_ACTIVITY_WAN)
+@Route(path = RouteWanPath.Activity.URL_WAN_ACTIVITY)
 class WanActivity : BaseActivity<WanActivityBinding, CommonViewModel>() {
 
     override fun getLayoutId(): Int {
@@ -29,7 +29,7 @@ class WanActivity : BaseActivity<WanActivityBinding, CommonViewModel>() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        val fragment = ARouter.getInstance().build(RouteWanPath.URL_FRAGMENT_WAN).navigation() as Fragment
+        val fragment = ARouter.getInstance().build(RouteWanPath.Fragment.URL_WAN_FRAGMENT).navigation() as Fragment
         supportFragmentManager.beginTransaction()
             .add(R.id.fl_wan, fragment)
             .commit()

@@ -26,7 +26,7 @@ import com.hjc.library_net.utils.AccountHelper
  * @Date: 2021/1/8 14:22
  * @Description: Web页面
  */
-@Route(path = RouteMainPath.URL_ACTIVITY_WEB)
+@Route(path = RouteMainPath.Activity.URL_WEB)
 class WebActivity : BaseActivity<MainActivityWebBinding, WebViewModel>() {
 
     @JvmField

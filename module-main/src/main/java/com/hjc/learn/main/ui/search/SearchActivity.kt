@@ -13,8 +13,6 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.*
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainActivitySearchBinding
-import com.hjc.learn.main.ui.search.child.SearchHistoryFragment
-import com.hjc.learn.main.ui.search.child.SearchResultFragment
 import com.hjc.learn.main.viewmodel.search.SearchViewModel
 import com.hjc.library_base.activity.BaseFragmentActivity
 import com.hjc.library_common.event.EventManager
@@ -31,7 +29,7 @@ import java.util.*
  * @Date: 2019/8/21 14:13
  * @Description: 搜索页面
  */
-@Route(path = RouteMainPath.URL_ACTIVITY_SEARCH)
+@Route(path = RouteMainPath.Activity.URL_SEARCH)
 class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchViewModel>() {
 
     private lateinit var mSearchHistoryFragment: Fragment
@@ -48,8 +46,8 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
-        mSearchHistoryFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_SEARCH_HISTORY).navigation() as Fragment
-        mSearchResultFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_SEARCH_RESULT).navigation() as Fragment
+        mSearchHistoryFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_SEARCH_HISTORY).navigation() as Fragment
+        mSearchResultFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_SEARCH_RESULT).navigation() as Fragment
 
         mBindingView.etSearch.requestFocus()
 
