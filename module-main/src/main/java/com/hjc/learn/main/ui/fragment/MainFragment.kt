@@ -52,8 +52,10 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
-        mTab1Fragment = ARouter.getInstance().build(RouteWanPath.Fragment.URL_WAN_FRAGMENT).navigation() as Fragment
-        mTab2Fragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_GANK_FRAGMENT).navigation() as Fragment
+        val testFragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_TEST).navigation() as Fragment
+
+        mTab1Fragment = ARouter.getInstance().build(RouteWanPath.Fragment.URL_WAN_FRAGMENT).navigation() as Fragment? ?: testFragment
+        mTab2Fragment = ARouter.getInstance().build(RouteGankPath.Fragment.URL_GANK_FRAGMENT).navigation() as Fragment? ?: testFragment
         mTab3Fragment = ARouter.getInstance().build(RouteMainPath.Fragment.URL_TEST).navigation() as Fragment
 
         setCurrentItem(0)

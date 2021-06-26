@@ -13,9 +13,11 @@ import com.hjc.learn.main.databinding.MainFragmentSearchHistoryBinding
 import com.hjc.learn.main.model.History
 import com.hjc.learn.main.viewmodel.search.SearchHistoryViewModel
 import com.hjc.library_base.fragment.BaseFragment
+import com.hjc.library_base.view.ILoadingView
 import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
+import com.hjc.library_common.impl.CommonLoadingViewImpl
 import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_net.model.WanSearchBean
 
@@ -33,6 +35,10 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
 
     override fun createViewModel(): SearchHistoryViewModel {
         return ViewModelProvider(this)[SearchHistoryViewModel::class.java]
+    }
+
+    override fun createLoadingView(): ILoadingView {
+        return CommonLoadingViewImpl(mContext)
     }
 
     override fun initData(savedInstanceState: Bundle?) {
