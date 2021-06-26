@@ -96,7 +96,7 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     override fun onSingleClick(v: View?) {
         when (v?.id) {
             R.id.iv_menu -> {
-                EventManager.sendEvent(MessageEvent(EventCode.OPEN_DRAWER, null))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_OPEN_DRAWER, null))
             }
 
             R.id.iv_tab1 -> setCurrentItem(0)
@@ -132,12 +132,10 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveEvent(messageEvent: MessageEvent<Int>) {
-        if (messageEvent.getCode() == EventCode.DRAWER_OPENED) {
-            ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", -180f, 0f).setDuration(500).start()
-
-        } else if (messageEvent.getCode() == EventCode.DRAWER_CLOSED) {
-            ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", 0f, -180f).setDuration(500).start()
+    fun receiveEvent(event: MessageEvent<*>) {
+        when (event.code) {
+            EventCode.CODE_DRAWER_OPENED -> ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", -180f, 0f).setDuration(500).start()
+            EventCode.CODE_DRAWER_CLOSED -> ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", 0f, -180f).setDuration(500).start()
         }
     }
 }

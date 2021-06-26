@@ -85,7 +85,7 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
 
             tvTag.setOnClickListener {
                 val keyword = tvTag.text.toString()
-                EventManager.sendEvent(MessageEvent(EventCode.CLICK_TAG_CODE, keyword))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLICK_TAG, keyword))
             }
         }
     }
@@ -105,7 +105,7 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
 
             tvTag.setOnClickListener {
                 val keyword = tvTag.text.toString()
-                EventManager.sendEvent(MessageEvent(EventCode.CLICK_TAG_CODE, keyword))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLICK_TAG, keyword))
             }
         }
 
@@ -126,7 +126,7 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
     override fun onSingleClick(v: View?) {
         when (v?.id) {
             R.id.iv_clear_history -> {
-                EventManager.sendEvent(MessageEvent(EventCode.HIDE_KEYBOARD, null))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_HIDE_KEYBOARD, null))
                 showClearHistoryDialog()
             }
 

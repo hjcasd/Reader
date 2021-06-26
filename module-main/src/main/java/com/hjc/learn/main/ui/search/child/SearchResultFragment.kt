@@ -66,9 +66,9 @@ class SearchResultFragment : BaseFragment<MainFragmentSearchResultBinding, Searc
      * 点击搜索后的逻辑
      */
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    fun receiveEvent(messageEvent: MessageEvent<String?>) {
-        if (messageEvent.getCode() === EventCode.SEARCH_RESULT_CODE) {
-            mKeyword = messageEvent.getData()
+    fun receiveEvent(event: MessageEvent<String?>) {
+        if (event.code === EventCode.CODE_SEARCH_RESULT) {
+            mKeyword = event.data
             mPage = 0
             mBindingView.rvList.scrollToPosition(0)
             mViewModel?.loadSearchData(mPage, mKeyword, true)

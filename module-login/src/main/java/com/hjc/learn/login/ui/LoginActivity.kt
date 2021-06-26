@@ -48,7 +48,7 @@ class LoginActivity : BaseActivity<LoginActivityBinding, LoginViewModel>() {
             loginData.observe(this@LoginActivity) { isLogin ->
                 if (isLogin) {
                     KeyboardUtils.hideSoftInput(this@LoginActivity)
-                    EventManager.sendEvent(MessageEvent(EventCode.LOGIN_CODE, null))
+                    EventManager.sendEvent(MessageEvent(EventCode.CODE_LOGIN, null))
                     bundle?.let {
                         val path = it.getString(GlobalKey.ROUTER_PATH)
                         RouteManager.jump(path)

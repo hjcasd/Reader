@@ -26,7 +26,6 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
 //            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(getBuilder().build())
-
             .build()
     }
 

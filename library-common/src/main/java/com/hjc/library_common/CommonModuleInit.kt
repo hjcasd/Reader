@@ -19,7 +19,7 @@ class CommonModuleInit : IModuleInit {
     override fun onInitAhead(application: BaseApplication): Boolean {
         initUtils(application)
         initARouter(application)
-        BuglyUtils.init(application)
+        initBugly(application)
         X5WebUtils.init(application)
         return false
     }
@@ -47,6 +47,13 @@ class CommonModuleInit : IModuleInit {
         }
         // 尽可能早，推荐在Application中初始化
         ARouter.init(application)
+    }
+
+    /**
+     * 初始化Bugly
+     */
+    private fun initBugly(application: BaseApplication) {
+        BuglyUtils.init(application, AppConstants.BUGLY_CODE, AppConstants.APP_IS_DEBUG)
     }
 
     override fun onInitAfter(application: BaseApplication): Boolean {

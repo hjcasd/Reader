@@ -12,7 +12,7 @@ object AppConstants {
 
     const val APP_IS_DEBUG = BuildConfig.IS_DEBUG
 
-    const val BUGLY_CODE = "2de12851be"
+    const val BUGLY_CODE = "e0a1ba856b"
 
     const val READER_URL = "https://github.com/hjcasd/Reader"
 }

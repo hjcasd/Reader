@@ -12,8 +12,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainActivityBinding
-import com.hjc.learn.main.ui.fragment.DrawerFragment
-import com.hjc.learn.main.ui.fragment.MainFragment
 import com.hjc.learn.main.viewmodel.MainViewModel
 import com.hjc.library_base.activity.BaseFragmentActivity
 import com.hjc.library_base.utils.ActivityHelper
@@ -24,7 +22,6 @@ import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.RouteManager
 import com.hjc.library_common.router.path.RouteLoginPath
 import com.hjc.library_common.router.path.RouteMainPath
-import com.hjc.library_common.router.path.RouteWanPath
 import com.hjc.library_net.utils.AccountHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -64,11 +61,11 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
             override fun onDrawerSlide(view: View, v: Float) {}
 
             override fun onDrawerOpened(view: View) {
-                EventManager.sendEvent(MessageEvent(EventCode.DRAWER_OPENED, null))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_DRAWER_OPENED, null))
             }
 
             override fun onDrawerClosed(view: View) {
-                EventManager.sendEvent(MessageEvent(EventCode.DRAWER_CLOSED, null))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_DRAWER_CLOSED, null))
                 when (flag) {
                     1 -> {
                         flag = 0
@@ -153,15 +150,15 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveEvent(messageEvent: MessageEvent<Int>) {
-        if (messageEvent.getCode() === EventCode.CLOSE_DRAWER) {
-            mBindingView.drawerLayout.closeDrawer(GravityCompat.START)
-            messageEvent.getData()?.let {
-                flag = it
+    fun receiveEvent(event: MessageEvent<Int?>) {
+        when(event.code){
+            EventCode.CODE_CLOSE_DRAWER -> {
+                mBindingView.drawerLayout.closeDrawer(GravityCompat.START)
+                event.data?.let {
+                    flag = it
+                }
             }
-
-        } else if (messageEvent.getCode() === EventCode.OPEN_DRAWER) {
-            mBindingView.drawerLayout.openDrawer(GravityCompat.START)
+            EventCode.CODE_OPEN_DRAWER -> mBindingView.drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 

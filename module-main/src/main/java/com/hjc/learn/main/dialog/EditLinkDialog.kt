@@ -62,7 +62,7 @@ class EditLinkDialog : BaseFragmentDialog<MainFragmentEditLinkBinding, EditLinkV
         mViewModel?.run {
             editLinkLiveData.observe(this@EditLinkDialog) { data ->
                 KeyboardUtils.hideSoftInput(mBindingView.etName)
-                EventManager.sendEvent(MessageEvent(EventCode.EDIT_LINK_CODE, data))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_EDIT_LINK, data))
                 dismiss()
             }
         }

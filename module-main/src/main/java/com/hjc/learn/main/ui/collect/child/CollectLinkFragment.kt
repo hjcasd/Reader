@@ -118,9 +118,9 @@ class CollectLinkFragment : BaseLazyFragment<MainFragmentCollectLinkBinding, Col
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveEvent(messageEvent: MessageEvent<WanCollectLinkBean>) {
-        if (messageEvent.getCode() === EventCode.EDIT_LINK_CODE) {
-            val srcBean= messageEvent.getData()
+    fun receiveEvent(event: MessageEvent<WanCollectLinkBean?>) {
+        if (event.code === EventCode.CODE_EDIT_LINK) {
+            val srcBean= event.data
             val dataList = mAdapter.data
             val desBean = dataList[mCurrentPosition]
 

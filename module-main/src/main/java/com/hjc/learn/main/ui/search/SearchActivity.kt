@@ -143,7 +143,7 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
         }
         KeyboardUtils.hideSoftInput(this)
         mViewModel?.saveHistoryData(keyword)
-        EventManager.sendStickyEvent(MessageEvent(EventCode.SEARCH_RESULT_CODE, keyword))
+        EventManager.sendStickyEvent(MessageEvent(EventCode.CODE_SEARCH_RESULT, keyword))
         showFragment(mSearchResultFragment)
     }
 
@@ -151,10 +151,10 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
      * 点击历史搜索标签或者热门搜索标签回调
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveEvent(messageEvent: MessageEvent<String?>) {
-        when (messageEvent.getCode()) {
-            EventCode.CLICK_TAG_CODE -> {
-                val keyword = messageEvent.getData()
+    fun receiveEvent(event: MessageEvent<String?>) {
+        when (event.code) {
+            EventCode.CODE_CLICK_TAG -> {
+                val keyword = event.data
                 keyword?.let {
                     mBindingView.etSearch.setText(it)
                     mBindingView.etSearch.requestFocus()
@@ -163,7 +163,7 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
                 }
             }
 
-            EventCode.HIDE_KEYBOARD -> KeyboardUtils.hideSoftInput(this)
+            EventCode.CODE_HIDE_KEYBOARD -> KeyboardUtils.hideSoftInput(this)
 
             else -> {
             }

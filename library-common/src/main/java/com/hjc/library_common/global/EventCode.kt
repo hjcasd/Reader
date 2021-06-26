@@ -7,24 +7,24 @@ package com.hjc.library_common.global
  */
 object EventCode {
 
-    const val LOGIN_CODE = "login"
+    const val CODE_LOGIN = "login"
 
-    const val LOGIN_OUT_CODE = "login_out"
+    const val CODE_LOGIN_OUT = "login_out"
 
-    const val OPEN_DRAWER = "open_drawer"
+    const val CODE_OPEN_DRAWER = "open_drawer"
 
-    const val DRAWER_OPENED = "drawer_opened"
+    const val CODE_DRAWER_OPENED = "drawer_opened"
 
-    const val CLOSE_DRAWER = "close_drawer"
+    const val CODE_CLOSE_DRAWER = "close_drawer"
 
-    const val DRAWER_CLOSED = "drawer_closed"
+    const val CODE_DRAWER_CLOSED = "drawer_closed"
 
-    const val EDIT_LINK_CODE = "edit_link"
+    const val CODE_EDIT_LINK = "edit_link"
 
-    const val CLICK_TAG_CODE = "click_tag"
+    const val CODE_CLICK_TAG = "click_tag"
 
-    const val HIDE_KEYBOARD = "hide_keyboard"
+    const val CODE_HIDE_KEYBOARD = "hide_keyboard"
 
-    const val SEARCH_RESULT_CODE = "search_result"
+    const val CODE_SEARCH_RESULT = "search_result"
 
 }

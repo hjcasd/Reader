@@ -19,7 +19,7 @@ class MainViewModel(application: Application) : KotlinViewModel(application) {
             RetrofitClient.getApiService1().logout()
         }, {
             ToastUtils.showShort("退出账号成功")
-            EventManager.sendEvent(MessageEvent(EventCode.LOGIN_OUT_CODE, null))
+            EventManager.sendEvent(MessageEvent(EventCode.CODE_LOGIN_OUT, null))
             AccountHelper.clear()
         }, isShowLoading = true)
     }

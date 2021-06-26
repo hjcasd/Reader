@@ -52,27 +52,27 @@ class DrawerFragment : BaseFragment<MainFragmentDrawerBinding, DrawerViewModel>(
         when (v?.id) {
             //登录注册
             R.id.fl_account -> {
-                EventManager.sendEvent(MessageEvent(EventCode.CLOSE_DRAWER, 1))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLOSE_DRAWER, 1))
             }
 
             //项目主页
             R.id.ll_home_page -> {
-                EventManager.sendEvent(MessageEvent(EventCode.CLOSE_DRAWER, 2))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLOSE_DRAWER, 2))
             }
 
             //扫描下载
             R.id.ll_scan -> {
-                EventManager.sendEvent(MessageEvent(EventCode.CLOSE_DRAWER, 3))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLOSE_DRAWER, 3))
             }
 
             //我的收藏
             R.id.ll_collect -> {
-                EventManager.sendEvent(MessageEvent(EventCode.CLOSE_DRAWER, 4))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLOSE_DRAWER, 4))
             }
 
             //退出应用
             R.id.ll_exit -> {
-                EventManager.sendEvent(MessageEvent(EventCode.CLOSE_DRAWER, 5))
+                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLOSE_DRAWER, 5))
             }
         }
     }
@@ -86,13 +86,13 @@ class DrawerFragment : BaseFragment<MainFragmentDrawerBinding, DrawerViewModel>(
      * 登录后的逻辑处理
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveEvent(messageEvent: MessageEvent<*>) {
-        if (messageEvent.getCode() === EventCode.LOGIN_CODE) {
-            val username = AccountHelper.username
-            mBindingView.tvUsername.text = username
-
-        }else if(messageEvent.getCode() === EventCode.LOGIN_OUT_CODE){
-            mBindingView.tvUsername.text = "登录/注册"
+    fun receiveEvent(event: MessageEvent<*>) {
+        when (event.code) {
+            EventCode.CODE_LOGIN -> {
+                val username = AccountHelper.username
+                mBindingView.tvUsername.text = username
+            }
+            EventCode.CODE_LOGIN_OUT -> mBindingView.tvUsername.text = "登录/注册"
         }
     }
 }

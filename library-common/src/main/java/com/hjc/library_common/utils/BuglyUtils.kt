@@ -16,7 +16,12 @@ import java.io.IOException
  */
 object BuglyUtils {
 
-    fun init(context: Context) {
+    /**
+     * @param context 上下文
+     * @param code Bugly App ID
+     * @param isDebug 是否debug
+     */
+    fun init(context: Context, code: String, isDebug: Boolean) {
         if (context is Application) {
             // 获取当前包名
             val packageName = context.getPackageName()
@@ -25,7 +30,7 @@ object BuglyUtils {
             // 设置是否为上报进程
             val strategy = CrashReport.UserStrategy(context)
             strategy.isUploadProcess = processName == null || processName == packageName
-            CrashReport.initCrashReport(context, AppConstants.BUGLY_CODE, AppConstants.APP_IS_DEBUG, strategy)
+            CrashReport.initCrashReport(context, code, isDebug, strategy)
         } else {
             throw UnsupportedOperationException("context must be application...")
         }
