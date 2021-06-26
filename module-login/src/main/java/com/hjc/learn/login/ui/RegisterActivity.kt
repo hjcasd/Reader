@@ -11,7 +11,7 @@ import com.hjc.learn.login.databinding.LoginActivityRegisterBinding
 import com.hjc.learn.login.viewmodel.RegisterViewModel
 import com.hjc.library_base.activity.BaseActivity
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteLoginPath
 import com.hjc.library_widget.bar.OnViewLeftClickListener
 
 /**
@@ -19,7 +19,7 @@ import com.hjc.library_widget.bar.OnViewLeftClickListener
  * @Date: 2020/5/14 15:27
  * @Description: 注册页面
  */
-@Route(path = RoutePath.Login.REGISTER)
+@Route(path = RouteLoginPath.URL_REGISTER)
 class RegisterActivity : BaseActivity<LoginActivityRegisterBinding, RegisterViewModel>() {
 
     override fun getLayoutId(): Int {
@@ -64,7 +64,7 @@ class RegisterActivity : BaseActivity<LoginActivityRegisterBinding, RegisterView
     override fun onSingleClick(v: View?) {
         when (v?.id) {
             R.id.btn_register -> mViewModel?.register()
-            R.id.tv_register -> RouteManager.jump(RoutePath.Login.LOGIN)
+            R.id.tv_register -> RouteManager.jump(RouteLoginPath.URL_LOGIN)
         }
     }
 

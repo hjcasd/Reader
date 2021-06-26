@@ -14,7 +14,7 @@ import com.hjc.learn.wan.viewmodel.TagViewModel
 import com.hjc.library_base.activity.BaseActivity
 import com.hjc.library_common.global.GlobalKey
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteWanPath
 import com.hjc.library_widget.bar.OnViewLeftClickListener
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
@@ -24,7 +24,7 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
  * @Date: 2020/8/27 17:13
  * @Description: 知识体系tag下文章列表页面
  */
-@Route(path = RoutePath.Wan.WAN_TAG)
+@Route(path = RouteWanPath.URL_ACTIVITY_TAG)
 class TagActivity : BaseActivity<WanActivityTagBinding, TagViewModel>() {
 
     private lateinit var mAdapter: TagAdapter

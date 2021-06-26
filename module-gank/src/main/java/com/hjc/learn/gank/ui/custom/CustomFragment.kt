@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hjc.learn.gank.R
@@ -15,6 +16,7 @@ import com.hjc.learn.gank.databinding.GankFragmentCustomBinding
 import com.hjc.learn.gank.viewmodel.GankViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
 import com.hjc.library_common.router.RouteManager
+import com.hjc.library_common.router.path.RouteGankPath
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import java.util.*
@@ -24,6 +26,7 @@ import java.util.*
  * @Date: 2019/1/21 11:29
  * @Description: 干货定制页面
  */
+@Route(path = RouteGankPath.URL_FRAGMENT_CUSTOM)
 class CustomFragment : BaseLazyFragment<GankFragmentCustomBinding, GankViewModel>() {
 
     private lateinit var tvTypeName: TextView
@@ -33,12 +36,6 @@ class CustomFragment : BaseLazyFragment<GankFragmentCustomBinding, GankViewModel
 
     private var page = 1
     private var type = "All"
-
-    companion object {
-        fun newInstance(): CustomFragment {
-            return CustomFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.gank_fragment_custom

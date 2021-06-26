@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hjc.learn.main.R
 import com.hjc.learn.main.adapter.LinkAdapter
@@ -16,6 +17,7 @@ import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.RouteManager
+import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_net.model.WanCollectLinkBean
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -25,17 +27,12 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2019/3/11 11:00
  * @Description: 我的收藏下的网址页面
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_COLLECT_LINK)
 class CollectLinkFragment : BaseLazyFragment<MainFragmentCollectLinkBinding, CollectLinkViewModel>() {
 
     private lateinit var mAdapter: LinkAdapter
 
     private var mCurrentPosition = 0
-
-    companion object {
-        fun newInstance(): CollectLinkFragment {
-            return CollectLinkFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment_collect_link
@@ -121,7 +118,7 @@ class CollectLinkFragment : BaseLazyFragment<MainFragmentCollectLinkBinding, Col
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun handlerEvent(messageEvent: MessageEvent<WanCollectLinkBean>) {
+    fun receiveEvent(messageEvent: MessageEvent<WanCollectLinkBean>) {
         if (messageEvent.getCode() === EventCode.EDIT_LINK_CODE) {
             val srcBean= messageEvent.getData()
             val dataList = mAdapter.data

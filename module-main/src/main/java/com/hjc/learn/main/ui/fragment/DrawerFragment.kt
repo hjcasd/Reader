@@ -2,8 +2,8 @@ package com.hjc.learn.main.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.gyf.immersionbar.ImmersionBar
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainFragmentDrawerBinding
@@ -12,6 +12,7 @@ import com.hjc.library_base.fragment.BaseFragment
 import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
+import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_net.utils.AccountHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -21,14 +22,8 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2021/2/2 20:39
  * @Description: 测试fragment
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_DRAWER)
 class DrawerFragment : BaseFragment<MainFragmentDrawerBinding, DrawerViewModel>() {
-
-    companion object {
-
-        fun newInstance(): Fragment {
-            return DrawerFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment_drawer
@@ -91,7 +86,7 @@ class DrawerFragment : BaseFragment<MainFragmentDrawerBinding, DrawerViewModel>(
      * 登录后的逻辑处理
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun handlerEvent(messageEvent: MessageEvent<*>) {
+    fun receiveEvent(messageEvent: MessageEvent<*>) {
         if (messageEvent.getCode() === EventCode.LOGIN_CODE) {
             val username = AccountHelper.username
             mBindingView.tvUsername.text = username

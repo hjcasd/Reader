@@ -7,9 +7,9 @@ import com.gyf.immersionbar.ImmersionBar
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainActivitySplashBinding
 import com.hjc.library_base.activity.BaseActivity
-import com.hjc.library_base.viewmodel.CommonViewModel
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteMainPath
+import com.hjc.library_common.viewmodel.CommonViewModel
 import com.hjc.library_net.utils.RxSchedulers
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
  * @Date: 2021/1/8 9:44
  * @Description: 启动页
  */
-@Route(path = RoutePath.Main.SPLASH)
+@Route(path = RouteMainPath.URL_ACTIVITY_SPLASH)
 class SplashActivity : BaseActivity<MainActivitySplashBinding, CommonViewModel>() {
 
     private var disposable1: Disposable? = null
@@ -71,7 +71,7 @@ class SplashActivity : BaseActivity<MainActivitySplashBinding, CommonViewModel>(
      * 跳转到首页
      */
     private fun toMain() {
-        RouteManager.jump(RoutePath.Main.MAIN)
+        RouteManager.jump(RouteMainPath.URL_ACTIVITY_MAIN)
         finish()
     }
 

@@ -3,6 +3,7 @@ package com.hjc.learn.gank.ui.recommend
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hitomi.tilibrary.transfer.TransferConfig
 import com.hitomi.tilibrary.transfer.Transferee
@@ -12,6 +13,7 @@ import com.hjc.learn.gank.databinding.GankFragmentRecommendBinding
 import com.hjc.learn.gank.viewmodel.RecommendViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
 import com.hjc.library_common.router.RouteManager
+import com.hjc.library_common.router.path.RouteGankPath
 import com.hjc.library_net.model.GankDayBean
 import com.vansz.glideimageloader.GlideImageLoader
 import java.util.*
@@ -21,17 +23,12 @@ import java.util.*
  * @Date: 2019/1/21 11:29
  * @Description: 每日推荐页面
  */
+@Route(path = RouteGankPath.URL_FRAGMENT_RECOMMEND)
 class RecommendFragment : BaseLazyFragment<GankFragmentRecommendBinding, RecommendViewModel>() {
 
     private lateinit var mAdapter: RecommendAdapter
 
     private lateinit var transferee: Transferee
-
-    companion object {
-        fun newInstance(): RecommendFragment {
-            return RecommendFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.gank_fragment_recommend
@@ -54,12 +51,6 @@ class RecommendFragment : BaseLazyFragment<GankFragmentRecommendBinding, Recomme
 
         mAdapter.setAnimationWithDefault(AnimationType.SlideInLeft)
     }
-
-//    override fun getImmersionBar(): ImmersionBar {
-//        return ImmersionBar.with(this)
-//            .statusBarColor(R.color.base_color)
-//            .fitsSystemWindows(true)
-//    }
 
     override fun initData() {
         transferee = Transferee.getDefault(mContext)

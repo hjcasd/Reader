@@ -6,8 +6,10 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.*
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainActivitySearchBinding
@@ -18,8 +20,8 @@ import com.hjc.library_base.activity.BaseFragmentActivity
 import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
-import com.hjc.library_common.router.RoutePath
-import com.hjc.library_widget.SearchEditText
+import com.hjc.library_common.router.path.RouteMainPath
+import com.hjc.library_widget.text.SearchEditText
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -29,11 +31,11 @@ import java.util.*
  * @Date: 2019/8/21 14:13
  * @Description: 搜索页面
  */
-@Route(path = RoutePath.Main.SEARCH)
+@Route(path = RouteMainPath.URL_ACTIVITY_SEARCH)
 class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchViewModel>() {
 
-    private lateinit var mSearchHistoryFragment: SearchHistoryFragment
-    private lateinit var mSearchResultFragment: SearchResultFragment
+    private lateinit var mSearchHistoryFragment: Fragment
+    private lateinit var mSearchResultFragment: Fragment
 
     override fun getLayoutId(): Int {
         return R.layout.main_activity_search
@@ -46,8 +48,8 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
-        mSearchHistoryFragment = SearchHistoryFragment.newInstance()
-        mSearchResultFragment = SearchResultFragment.newInstance()
+        mSearchHistoryFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_SEARCH_HISTORY).navigation() as Fragment
+        mSearchResultFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_SEARCH_RESULT).navigation() as Fragment
 
         mBindingView.etSearch.requestFocus()
 
@@ -112,7 +114,7 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
 
     private fun showTestDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("确认清除全部历史记录吗？")
+        builder.setMessage("哈哈哈哈哈哈")
         builder.setCancelable(false)
         builder.setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
             dialog.dismiss()
@@ -151,7 +153,7 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
      * 点击历史搜索标签或者热门搜索标签回调
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun handlerEvent(messageEvent: MessageEvent<String?>) {
+    fun receiveEvent(messageEvent: MessageEvent<String?>) {
         when (messageEvent.getCode()) {
             EventCode.CLICK_TAG_CODE -> {
                 val keyword = messageEvent.getData()

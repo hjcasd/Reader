@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     testImplementation lib.junit
     androidTestImplementation lib.test_junit
     androidTestImplementation lib.espresso_core
@@ -53,10 +55,11 @@ dependencies {
     implementation lib.utilcodex
 
     // Retrofit
-    api lib.retrofit
-    api lib.converter_gson
+    implementation lib.retrofit
+    implementation lib.retrofit_converter_gson
+    implementation lib.retrofit_adapter_rxjava
 
     // RxJava
-    api lib.rxjava
-    api lib.rxandroid
+    implementation lib.rxjava
+    implementation lib.rxandroid
 }

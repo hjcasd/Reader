@@ -1,18 +1,19 @@
-package com.hjc.learn.gank.ui.fragment
+package com.hjc.learn.gank.ui
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.hjc.learn.gank.R
 import com.hjc.learn.gank.databinding.GankFragmentBinding
 import com.hjc.learn.gank.ui.custom.CustomFragment
 import com.hjc.learn.gank.ui.recommend.RecommendFragment
 import com.hjc.learn.gank.ui.welfare.WelfareFragment
 import com.hjc.library_base.fragment.BaseFragment
-import com.hjc.library_base.viewmodel.CommonViewModel
 import com.hjc.library_common.adapter.MyViewPagerAdapter
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteGankPath
+import com.hjc.library_common.viewmodel.CommonViewModel
 import java.util.*
 
 /**
@@ -20,7 +21,7 @@ import java.util.*
  * @Date: 2019/1/21 16:10
  * @Description: 干货模块fragment
  */
-@Route(path = RoutePath.Gank.GANK_FRAGMENT)
+@Route(path = RouteGankPath.URL_FRAGMENT_GANK)
 class GankFragment : BaseFragment<GankFragmentBinding, CommonViewModel>() {
 
     private val titles = arrayOf("每日推荐", "福利社区", "干货定制")
@@ -36,9 +37,9 @@ class GankFragment : BaseFragment<GankFragmentBinding, CommonViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         val fragments = ArrayList<Fragment>()
 
-        val recommendFragment: RecommendFragment = RecommendFragment.newInstance()
-        val welfareFragment: WelfareFragment = WelfareFragment.newInstance()
-        val customFragment: CustomFragment = CustomFragment.newInstance()
+        val recommendFragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_RECOMMEND).navigation() as Fragment
+        val welfareFragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_WELFARE).navigation() as Fragment
+        val customFragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_CUSTOM).navigation() as Fragment
 
         fragments.add(recommendFragment)
         fragments.add(welfareFragment)

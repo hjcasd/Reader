@@ -3,6 +3,7 @@ package com.hjc.learn.main.ui.collect.child
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hjc.learn.main.R
 import com.hjc.learn.main.adapter.ArticleAdapter
@@ -10,6 +11,7 @@ import com.hjc.learn.main.databinding.MainFragmentCollectArticleBinding
 import com.hjc.learn.main.viewmodel.collect.CollectArticleViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
 import com.hjc.library_common.router.RouteManager
+import com.hjc.library_common.router.path.RouteMainPath
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 
@@ -18,17 +20,12 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
  * @Date: 2019/3/11 11:00
  * @Description: 我的收藏下的文章页面
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_COLLECT_ARTICLE)
 class CollectArticleFragment : BaseLazyFragment<MainFragmentCollectArticleBinding, CollectArticleViewModel>() {
 
     private lateinit var mAdapter: ArticleAdapter
 
     private var mPage = 0
-
-    companion object {
-        fun newInstance(): CollectArticleFragment {
-            return CollectArticleFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment_collect_article

@@ -17,8 +17,7 @@ import com.hjc.library_base.viewmodel.BaseViewModel
  * @Date: 2020/5/15 11:09
  * @Description: (含有Fragment)Activity 基类
  */
-abstract class BaseFragmentActivity<VDB : ViewDataBinding, VM : BaseViewModel> :
-    AppCompatActivity(), View.OnClickListener {
+abstract class BaseFragmentActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity(), View.OnClickListener {
 
     // ViewDataBinding
     protected lateinit var mBindingView: VDB
@@ -47,9 +46,7 @@ abstract class BaseFragmentActivity<VDB : ViewDataBinding, VM : BaseViewModel> :
     abstract fun getLayoutId(): Int
 
     private fun initViewModel() {
-        if (mViewModel == null) {
-            mViewModel = createViewModel()
-        }
+        mViewModel = createViewModel()
     }
 
     /**
@@ -68,29 +65,29 @@ abstract class BaseFragmentActivity<VDB : ViewDataBinding, VM : BaseViewModel> :
     /**
      * 初始化沉浸式
      */
-    protected open fun getImmersionBar(): ImmersionBar? {
+    open fun getImmersionBar(): ImmersionBar? {
         return null
     }
 
     /**
      * 初始化数据
      */
-    protected abstract fun initData(savedInstanceState: Bundle?)
+    abstract fun initData(savedInstanceState: Bundle?)
 
     /**
      * 监听LiveData
      */
-    protected fun observeLiveData() {}
+    open fun observeLiveData() {}
 
     /**
      * 设置监听器
      */
-    protected abstract fun addListeners()
+    abstract fun addListeners()
 
     /**
      * 设置点击事件
      */
-    protected abstract fun onSingleClick(v: View?)
+    abstract fun onSingleClick(v: View?)
 
     /**
      * 布局中Fragment的容器ID
@@ -109,7 +106,7 @@ abstract class BaseFragmentActivity<VDB : ViewDataBinding, VM : BaseViewModel> :
     /**
      * 显示fragment
      */
-    protected fun showFragment(fragment: Fragment) {
+    fun showFragment(fragment: Fragment) {
         if (mCurrentFragment !== fragment) {
             val fm = supportFragmentManager
             val ft = fm.beginTransaction()

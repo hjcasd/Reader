@@ -16,9 +16,9 @@ import com.blankj.utilcode.util.ToastUtils
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainActivityScanCodeBinding
 import com.hjc.library_base.activity.BaseActivity
-import com.hjc.library_base.viewmodel.CommonViewModel
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_common.utils.CommonUtils
+import com.hjc.library_common.viewmodel.CommonViewModel
 import com.hjc.library_net.utils.RxSchedulers
 import com.hjc.library_widget.bar.OnViewLeftClickListener
 import io.reactivex.Observable
@@ -29,7 +29,7 @@ import io.reactivex.observers.DefaultObserver
  * @Date: 2019/8/19 17:44
  * @Description: 扫码下载页面
  */
-@Route(path = RoutePath.Main.SCAN)
+@Route(path = RouteMainPath.URL_ACTIVITY_SCAN)
 class ScanCodeActivity : BaseActivity<MainActivityScanCodeBinding, CommonViewModel>() {
 
     override fun getLayoutId(): Int {

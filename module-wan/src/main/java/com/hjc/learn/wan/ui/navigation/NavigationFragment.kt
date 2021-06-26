@@ -4,6 +4,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hjc.learn.wan.R
 import com.hjc.learn.wan.adapter.NavigationAdapter
@@ -11,12 +12,14 @@ import com.hjc.learn.wan.adapter.NavigationContentAdapter
 import com.hjc.learn.wan.databinding.WanFragmentNavigationBinding
 import com.hjc.learn.wan.viewmodel.NavigationViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
+import com.hjc.library_common.router.path.RouteWanPath
 
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:29
  * @Description: 导航数据页面
  */
+@Route(path = RouteWanPath.URL_FRAGMENT_NAVIGATION)
 class NavigationFragment : BaseLazyFragment<WanFragmentNavigationBinding, NavigationViewModel>() {
 
     private lateinit var mNavigationAdapter: NavigationAdapter
@@ -25,12 +28,6 @@ class NavigationFragment : BaseLazyFragment<WanFragmentNavigationBinding, Naviga
     private lateinit var contentManager: LinearLayoutManager
 
     private var oldPosition = 0
-
-    companion object {
-        fun newInstance(): NavigationFragment {
-            return NavigationFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.wan_fragment_navigation

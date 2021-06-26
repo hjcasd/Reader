@@ -46,7 +46,7 @@ class NavigationContentAdapter(data: MutableList<WanNavigationBean>?) :
             val view = View.inflate(context, R.layout.wan_view_navigation_tag, null)
             val tvTag = view.findViewById<TextView>(R.id.tv_tag)
             tvTag.text = bean.title
-            flLabels.addView(tvTag)
+            flLabels.addView(view)
             tvTag.setOnClickListener { jumpToWeb(bean.title, bean.link) }
         }
     }

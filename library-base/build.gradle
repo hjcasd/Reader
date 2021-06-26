@@ -50,10 +50,13 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     testImplementation lib.junit
     androidTestImplementation lib.test_junit
     androidTestImplementation lib.espresso_core
 
+    // Android
     api lib.appcompat
     api lib.constraintlayout
     api lib.recyclerview
@@ -65,6 +68,15 @@ dependencies {
     api lib.kotlin_stdlib
     api lib.lifecycle_viewmodel_ktx
     api lib.kotlinx_coroutines_android
+
+    // Retrofit
+    api lib.retrofit
+    api lib.retrofit_converter_gson
+    api lib.retrofit_adapter_rxjava
+
+    // RxJava
+    api lib.rxjava
+    api lib.rxandroid
 
     // JetPack
     api lib.lifecycle_runtime

@@ -3,6 +3,7 @@ package com.hjc.learn.wan.ui.play
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hjc.learn.wan.R
 import com.hjc.learn.wan.adapter.MyBannerAdapter
@@ -11,7 +12,8 @@ import com.hjc.learn.wan.databinding.WanFragmentPlayBinding
 import com.hjc.learn.wan.viewmodel.PlayViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteLoginPath
+import com.hjc.library_common.router.path.RouteWanPath
 import com.hjc.library_net.model.WanArticleBean
 import com.hjc.library_net.model.WanBannerBean
 import com.hjc.library_net.utils.AccountHelper
@@ -25,6 +27,7 @@ import com.youth.banner.transformer.ZoomOutPageTransformer
  * @Date: 2019/1/21 11:29
  * @Description: 玩安卓页面
  */
+@Route(path = RouteWanPath.URL_FRAGMENT_PLAY)
 class PlayFragment : BaseLazyFragment<WanFragmentPlayBinding, PlayViewModel>() {
 
     private lateinit var banner: Banner<*, *>
@@ -33,12 +36,6 @@ class PlayFragment : BaseLazyFragment<WanFragmentPlayBinding, PlayViewModel>() {
 
     //页码
     private var mPage = 0
-
-    companion object {
-        fun newInstance(): PlayFragment {
-            return PlayFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.wan_fragment_play
@@ -142,7 +139,7 @@ class PlayFragment : BaseLazyFragment<WanFragmentPlayBinding, PlayViewModel>() {
                     } else {
                         bean.collect = false
                         mAdapter.notifyItemChanged(position + 1)
-                        RouteManager.jump(RoutePath.Login.LOGIN)
+                        RouteManager.jump(RouteLoginPath.URL_LOGIN)
                     }
                 }
             }

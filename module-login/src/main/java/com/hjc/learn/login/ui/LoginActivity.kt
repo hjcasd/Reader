@@ -16,7 +16,7 @@ import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.global.GlobalKey
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteLoginPath
 import com.hjc.library_widget.bar.OnViewLeftClickListener
 
 /**
@@ -24,7 +24,7 @@ import com.hjc.library_widget.bar.OnViewLeftClickListener
  * @Date: 2020/5/14 15:27
  * @Description: 登录页面
  */
-@Route(path = RoutePath.Login.LOGIN)
+@Route(path = RouteLoginPath.URL_LOGIN)
 class LoginActivity : BaseActivity<LoginActivityBinding, LoginViewModel>() {
 
     @JvmField
@@ -74,7 +74,7 @@ class LoginActivity : BaseActivity<LoginActivityBinding, LoginViewModel>() {
     override fun onSingleClick(v: View?) {
         when (v?.id) {
             R.id.btn_login -> mViewModel?.login()
-            R.id.tv_register -> RouteManager.jumpWithCode(this, RoutePath.Login.REGISTER, null, 100)
+            R.id.tv_register -> RouteManager.jumpWithCode(this, RouteLoginPath.URL_REGISTER, null, 100)
         }
     }
 

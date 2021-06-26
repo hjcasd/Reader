@@ -3,27 +3,24 @@ package com.hjc.learn.wan.ui.tree
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hjc.learn.wan.R
 import com.hjc.learn.wan.adapter.TreeAdapter
 import com.hjc.learn.wan.databinding.WanFragmentTreeBinding
 import com.hjc.learn.wan.viewmodel.TreeViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
+import com.hjc.library_common.router.path.RouteWanPath
 
 /**
  * @Author: HJC
  * @Date: 2019/1/21 11:30
  * @Description: 知识体系页面
  */
+@Route(path = RouteWanPath.URL_FRAGMENT_TREE)
 class TreeFragment : BaseLazyFragment<WanFragmentTreeBinding, TreeViewModel>() {
 
     private lateinit var mAdapter: TreeAdapter
-
-    companion object {
-        fun newInstance(): TreeFragment {
-            return TreeFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.wan_fragment_tree

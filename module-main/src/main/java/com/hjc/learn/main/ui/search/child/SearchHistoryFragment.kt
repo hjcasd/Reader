@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainFragmentSearchHistoryBinding
 import com.hjc.learn.main.model.History
@@ -15,21 +16,16 @@ import com.hjc.library_base.fragment.BaseFragment
 import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
+import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_net.model.WanSearchBean
-
 
 /**
  * @Author: HJC
  * @Date: 2020/9/11 10:55
  * @Description: 搜索记录页面
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_SEARCH_HISTORY)
 class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, SearchHistoryViewModel>() {
-
-    companion object {
-        fun newInstance(): SearchHistoryFragment {
-            return SearchHistoryFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment_search_history

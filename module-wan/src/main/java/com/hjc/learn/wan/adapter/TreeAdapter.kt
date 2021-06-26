@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjc.learn.wan.R
 import com.hjc.learn.wan.databinding.WanItemTreeBinding
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteWanPath
 import com.hjc.library_net.model.WanClassifyBean
 import com.hjc.library_net.model.WanSystemBean
 import com.hjc.library_widget.FlowLayout
@@ -48,13 +48,13 @@ class TreeAdapter(data: MutableList<WanSystemBean>?) :
             val view = View.inflate(context, R.layout.wan_view_tree_tag, null)
             val tvTag = view.findViewById<TextView>(R.id.tv_tag)
             tvTag.text = bean.name
-            flLabels.addView(tvTag)
+            flLabels.addView(view)
 
             tvTag.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("name", bean.name)
                 bundle.putInt("id", bean.id)
-                RouteManager.jumpWithBundle(RoutePath.Wan.WAN_TAG, bundle)
+                RouteManager.jumpWithBundle(RouteWanPath.URL_ACTIVITY_TAG, bundle)
             }
         }
     }

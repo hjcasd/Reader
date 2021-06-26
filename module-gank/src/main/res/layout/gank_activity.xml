@@ -10,13 +10,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <fragment
-            android:id="@+id/fg_gank"
-            android:name="com.hjc.learn.gank.ui.fragment.GankFragment"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fl_gank"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </fragment>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

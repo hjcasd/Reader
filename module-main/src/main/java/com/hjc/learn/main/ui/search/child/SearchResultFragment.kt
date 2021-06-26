@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hjc.learn.main.R
 import com.hjc.learn.main.adapter.SearchAdapter
@@ -14,7 +15,8 @@ import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteLoginPath
+import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_net.utils.AccountHelper
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
@@ -26,18 +28,13 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2020/9/11 10:55
  * @Description: 搜索结果页面
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_SEARCH_RESULT)
 class SearchResultFragment : BaseFragment<MainFragmentSearchResultBinding, SearchResultViewModel>() {
 
     private lateinit var mAdapter: SearchAdapter
 
     private var mPage = 0
     private var mKeyword: String? = null
-
-    companion object {
-        fun newInstance(): SearchResultFragment {
-            return SearchResultFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment_search_result
@@ -69,7 +66,7 @@ class SearchResultFragment : BaseFragment<MainFragmentSearchResultBinding, Searc
      * 点击搜索后的逻辑
      */
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    fun handlerEvent(messageEvent: MessageEvent<String?>) {
+    fun receiveEvent(messageEvent: MessageEvent<String?>) {
         if (messageEvent.getCode() === EventCode.SEARCH_RESULT_CODE) {
             mKeyword = messageEvent.getData()
             mPage = 0
@@ -138,7 +135,7 @@ class SearchResultFragment : BaseFragment<MainFragmentSearchResultBinding, Searc
                     } else {
                         bean.collect = false
                         adapter.notifyItemChanged(position)
-                        RouteManager.jump(RoutePath.Login.LOGIN)
+                        RouteManager.jump(RouteLoginPath.URL_LOGIN)
                     }
                 }
             }

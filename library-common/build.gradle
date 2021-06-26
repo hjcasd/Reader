@@ -56,6 +56,8 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     testImplementation lib.junit
     androidTestImplementation lib.test_junit
     androidTestImplementation lib.espresso_core
@@ -69,6 +71,10 @@ dependencies {
     // 消息
     api lib.eventbus
 
+    // Room
+    api lib.room_runtime
+    kapt lib.room_compiler
+
     // Glide
     api lib.glide
     annotationProcessor lib.glide_compiler
@@ -80,18 +86,24 @@ dependencies {
     // 列表
     api lib.BaseRecyclerViewAdapterHelper
 
+    // 图片浏览
+    api lib.Transferee
+    api lib.GlideImageLoader
+
+    // 二维码
+    api lib.bga_qrcode_zxing
+
     // 刷新
     api lib.refresh_layout_kernel
     api lib.refresh_header_classics
     api lib.refresh_footer_classics
 
+    // Banner
+    api lib.banner
+
     // Bugly
     api lib.crashreport
     api lib.nativecrashreport
-
-    // 图片浏览
-    api lib.Transferee
-    api lib.GlideImageLoader
 
     api project(path: ':library-base')
     api project(path: ':library-net')

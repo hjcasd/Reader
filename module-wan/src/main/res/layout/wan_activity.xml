@@ -10,13 +10,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <fragment
-            android:id="@+id/fg_wan"
-            android:name="com.hjc.learn.wan.ui.fragment.WanFragment"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fl_wan"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </fragment>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

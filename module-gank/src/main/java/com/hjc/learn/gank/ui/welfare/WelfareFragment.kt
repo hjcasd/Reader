@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.chad.library.adapter.base.BaseQuickAdapter.AnimationType
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator
@@ -14,6 +15,7 @@ import com.hjc.learn.gank.adapter.WelfareAdapter
 import com.hjc.learn.gank.databinding.GankFragmentWelfareBinding
 import com.hjc.learn.gank.viewmodel.WelfareViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
+import com.hjc.library_common.router.path.RouteGankPath
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.vansz.glideimageloader.GlideImageLoader
@@ -23,20 +25,14 @@ import java.util.*
  * @Author: HJC
  * @Date: 2019/1/21 11:29
  * @Description: 福利社区页面
- *
  */
+@Route(path = RouteGankPath.URL_FRAGMENT_WELFARE)
 class WelfareFragment : BaseLazyFragment<GankFragmentWelfareBinding, WelfareViewModel>() {
 
     private lateinit var mAdapter: WelfareAdapter
     private lateinit var transferee: Transferee
 
     private var mPage = 1
-
-    companion object {
-        fun newInstance(): WelfareFragment {
-            return WelfareFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.gank_fragment_welfare
@@ -59,12 +55,6 @@ class WelfareFragment : BaseLazyFragment<GankFragmentWelfareBinding, WelfareView
 
         mAdapter.setAnimationWithDefault(AnimationType.ScaleIn)
     }
-
-//    override fun getImmersionBar(): ImmersionBar {
-//        return ImmersionBar.with(this)
-//            .statusBarColor(R.color.base_color)
-//            .fitsSystemWindows(true)
-//    }
 
     override fun initData() {
         transferee = Transferee.getDefault(mContext)

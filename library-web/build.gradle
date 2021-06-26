@@ -54,6 +54,8 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     testImplementation lib.junit
     androidTestImplementation lib.test_junit
     androidTestImplementation lib.espresso_core

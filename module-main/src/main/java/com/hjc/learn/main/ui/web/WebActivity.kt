@@ -16,7 +16,8 @@ import com.hjc.learn.main.databinding.MainActivityWebBinding
 import com.hjc.learn.main.viewmodel.web.WebViewModel
 import com.hjc.library_base.activity.BaseActivity
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteLoginPath
+import com.hjc.library_common.router.path.RouteMainPath
 import com.hjc.library_common.utils.CommonUtils
 import com.hjc.library_net.utils.AccountHelper
 
@@ -25,7 +26,7 @@ import com.hjc.library_net.utils.AccountHelper
  * @Date: 2021/1/8 14:22
  * @Description: Web页面
  */
-@Route(path = RoutePath.Main.WEB)
+@Route(path = RouteMainPath.URL_ACTIVITY_WEB)
 class WebActivity : BaseActivity<MainActivityWebBinding, WebViewModel>() {
 
     @JvmField
@@ -72,7 +73,7 @@ class WebActivity : BaseActivity<MainActivityWebBinding, WebViewModel>() {
     }
 
     override fun onSingleClick(v: View?) {
-        when(v?.id){
+        when (v?.id) {
             R.id.tv_close -> finish()
         }
     }
@@ -106,7 +107,7 @@ class WebActivity : BaseActivity<MainActivityWebBinding, WebViewModel>() {
                 if (AccountHelper.isLogin) {
                     mViewModel?.collectLink(mTitle, mUrl)
                 } else {
-                    RouteManager.jump(RoutePath.Login.LOGIN)
+                    RouteManager.jump(RouteLoginPath.URL_LOGIN)
                 }
             }
 

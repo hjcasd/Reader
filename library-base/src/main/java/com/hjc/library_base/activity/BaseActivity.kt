@@ -9,25 +9,20 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ToastUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.hjc.library_base.base.BaseActionEvent
-import com.hjc.library_base.base.IBaseView
 import com.hjc.library_base.base.IViewModelAction
-import com.hjc.library_base.dialog.LoadingDialog
-import com.hjc.library_base.loadsir.EmptyCallback
-import com.hjc.library_base.loadsir.ErrorCallback
-import com.hjc.library_base.loadsir.ProgressCallback
-import com.hjc.library_base.loadsir.TimeoutCallback
 import com.hjc.library_base.utils.ClickUtils
+import com.hjc.library_base.view.ILoadingView
+import com.hjc.library_base.view.IStatusView
+import com.hjc.library_base.view.impl.BaseLoadingViewImpl
+import com.hjc.library_base.view.impl.BaseStatusViewImpl
 import com.hjc.library_base.viewmodel.BaseViewModel
-import com.kingja.loadsir.core.LoadService
-import com.kingja.loadsir.core.LoadSir
 
 /**
  * @Author: HJC
  * @Date: 2020/5/15 11:09
  * @Description: Activity 基类
  */
-abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity(),
-    IBaseView, View.OnClickListener {
+abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity(), View.OnClickListener {
 
     // ViewDataBinding
     protected lateinit var mBindingView: VDB
@@ -35,9 +30,11 @@ abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppComp
     // ViewModel
     protected var mViewModel: VM? = null
 
-    private var mLoadService: LoadService<*>? = null
-    private var mLoadingDialog: LoadingDialog? = null
+    // IStateView
+    private var mStatusView: IStatusView? = null
 
+    // ILoadingView
+    private var mLoadingView: ILoadingView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,28 +54,26 @@ abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppComp
     abstract fun getLayoutId(): Int
 
     private fun initViewModel() {
-        if (mViewModel == null) {
-            mViewModel = createViewModel()
-        }
+        mViewModel = createViewModel()
 
         mViewModel?.let {
             val viewModelAction: IViewModelAction = it
             viewModelAction.getActionLiveData().observe(this, { baseActionEvent: BaseActionEvent? ->
                 baseActionEvent?.let { event ->
                     when (event.action) {
-                        BaseActionEvent.SHOW_LOADING_DIALOG -> showLoading()
+                        BaseActionEvent.SHOW_LOADING_DIALOG -> mLoadingView?.showLoading()
 
-                        BaseActionEvent.DISMISS_LOADING_DIALOG -> dismissLoading()
+                        BaseActionEvent.DISMISS_LOADING_DIALOG -> mLoadingView?.dismissLoading()
 
-                        BaseActionEvent.SHOW_PROGRESS -> showProgress()
+                        BaseActionEvent.SHOW_PROGRESS -> mStatusView?.showProgress()
 
-                        BaseActionEvent.SHOW_CONTENT -> showContent()
+                        BaseActionEvent.SHOW_CONTENT -> mStatusView?.showContent()
 
-                        BaseActionEvent.SHOW_EMPTY -> showEmpty()
+                        BaseActionEvent.SHOW_EMPTY -> mStatusView?.showEmpty()
 
-                        BaseActionEvent.SHOW_ERROR -> showError()
+                        BaseActionEvent.SHOW_ERROR -> mStatusView?.showError()
 
-                        BaseActionEvent.SHOW_TIMEOUT -> showTimeout()
+                        BaseActionEvent.SHOW_TIMEOUT -> mStatusView?.showTimeout()
 
                         else -> {
                         }
@@ -98,6 +93,8 @@ abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppComp
      */
     open fun initView() {
         getImmersionBar()?.init()
+        mLoadingView = createLoadingView()
+        mStatusView = createStatusView()
         ARouter.getInstance().inject(this)
     }
 
@@ -106,6 +103,20 @@ abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppComp
      */
     open fun getImmersionBar(): ImmersionBar? {
         return null
+    }
+
+    /**
+     * 初始化Loading
+     */
+    open fun createLoadingView(): ILoadingView? {
+        return BaseLoadingViewImpl(this)
+    }
+
+    /**
+     * 初始化StatusView
+     */
+    open fun createStatusView(): IStatusView {
+        return BaseStatusViewImpl()
     }
 
     /**
@@ -139,53 +150,14 @@ abstract class BaseActivity<VDB : ViewDataBinding, VM : BaseViewModel> : AppComp
 
     /**
      * 注册LoadSir
-     *
-     * @param view 状态视图
+     * @param view 绑定的View
      */
-    protected fun initLoadSir(view: View?) {
-        if (mLoadService == null) {
-            mLoadService = LoadSir.getDefault().register(view) { v: View? -> onRetryBtnClick(v) }
-        }
+    fun initLoadSir(view: View?) {
+        mStatusView?.setLoadSir(view) { v: View? -> onRetryBtnClick(v) }
     }
 
     /**
      * 失败重试,重新加载事件
      */
     open fun onRetryBtnClick(v: View?) {}
-
-    override fun showLoading() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = LoadingDialog.newInstance()
-        }
-        mLoadingDialog?.showDialog(supportFragmentManager)
-    }
-
-    override fun dismissLoading() {
-        mLoadingDialog?.let {
-            val dialog = it.dialog
-            if (dialog != null && dialog.isShowing) {
-                it.dismiss()
-            }
-        }
-    }
-
-    override fun showContent() {
-        mLoadService?.showSuccess()
-    }
-
-    override fun showProgress() {
-        mLoadService?.showCallback(ProgressCallback::class.java)
-    }
-
-    override fun showEmpty() {
-        mLoadService?.showCallback(EmptyCallback::class.java)
-    }
-
-    override fun showError() {
-        mLoadService?.showCallback(ErrorCallback::class.java)
-    }
-
-    override fun showTimeout() {
-        mLoadService?.showCallback(TimeoutCallback::class.java)
-    }
 }

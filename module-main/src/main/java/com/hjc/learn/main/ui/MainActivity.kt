@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainActivityBinding
 import com.hjc.learn.main.ui.fragment.DrawerFragment
@@ -20,7 +22,9 @@ import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.AppConstants
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteLoginPath
+import com.hjc.library_common.router.path.RouteMainPath
+import com.hjc.library_common.router.path.RouteWanPath
 import com.hjc.library_net.utils.AccountHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -30,7 +34,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2020/8/24 15:58
  * @Description: 主界面
  */
-@Route(path = RoutePath.Main.MAIN)
+@Route(path = RouteMainPath.URL_ACTIVITY_MAIN)
 class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() {
 
     private var flag = 0
@@ -46,9 +50,12 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
+        val mainFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_MAIN).navigation() as Fragment
+        val drawerFragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_DRAWER).navigation() as Fragment
+
         supportFragmentManager.beginTransaction()
-            .add(R.id.fl_main, MainFragment.newInstance())
-            .add(R.id.fl_drawer, DrawerFragment.newInstance())
+            .add(R.id.fl_main, mainFragment)
+            .add(R.id.fl_drawer, drawerFragment)
             .commit()
     }
 
@@ -68,7 +75,7 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
                         if (AccountHelper.isLogin) {
                             showLogoutDialog()
                         } else {
-                            RouteManager.jump(RoutePath.Login.LOGIN)
+                            RouteManager.jump(RouteLoginPath.URL_LOGIN)
                         }
                     }
 
@@ -79,12 +86,12 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
 
                     3 -> {
                         flag = 0
-                        RouteManager.jump(RoutePath.Main.SCAN)
+                        RouteManager.jump(RouteMainPath.URL_ACTIVITY_SCAN)
                     }
 
                     4 -> {
                         flag = 0
-                        RouteManager.jump(RoutePath.Main.COLLECT)
+                        RouteManager.jump(RouteMainPath.URL_ACTIVITY_COLLECT)
                     }
 
                     5 -> {
@@ -146,7 +153,7 @@ class MainActivity : BaseFragmentActivity<MainActivityBinding, MainViewModel>() 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun handlerEvent(messageEvent: MessageEvent<Int>) {
+    fun receiveEvent(messageEvent: MessageEvent<Int>) {
         if (messageEvent.getCode() === EventCode.CLOSE_DRAWER) {
             mBindingView.drawerLayout.closeDrawer(GravityCompat.START)
             messageEvent.getData()?.let {

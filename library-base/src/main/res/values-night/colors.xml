@@ -5,6 +5,7 @@
     <color name="base_white">#ffffffff</color>
     <color name="base_black">#FF000000</color>
     <color name="base_black_33">#333333</color>
+    <color name="base_black_8833">#88333333</color>
     <color name="base_gray">#f4f5f6</color>
     <color name="base_gray_dark">#a4a2a2</color>
     <color name="base_gray_de">#dedede</color>

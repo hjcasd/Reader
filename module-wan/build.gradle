@@ -75,14 +75,13 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     testImplementation lib.junit
     androidTestImplementation lib.test_junit
     androidTestImplementation lib.espresso_core
 
     kapt lib.arouter_compiler
-
-    implementation lib.banner
 
     implementation project(path: ':library-common')
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.gyf.immersionbar.ImmersionBar
 import com.hjc.learn.main.R
@@ -15,7 +16,9 @@ import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.RouteManager
-import com.hjc.library_common.router.RoutePath
+import com.hjc.library_common.router.path.RouteGankPath
+import com.hjc.library_common.router.path.RouteMainPath
+import com.hjc.library_common.router.path.RouteWanPath
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -24,6 +27,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @Date: 2021/2/2 20:39
  * @Description: 测试fragment
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_MAIN)
 class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
 
     private lateinit var mTab1Fragment: Fragment
@@ -31,13 +35,6 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     private lateinit var mTab3Fragment: Fragment
 
     private var mCurrentFragment = Fragment()
-
-    companion object {
-
-        fun newInstance(): Fragment {
-            return MainFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment
@@ -55,13 +52,9 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         EventManager.register(this)
 
-        val fragment1 = ARouter.getInstance().build(RoutePath.Wan.WAN_FRAGMENT).navigation() as Fragment?
-        mTab1Fragment = fragment1 ?: TestFragment.newInstance()
-
-        val fragment2 = ARouter.getInstance().build(RoutePath.Gank.GANK_FRAGMENT).navigation() as Fragment?
-        mTab2Fragment = fragment2 ?: TestFragment.newInstance()
-
-        mTab3Fragment = TestFragment.newInstance()
+        mTab1Fragment = ARouter.getInstance().build(RouteWanPath.URL_FRAGMENT_WAN).navigation() as Fragment
+        mTab2Fragment = ARouter.getInstance().build(RouteGankPath.URL_FRAGMENT_GANK).navigation() as Fragment
+        mTab3Fragment = ARouter.getInstance().build(RouteMainPath.URL_FRAGMENT_TEST).navigation() as Fragment
 
         setCurrentItem(0)
     }
@@ -109,7 +102,7 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
             R.id.iv_tab3 -> setCurrentItem(2)
 
             R.id.iv_search -> {
-                RouteManager.jump(RoutePath.Main.SEARCH)
+                RouteManager.jump(RouteMainPath.URL_ACTIVITY_SEARCH)
             }
         }
     }
@@ -137,7 +130,7 @@ class MainFragment : BaseFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun handlerEvent(messageEvent: MessageEvent<Int>) {
+    fun receiveEvent(messageEvent: MessageEvent<Int>) {
         if (messageEvent.getCode() == EventCode.DRAWER_OPENED) {
             ObjectAnimator.ofFloat(mBindingView.ivMenu, "rotation", -180f, 0f).setDuration(500).start()
 

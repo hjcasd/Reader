@@ -2,25 +2,20 @@ package com.hjc.learn.main.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainFragmentTestBinding
 import com.hjc.library_base.fragment.BaseFragment
-import com.hjc.library_base.viewmodel.CommonViewModel
+import com.hjc.library_common.router.path.RouteMainPath
+import com.hjc.library_common.viewmodel.CommonViewModel
 
 /**
  * @Author: HJC
  * @Date: 2021/2/2 20:39
  * @Description: 测试fragment
  */
+@Route(path = RouteMainPath.URL_FRAGMENT_TEST)
 class TestFragment : BaseFragment<MainFragmentTestBinding, CommonViewModel>() {
-
-    companion object {
-
-        fun newInstance(): Fragment {
-            return TestFragment()
-        }
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.main_fragment_test
