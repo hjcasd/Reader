@@ -1,15 +1,12 @@
 package com.hjc.learn.gank.adapter
 
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.blankj.utilcode.util.ConvertUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjc.learn.gank.R
 import com.hjc.learn.gank.databinding.GankItemWelfareBinding
-import com.hjc.library_net.model.GankDayBean
+import com.hjc.library_net.entity.GankDayBean
 
 
 /**

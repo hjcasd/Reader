@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.login.model.LoginModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.utils.AccountHelper
+import com.hjc.library_common.utils.AccountHelper
 
 /**
  * @Author: HJC
@@ -14,6 +14,8 @@ import com.hjc.library_net.utils.AccountHelper
  * @Description: 登录ViewModel
  */
 class LoginViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = LoginModel()
 
     val loginData = MutableLiveData<Boolean>()
     val usernameData = MutableLiveData<String>()
@@ -44,7 +46,7 @@ class LoginViewModel(application: Application) : KotlinViewModel(application) {
         }
 
         launchWan({
-            RetrofitClient.getApiService1().login(username, password)
+            mModel.login(username, password)
         }, { result ->
             result?.let {
                 ToastUtils.showShort("登录成功")

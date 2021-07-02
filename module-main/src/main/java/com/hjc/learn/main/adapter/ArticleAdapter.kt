@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainItemArticleImageBinding
 import com.hjc.learn.main.databinding.MainItemArticleTextBinding
-import com.hjc.library_net.model.WanCollectArticleBean
+import com.hjc.library_net.entity.WanCollectArticleBean
 
 /**
  * @Author: HJC

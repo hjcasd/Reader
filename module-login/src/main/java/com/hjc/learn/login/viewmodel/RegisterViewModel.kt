@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.login.model.LoginModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
 
 /**
  * @Author: HJC
@@ -13,6 +13,8 @@ import com.hjc.library_net.RetrofitClient
  * @Description: 注册ViewModel
  */
 class RegisterViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = LoginModel()
 
     val registerData = MutableLiveData<Boolean>()
     val usernameData = MutableLiveData<String>()
@@ -53,7 +55,7 @@ class RegisterViewModel(application: Application) : KotlinViewModel(application)
         }
 
         launchWan({
-            RetrofitClient.getApiService1().register(username, password, confirmPassword)
+            mModel.register(username, password, confirmPassword)
         }, { result ->
             result?.let {
                 ToastUtils.showShort("注册成功")

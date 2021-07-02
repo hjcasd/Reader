@@ -3,10 +3,10 @@ package com.hjc.learn.gank.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.gank.model.GankModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.GankDayBean
-import com.hjc.library_net.model.GankRecommendResultBean
+import com.hjc.library_net.entity.GankDayBean
+import com.hjc.library_net.entity.GankRecommendResultBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -17,6 +17,8 @@ import java.util.*
  * @Description: 每日推荐ViewModel
  */
 class RecommendViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = GankModel()
 
     // 每日推荐列表数据
     val recommendLiveData = MutableLiveData<MutableList<GankDayBean>>()
@@ -31,7 +33,7 @@ class RecommendViewModel(application: Application) : KotlinViewModel(application
      */
     fun getRecommendData(isFirst: Boolean) {
         launchOriginal({
-            RetrofitClient.getApiService2().getRecommendData("2016", "11", "24")
+            mModel.getRecommendData("2016", "11", "24")
         }, { result ->
             refreshData.value = true
 

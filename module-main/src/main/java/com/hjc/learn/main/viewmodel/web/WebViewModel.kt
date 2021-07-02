@@ -2,8 +2,8 @@ package com.hjc.learn.main.viewmodel.web
 
 import android.app.Application
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.main.model.MainModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
 
 /**
  * @Author: HJC
@@ -11,6 +11,9 @@ import com.hjc.library_net.RetrofitClient
  * @Description: Web ViewModel
  */
 class WebViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = MainModel()
+
     /**
      * 收藏网址链接
      *
@@ -18,7 +21,7 @@ class WebViewModel(application: Application) : KotlinViewModel(application) {
      * @param url   链接
      */
     fun collectLink(title: String?, url: String?) {
-        launchWan({ RetrofitClient.getApiService1().collectLink(title, url) }, {
+        launchWan({ mModel.collectLink(title, url) }, {
             ToastUtils.showShort("收藏网址成功")
         }, {
             ToastUtils.showShort("收藏网址失败")

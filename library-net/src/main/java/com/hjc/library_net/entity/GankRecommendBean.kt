@@ -1,4 +1,4 @@
-package com.hjc.library_net.model
+package com.hjc.library_net.entity
 
 data class GankRecommendBean(
     var error: Boolean = false,

@@ -1,12 +1,11 @@
-package com.hjc.library_net.interceptor
+package com.hjc.library_common.interceptors
 
 import android.text.TextUtils
-import com.hjc.library_net.utils.AccountHelper
+import com.hjc.library_common.utils.AccountHelper
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 import java.util.*
-
 
 /**
  * @Author: HJC
@@ -14,6 +13,10 @@ import java.util.*
  * @Description: 登录后保存cookie到SharedPreferences中
  */
 class ReceivedCookiesInterceptor : Interceptor {
+
+    companion object {
+        private const val COOKIE_HEADER = "Set-Cookie"
+    }
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -76,7 +79,4 @@ class ReceivedCookiesInterceptor : Interceptor {
         return originalResponse
     }
 
-    companion object {
-        private const val COOKIE_HEADER = "Set-Cookie"
-    }
 }

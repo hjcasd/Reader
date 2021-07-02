@@ -3,14 +3,16 @@ package com.hjc.learn.wan.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.wan.model.WanModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanArticleBean
-import com.hjc.library_net.model.WanBannerBean
+import com.hjc.library_net.entity.WanArticleBean
+import com.hjc.library_net.entity.WanBannerBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class PlayViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = WanModel()
 
     // banner数据
     val bannerData = MutableLiveData<MutableList<WanBannerBean>>()
@@ -30,7 +32,7 @@ class PlayViewModel(application: Application) : KotlinViewModel(application) {
      */
     fun getBannerData() {
         launchWan({
-            RetrofitClient.getApiService1().getWanBannerList()
+            mModel.getWanBannerList()
         }, { result ->
             bannerData.value = result
         })
@@ -43,7 +45,7 @@ class PlayViewModel(application: Application) : KotlinViewModel(application) {
      * @param isFirst 是否第一次加载
      */
     fun loadArticleList(page: Int, isFirst: Boolean) {
-        launchWan({ RetrofitClient.getApiService1().getWanList(page, null) }, { result ->
+        launchWan({ mModel.getWanList(page, null) }, { result ->
             refreshData.value = true
 
             val data = result?.datas
@@ -77,7 +79,7 @@ class PlayViewModel(application: Application) : KotlinViewModel(application) {
      * @param bean 文章bean
      */
     fun collectArticle(bean: WanArticleBean, position: Int) {
-        launchWan({ RetrofitClient.getApiService1().collectArticle(bean.id) }, {
+        launchWan({ mModel.collectArticle(bean.id) }, {
             bean.collect = true
             bean.position = position
             articleLiveData.value = bean
@@ -91,7 +93,7 @@ class PlayViewModel(application: Application) : KotlinViewModel(application) {
      * @param bean 文章bean
      */
     fun unCollectArticle(bean: WanArticleBean, position: Int) {
-        launchWan({ RetrofitClient.getApiService1().unCollect(bean.id) }, {
+        launchWan({ mModel.unCollect(bean.id) }, {
             bean.collect = false
             bean.position = position
             articleLiveData.value = bean

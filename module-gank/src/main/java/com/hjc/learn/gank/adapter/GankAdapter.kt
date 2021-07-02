@@ -11,7 +11,7 @@ import com.hjc.learn.gank.R
 import com.hjc.learn.gank.databinding.GankItemImageOneBinding
 import com.hjc.learn.gank.databinding.GankItemImageThreeBinding
 import com.hjc.learn.gank.databinding.GankItemTextBinding
-import com.hjc.library_net.model.GankDayBean
+import com.hjc.library_net.entity.GankDayBean
 import java.util.*
 
 /**

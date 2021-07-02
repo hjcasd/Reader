@@ -3,9 +3,9 @@ package com.hjc.learn.main.viewmodel.collect
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.main.model.MainModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanCollectArticleBean
+import com.hjc.library_net.entity.WanCollectArticleBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -15,6 +15,8 @@ import java.net.UnknownHostException
  * @Description: 收藏文章ViewModel
  */
 class CollectArticleViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = MainModel()
 
     // 收藏文章列表数据
     val collectArticleLiveData = MutableLiveData<MutableList<WanCollectArticleBean>>()
@@ -33,7 +35,7 @@ class CollectArticleViewModel(application: Application) : KotlinViewModel(applic
      * @param isFirst 是否第一次加载
      */
     fun loadCollectArticleList(page: Int, isFirst: Boolean) {
-        launchWan({ RetrofitClient.getApiService1().getArticleList(page) }, { result ->
+        launchWan({ mModel.getArticleList(page) }, { result ->
             refreshData.value = true
 
             val data = result?.datas
@@ -67,7 +69,7 @@ class CollectArticleViewModel(application: Application) : KotlinViewModel(applic
      * @param position 位置
      */
     fun unCollectArticle(id: Int, originId: Int, position: Int) {
-        launchWan({ RetrofitClient.getApiService1().unCollectOrigin(id, originId) }, {
+        launchWan({ mModel.unCollectOrigin(id, originId) }, {
             positionLiveData.value = position
             ToastUtils.showShort("已取消收藏")
         }, isShowLoading = true)

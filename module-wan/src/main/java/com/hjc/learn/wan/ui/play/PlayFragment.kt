@@ -14,9 +14,9 @@ import com.hjc.library_base.fragment.BaseLazyFragment
 import com.hjc.library_common.router.RouteManager
 import com.hjc.library_common.router.path.RouteLoginPath
 import com.hjc.library_common.router.path.RouteWanPath
-import com.hjc.library_net.model.WanArticleBean
-import com.hjc.library_net.model.WanBannerBean
-import com.hjc.library_net.utils.AccountHelper
+import com.hjc.library_net.entity.WanArticleBean
+import com.hjc.library_net.entity.WanBannerBean
+import com.hjc.library_common.utils.AccountHelper
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.Banner

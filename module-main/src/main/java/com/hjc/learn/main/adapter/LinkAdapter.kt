@@ -6,7 +6,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainItemLinkBinding
-import com.hjc.library_net.model.WanCollectLinkBean
+import com.hjc.library_net.entity.WanCollectLinkBean
 
 /**
  * @Author: HJC

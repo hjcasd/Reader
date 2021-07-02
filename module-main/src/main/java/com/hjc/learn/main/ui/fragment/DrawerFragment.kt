@@ -13,7 +13,7 @@ import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.path.RouteMainPath
-import com.hjc.library_net.utils.AccountHelper
+import com.hjc.library_common.utils.AccountHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 

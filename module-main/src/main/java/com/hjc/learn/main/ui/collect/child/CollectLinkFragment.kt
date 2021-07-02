@@ -18,7 +18,7 @@ import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.router.RouteManager
 import com.hjc.library_common.router.path.RouteMainPath
-import com.hjc.library_net.model.WanCollectLinkBean
+import com.hjc.library_net.entity.WanCollectLinkBean
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 

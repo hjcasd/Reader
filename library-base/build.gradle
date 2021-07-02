@@ -97,4 +97,7 @@ dependencies {
     // 状态布局
     api lib.loadsir
 
+    // LeakCanary
+    debugApi lib.leakcanary_android
+
 }

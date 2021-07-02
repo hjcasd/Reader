@@ -11,7 +11,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjc.learn.gank.R
 import com.hjc.learn.gank.databinding.*
 import com.hjc.learn.gank.utils.TranslateUtils
-import com.hjc.library_net.model.GankDayBean
+import com.hjc.library_net.entity.GankDayBean
 import java.util.*
 
 /**

@@ -1,4 +1,4 @@
-package com.hjc.library_net.utils
+package com.hjc.library_common.utils
 
 import com.blankj.utilcode.util.SPUtils
 

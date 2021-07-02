@@ -9,8 +9,8 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjc.learn.wan.R
 import com.hjc.learn.wan.databinding.WanItemNavigationContentBinding
 import com.hjc.library_common.router.RouteManager.jumpToWeb
-import com.hjc.library_net.model.WanArticleBean
-import com.hjc.library_net.model.WanNavigationBean
+import com.hjc.library_net.entity.WanArticleBean
+import com.hjc.library_net.entity.WanNavigationBean
 import com.hjc.library_widget.FlowLayout
 
 /**

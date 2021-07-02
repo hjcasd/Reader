@@ -28,7 +28,6 @@ open class BaseApplication : MultiDexApplication() {
             .addCallback(EmptyCallback())
             .addCallback(TimeoutCallback())
             .addCallback(ShimmerCallback())
-            .setDefaultCallback(ProgressCallback::class.java)
             .commit()
     }
 

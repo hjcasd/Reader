@@ -1,4 +1,4 @@
-package com.hjc.learn.main.model
+package com.hjc.learn.main.entity
 
 import android.content.Context
 import androidx.room.Database

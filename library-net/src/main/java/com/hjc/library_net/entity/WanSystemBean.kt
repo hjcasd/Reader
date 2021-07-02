@@ -1,12 +1,9 @@
-package com.hjc.library_net.model
+package com.hjc.library_net.entity
 
 import java.io.Serializable
 
-/**
- * 项目分类
- */
-data class WanClassifyBean(
-    var children: List<Any>,
+data class WanSystemBean(
+    var children: MutableList<WanClassifyBean>,
     var courseId: Int,
     var id: Int,
     var name: String,

@@ -2,13 +2,15 @@ package com.hjc.learn.main.viewmodel.search
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.hjc.learn.main.model.History
-import com.hjc.learn.main.model.HistoryDataBase
+import com.hjc.learn.main.entity.History
+import com.hjc.learn.main.entity.HistoryDataBase
+import com.hjc.learn.main.model.MainModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanSearchBean
+import com.hjc.library_net.entity.WanSearchBean
 
 class SearchHistoryViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = MainModel()
 
     // 热门搜索数据
     val hotKeyLiveData = MutableLiveData<MutableList<WanSearchBean>>()
@@ -21,7 +23,7 @@ class SearchHistoryViewModel(application: Application) : KotlinViewModel(applica
      * 获取热门搜索数据
      */
     fun getHotKeyData() {
-        launchWan({ RetrofitClient.getApiService1().getHotKey() }, { result ->
+        launchWan({ mModel.getHotKey() }, { result ->
             if (result != null && result.size > 0) {
                 hotKeyLiveData.value = result
             } else {

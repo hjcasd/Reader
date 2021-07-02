@@ -11,8 +11,8 @@ import com.hjc.learn.wan.R
 import com.hjc.learn.wan.databinding.WanItemTreeBinding
 import com.hjc.library_common.router.RouteManager
 import com.hjc.library_common.router.path.RouteWanPath
-import com.hjc.library_net.model.WanClassifyBean
-import com.hjc.library_net.model.WanSystemBean
+import com.hjc.library_net.entity.WanClassifyBean
+import com.hjc.library_net.entity.WanSystemBean
 import com.hjc.library_widget.FlowLayout
 
 /**

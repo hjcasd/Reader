@@ -3,13 +3,16 @@ package com.hjc.learn.main.viewmodel.search
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.main.model.MainModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanArticleBean
+import com.hjc.library_net.entity.WanArticleBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class SearchResultViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = MainModel()
+
     // 收藏文章列表数据
     val searchLiveData = MutableLiveData<MutableList<WanArticleBean>>()
 
@@ -24,7 +27,7 @@ class SearchResultViewModel(application: Application) : KotlinViewModel(applicat
      * @param isFirst 是否第一次加载
      */
     fun loadSearchData(page: Int, keyword: String?, isFirst: Boolean) {
-        launchWan({ RetrofitClient.getApiService1().search(page, keyword) }, { result ->
+        launchWan({ mModel.search(page, keyword) }, { result ->
             refreshData.value = true
 
             val data = result?.datas
@@ -58,7 +61,7 @@ class SearchResultViewModel(application: Application) : KotlinViewModel(applicat
      * @param bean 文章bean
      */
     fun collectArticle(bean: WanArticleBean, position: Int) {
-        launchWan({ RetrofitClient.getApiService1().collectArticle(bean.id) }, {
+        launchWan({ mModel.collectArticle(bean.id) }, {
             bean.collect = true
             bean.position = position
             articleLiveData.value = bean
@@ -72,7 +75,7 @@ class SearchResultViewModel(application: Application) : KotlinViewModel(applicat
      * @param bean 文章bean
      */
     fun unCollectArticle(bean: WanArticleBean, position: Int) {
-        launchWan({ RetrofitClient.getApiService1().unCollect(bean.id) }, {
+        launchWan({ mModel.unCollect(bean.id) }, {
             bean.collect = false
             bean.position = position
             articleLiveData.value = bean

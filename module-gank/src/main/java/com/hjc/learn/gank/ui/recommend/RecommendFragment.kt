@@ -14,7 +14,7 @@ import com.hjc.learn.gank.viewmodel.RecommendViewModel
 import com.hjc.library_base.fragment.BaseLazyFragment
 import com.hjc.library_common.router.RouteManager
 import com.hjc.library_common.router.path.RouteGankPath
-import com.hjc.library_net.model.GankDayBean
+import com.hjc.library_net.entity.GankDayBean
 import com.vansz.glideimageloader.GlideImageLoader
 import java.util.*
 

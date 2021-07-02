@@ -1,7 +1,6 @@
 package com.hjc.library_net.interceptor
 
 import com.blankj.utilcode.util.LogUtils
-import com.hjc.library_net.config.HttpConfig
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -14,6 +13,14 @@ import java.io.IOException
  * @Description: 多BaseUrl拦截器
  */
 class BaseUrlInterceptor : Interceptor {
+
+    companion object {
+        //多服务器地址1
+        private const val TEST_BASE_URL1 = "https://gank.io"
+
+        //多服务器地址2
+        private const val TEST_BASE_URL2 = "https://api-m.mtime.cn"
+    }
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -29,24 +36,24 @@ class BaseUrlInterceptor : Interceptor {
             val headerValue = headerValues[0]
             val newBaseUrl = getNewBaseUrl(headerValue, oldHttpUrl)
             //重建新的HttpUrl，修改需要修改的url部分
-            if (newBaseUrl != null) {
+            return newBaseUrl?.let {
                 val newFullUrl = oldHttpUrl
                     .newBuilder()
 //                    .scheme("https") //更换网络协议
-                    .host(newBaseUrl.host()) //更换主机名
-//                    .port(newBaseUrl.port()) //更换端口
+                    .host(it.host()) //更换主机名
+//                    .port(it.port()) //更换端口
                     .build()
                 LogUtils.e("newFullUrl: $newFullUrl")
-                return chain.proceed(builder.url(newFullUrl).build())
-            }
+                chain.proceed(builder.url(newFullUrl).build())
+            } ?: chain.proceed(request)
         }
         return chain.proceed(request)
     }
 
     private fun getNewBaseUrl(headerValue: String, oldHttpUrl: HttpUrl): HttpUrl? {
         return when (headerValue) {
-            "test1" -> HttpUrl.parse(HttpConfig.TEST_BASE_URL1)
-            "test2" -> HttpUrl.parse(HttpConfig.TEST_BASE_URL2)
+            "test1" -> HttpUrl.parse(TEST_BASE_URL1)
+            "test2" -> HttpUrl.parse(TEST_BASE_URL2)
             else -> oldHttpUrl
         }
     }

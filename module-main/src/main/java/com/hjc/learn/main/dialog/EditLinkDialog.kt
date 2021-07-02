@@ -11,7 +11,7 @@ import com.hjc.library_base.dialog.BaseFragmentDialog
 import com.hjc.library_common.event.EventManager
 import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
-import com.hjc.library_net.model.WanCollectLinkBean
+import com.hjc.library_net.entity.WanCollectLinkBean
 
 /**
  * @Author: HJC

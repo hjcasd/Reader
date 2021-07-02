@@ -6,7 +6,7 @@
 
         <variable
             name="linkBean"
-            type="com.hjc.library_net.model.WanCollectLinkBean" />
+            type="com.hjc.library_net.entity.WanCollectLinkBean" />
 
     </data>
 

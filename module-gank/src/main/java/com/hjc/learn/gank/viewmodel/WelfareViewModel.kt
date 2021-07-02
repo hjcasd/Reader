@@ -3,13 +3,15 @@ package com.hjc.learn.gank.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.gank.model.GankModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.GankDayBean
+import com.hjc.library_net.entity.GankDayBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class WelfareViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = GankModel()
 
     // 福利社区列表数据
     val welfareLiveData = MutableLiveData<MutableList<GankDayBean>>()
@@ -25,7 +27,7 @@ class WelfareViewModel(application: Application) : KotlinViewModel(application) 
      */
     fun loadWelfareList(page: Int, isFirst: Boolean) {
         launchOriginal({
-            RetrofitClient.getApiService2().getGankIoData("Girl", "Girl", page, 20)
+            mModel.getGankIoData("Girl", "Girl", page, 20)
         }, { result ->
             refreshData.value = true
 

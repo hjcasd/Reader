@@ -2,7 +2,7 @@ package com.hjc.library_net.service
 
 import com.hjc.library_net.bean.WanBaseResponse
 import com.hjc.library_net.bean.WanPageResponse
-import com.hjc.library_net.model.*
+import com.hjc.library_net.entity.*
 import retrofit2.http.*
 
 /**
@@ -10,7 +10,7 @@ import retrofit2.http.*
  * @Date: 2019/1/7 11:53
  * @Description: Retrofit接口请求1
  */
-interface ApiService1 {
+interface WanApiService {
 
     /**
      * 玩安卓登录

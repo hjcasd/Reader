@@ -1,9 +1,9 @@
 package com.hjc.learn.main.viewmodel.search
 
 import android.app.Application
-import com.hjc.learn.main.model.History
-import com.hjc.learn.main.model.HistoryDao
-import com.hjc.learn.main.model.HistoryDataBase
+import com.hjc.learn.main.entity.History
+import com.hjc.learn.main.entity.HistoryDao
+import com.hjc.learn.main.entity.HistoryDataBase
 import com.hjc.library_common.viewmodel.KotlinViewModel
 
 /**

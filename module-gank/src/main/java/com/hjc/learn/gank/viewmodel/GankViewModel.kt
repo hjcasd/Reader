@@ -3,9 +3,9 @@ package com.hjc.learn.gank.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.gank.model.GankModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.GankDayBean
+import com.hjc.library_net.entity.GankDayBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -15,6 +15,8 @@ import java.net.UnknownHostException
  * @Description: 干货定制ViewModel
  */
 class GankViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = GankModel()
 
     // 干货定制列表数据
     val gankLiveData = MutableLiveData<MutableList<GankDayBean>>()
@@ -31,7 +33,7 @@ class GankViewModel(application: Application) : KotlinViewModel(application) {
      */
     fun loadGankList(type: String?, page: Int, isFirst: Boolean) {
         launchOriginal({
-            RetrofitClient.getApiService2().getGankIoData("GanHuo", type, page, 20)
+            mModel.getGankIoData("GanHuo", type, page, 20)
         }, {result->
             refreshData.value = true
 

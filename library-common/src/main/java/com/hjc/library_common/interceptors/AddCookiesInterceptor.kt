@@ -1,6 +1,6 @@
-package com.hjc.library_net.interceptor
+package com.hjc.library_common.interceptors
 
-import com.hjc.library_net.utils.AccountHelper
+import com.hjc.library_common.utils.AccountHelper
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException

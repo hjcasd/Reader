@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.hjc.learn.main.R
 import com.hjc.learn.main.databinding.MainFragmentSearchHistoryBinding
-import com.hjc.learn.main.model.History
+import com.hjc.learn.main.entity.History
 import com.hjc.learn.main.viewmodel.search.SearchHistoryViewModel
 import com.hjc.library_base.fragment.BaseFragment
 import com.hjc.library_base.view.ILoadingView
@@ -19,7 +19,7 @@ import com.hjc.library_common.event.MessageEvent
 import com.hjc.library_common.global.EventCode
 import com.hjc.library_common.impl.CommonLoadingViewImpl
 import com.hjc.library_common.router.path.RouteMainPath
-import com.hjc.library_net.model.WanSearchBean
+import com.hjc.library_net.entity.WanSearchBean
 
 /**
  * @Author: HJC

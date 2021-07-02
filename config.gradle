@@ -13,8 +13,6 @@ ext {
             DEV_BASE_URL : '"https://www.wanandroid.com"',
             TEST_BASE_URL: '"https://www.wanandroid.com"',
             PROD_BASE_URL: '"https://www.wanandroid.com"',
-
-            IS_DEBUG     : true,
     ]
 
     dependencies = [
@@ -35,8 +33,8 @@ ext {
             lifecycle_viewmodel          : 'androidx.lifecycle:lifecycle-viewmodel:2.2.0',
             lifecycle_viewmodel_ktx      : 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0',
             lifecycle_livedata           : 'androidx.lifecycle:lifecycle-livedata:2.2.0',
-            room_runtime               : 'androidx.room:room-runtime:2.2.5',
-            room_compiler              : 'androidx.room:room-compiler:2.2.5',
+            room_runtime                 : 'androidx.room:room-runtime:2.2.5',
+            room_compiler                : 'androidx.room:room-compiler:2.2.5',
 
             //分包处理
             multidex                     : 'androidx.multidex:multidex:2.0.1',
@@ -103,6 +101,8 @@ ext {
 
             //Zxing二维码
             bga_qrcode_zxing             : 'cn.bingoogolapple:bga-qrcode-zxing:1.3.6',
+
+            leakcanary_android           : 'com.squareup.leakcanary:leakcanary-android:2.7'
     ]
 
 }

@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.main.model.MainModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanCollectLinkBean
+import com.hjc.library_net.entity.WanCollectLinkBean
 
 class EditLinkViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = MainModel()
 
     // 收藏地址数据
     val editLinkLiveData = MutableLiveData<WanCollectLinkBean>()
@@ -35,7 +37,7 @@ class EditLinkViewModel(application: Application) : KotlinViewModel(application)
             return
         }
 
-        launchWan({ RetrofitClient.getApiService1().editLink(id, name, link) }, {
+        launchWan({ mModel.editLink(id, name, link) }, {
             val bean = WanCollectLinkBean()
             bean.name = name
             bean.link = link

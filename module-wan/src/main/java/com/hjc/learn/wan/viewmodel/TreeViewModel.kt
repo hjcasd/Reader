@@ -2,9 +2,9 @@ package com.hjc.learn.wan.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.hjc.learn.wan.model.WanModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanSystemBean
+import com.hjc.library_net.entity.WanSystemBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -14,6 +14,8 @@ import java.net.UnknownHostException
  * @Description: 知识体系ViewModel
  */
 class TreeViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = WanModel()
 
     // 知识体系列表数据
     val listData = MutableLiveData<MutableList<WanSystemBean>>()
@@ -27,7 +29,7 @@ class TreeViewModel(application: Application) : KotlinViewModel(application) {
      * @param isFirst 是否第一次加载
      */
     fun loadTreeList(isFirst: Boolean) {
-        launchWan({ RetrofitClient.getApiService1().getTreeList() }, { result ->
+        launchWan({ mModel.getTreeList() }, { result ->
             refreshData.value = true
 
             result?.let {

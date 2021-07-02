@@ -1,7 +1,7 @@
 package com.hjc.library_net.service
 
-import com.hjc.library_net.model.GankIOBean
-import com.hjc.library_net.model.GankRecommendBean
+import com.hjc.library_net.entity.GankIOBean
+import com.hjc.library_net.entity.GankRecommendBean
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -11,7 +11,7 @@ import retrofit2.http.Path
  * @Date: 2019/1/7 11:53
  * @Description: Retrofit接口请求2
  */
-interface ApiService2 {
+interface GankApiService {
 
     @Headers("url_name:test1")
     @GET("/api/v2/data/category/{category}/type/{type}/page/{page}/count/{count}")

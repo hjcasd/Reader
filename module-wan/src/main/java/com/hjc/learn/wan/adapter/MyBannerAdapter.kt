@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hjc.learn.wan.R
 import com.hjc.learn.wan.databinding.WanItemBannerBinding
-import com.hjc.library_net.model.WanBannerBean
+import com.hjc.library_net.entity.WanBannerBean
 import com.youth.banner.adapter.BannerAdapter
 
 /**

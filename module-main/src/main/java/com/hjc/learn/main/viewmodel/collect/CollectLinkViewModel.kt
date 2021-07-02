@@ -3,9 +3,9 @@ package com.hjc.learn.main.viewmodel.collect
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ToastUtils
+import com.hjc.learn.main.model.MainModel
 import com.hjc.library_common.viewmodel.KotlinViewModel
-import com.hjc.library_net.RetrofitClient
-import com.hjc.library_net.model.WanCollectLinkBean
+import com.hjc.library_net.entity.WanCollectLinkBean
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -15,6 +15,8 @@ import java.net.UnknownHostException
  * @Description: 收藏网址ViewModel
  */
 class CollectLinkViewModel(application: Application) : KotlinViewModel(application) {
+
+    private val mModel = MainModel()
 
     // 收藏地址列表数据
     val collectLinkLiveData = MutableLiveData<MutableList<WanCollectLinkBean>>()
@@ -32,7 +34,7 @@ class CollectLinkViewModel(application: Application) : KotlinViewModel(applicati
      * @param isFirst 是否第一次加载
      */
     fun loadCollectLinkList(isFirst: Boolean) {
-        launchWan({ RetrofitClient.getApiService1().getLinkList() }, { result ->
+        launchWan({ mModel.getLinkList() }, { result ->
             refreshData.value = true
 
             result?.let {
@@ -60,7 +62,7 @@ class CollectLinkViewModel(application: Application) : KotlinViewModel(applicati
      * @param id 网址id
      */
     fun deleteLink(id: Int, position: Int) {
-        launchWan({ RetrofitClient.getApiService1().deleteLink(id) }, {
+        launchWan({ mModel.deleteLink(id) }, {
             positionLiveData.value = position
             ToastUtils.showShort("删除网址成功")
         }, isShowLoading = true)

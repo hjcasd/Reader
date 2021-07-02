@@ -5,9 +5,15 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.Utils
 import com.hjc.library_base.BaseApplication
 import com.hjc.library_common.global.AppConstants
+import com.hjc.library_common.global.HttpConfig
+import com.hjc.library_common.interceptors.AddCookiesInterceptor
+import com.hjc.library_common.interceptors.ReceivedCookiesInterceptor
 import com.hjc.library_common.module.IModuleInit
 import com.hjc.library_common.utils.BuglyUtils
+import com.hjc.library_net.SmartHttp
+import com.hjc.library_net.interceptor.BaseUrlInterceptor
 import com.hjc.library_web.utils.X5WebUtils
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * @Author: HJC
@@ -21,6 +27,7 @@ class CommonModuleInit : IModuleInit {
         initARouter(application)
         initBugly(application)
         X5WebUtils.init(application)
+        initHttp()
         return false
     }
 
@@ -54,6 +61,19 @@ class CommonModuleInit : IModuleInit {
      */
     private fun initBugly(application: BaseApplication) {
         BuglyUtils.init(application, AppConstants.BUGLY_CODE, AppConstants.APP_IS_DEBUG)
+    }
+
+    /**
+     * 初始化Http配置
+     */
+    private fun initHttp() {
+        SmartHttp.setDebug(AppConstants.APP_IS_DEBUG)
+            .setBaseUrl(HttpConfig.BASE_URL)
+            .setTimeout(HttpConfig.HTTP_TIME_OUT)
+            .addInterceptor(BaseUrlInterceptor())
+            .addInterceptor(ReceivedCookiesInterceptor())
+            .addInterceptor(AddCookiesInterceptor())
+            .addConverter(GsonConverterFactory.create())
     }
 
     override fun onInitAfter(application: BaseApplication): Boolean {
