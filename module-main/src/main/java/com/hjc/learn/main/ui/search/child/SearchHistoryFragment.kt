@@ -81,7 +81,7 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
             val view = View.inflate(mContext, R.layout.main_view_navigation_tag, null)
             val tvTag = view.findViewById<TextView>(R.id.tv_tag)
             tvTag.text = bean.name
-            mBindingView.flHot.addView(tvTag)
+            mBindingView.flHot.addView(view)
 
             tvTag.setOnClickListener {
                 val keyword = tvTag.text.toString()
@@ -101,7 +101,7 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
             val view = View.inflate(mContext, R.layout.main_view_navigation_tag, null)
             val tvTag = view.findViewById<TextView>(R.id.tv_tag)
             tvTag.text = history.name
-            mBindingView.flHistory.addView(tvTag)
+            mBindingView.flHistory.addView(view)
 
             tvTag.setOnClickListener {
                 val keyword = tvTag.text.toString()

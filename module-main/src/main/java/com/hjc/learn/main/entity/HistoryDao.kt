@@ -14,11 +14,10 @@ interface HistoryDao {
     @Delete
     fun delete(history: History)
 
-
-    @Query("DELETE FROM history")
+    @Query("DELETE FROM history_table")
     fun deleteAll()
 
-    @Query("SELECT * FROM history")
+    @Query("SELECT * FROM history_table ORDER BY time DESC")
     fun getAllHistory(): List<History>?
 
 }

@@ -12,19 +12,19 @@ abstract class HistoryDataBase : RoomDatabase() {
     abstract fun getHistoryDao(): HistoryDao
 
     companion object {
-        private var appDataBase: HistoryDataBase? = null
+        @Volatile
+        private var instance: HistoryDataBase? = null
 
-        fun getInstance(context: Context): HistoryDataBase {
-            if (appDataBase == null) {
-                synchronized(HistoryDataBase::class.java) {
-                    appDataBase = Room.databaseBuilder(
-                        context.applicationContext,
-                        HistoryDataBase::class.java,
-                        "user_database"
-                    ).allowMainThreadQueries().build()
-                }
-            }
-            return appDataBase!!
+        fun getInstance(context: Context): HistoryDataBase = instance ?: synchronized(this) {
+            instance ?: buildDatabase(context).also { instance = it }
         }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(
+                context.applicationContext,
+                HistoryDataBase::class.java, "search_history.db"
+            )
+                .allowMainThreadQueries()
+                .build()
     }
 }

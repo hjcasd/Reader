@@ -30,8 +30,8 @@ class SearchViewModel(application: Application) : KotlinViewModel(application) {
                 }
             }
             if (!isExit) {
-                val history = History()
-                history.name = keyword
+                val time = System.currentTimeMillis()
+                val history = History(keyword, time)
                 historyDao.insert(history)
             }
         }
