@@ -3,9 +3,11 @@ package com.hjc.learn.main.ui.search.child
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.hjc.learn.main.R
@@ -78,7 +80,7 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
     private fun initHotTags(list: List<WanSearchBean>) {
         mBindingView.flHot.removeAllViews()
         for (bean in list) {
-            val view = View.inflate(mContext, R.layout.main_view_navigation_tag, null)
+            val view = View.inflate(mContext, R.layout.main_view_search_tag, null)
             val tvTag = view.findViewById<TextView>(R.id.tv_tag)
             tvTag.text = bean.name
             mBindingView.flHot.addView(view)
@@ -96,27 +98,88 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
      * @param list 标签集合
      */
     private fun initHistoryTags(list: List<History>) {
-        mBindingView.flHistory.removeAllViews()
+        val viewList = mutableListOf<View>()
         for (history in list) {
-            val view = View.inflate(mContext, R.layout.main_view_navigation_tag, null)
-            val tvTag = view.findViewById<TextView>(R.id.tv_tag)
-            tvTag.text = history.name
-            mBindingView.flHistory.addView(view)
-
-            tvTag.setOnClickListener {
-                val keyword = tvTag.text.toString()
-                EventManager.sendEvent(MessageEvent(EventCode.CODE_CLICK_TAG, keyword))
-            }
+            val textView = LayoutInflater.from(mContext).inflate(R.layout.main_view_history_tag, mBindingView.flHistory, false) as TextView
+            textView.text = history.name
+            viewList.add(textView)
         }
+        mBindingView.flHistory.setChildren(viewList)
 
         //view加载完成时回调
-        mBindingView.flHistory.viewTreeObserver.addOnGlobalLayoutListener {
-            val rowCount = mBindingView.flHistory.getRowCount()
-            val maxLines = mBindingView.flHistory.maxLines
-            if (rowCount > maxLines) {
-                mBindingView.tvExpanded.visibility = View.VISIBLE
+        mBindingView.flHistory.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+
+            override fun onGlobalLayout() {
+                mBindingView.flHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val lineCount: Int = mBindingView.flHistory.lineCount
+                val twoLineViewCount: Int = mBindingView.flHistory.twoLineViewCount
+                if (lineCount > 2) {
+                    initExpandView(list, twoLineViewCount)
+                }
             }
+
+        })
+
+        mBindingView.flHistory.setOnTagClickListener { view, position ->
+            val keyword = list[position].name
+            EventManager.sendEvent(MessageEvent(EventCode.CODE_CLICK_TAG, keyword))
         }
+    }
+
+    /**
+     * 点击展开
+     */
+    private fun initExpandView(list: List<History>, twoLineViewCount: Int) {
+        val viewList = mutableListOf<View>()
+        for (i in 0 until twoLineViewCount) {
+            val textView = LayoutInflater.from(mContext).inflate(R.layout.main_view_history_tag, mBindingView.flHistory, false) as TextView
+            textView.text = list[i].name
+            viewList.add(textView)
+        }
+
+        val imageView = getMoreImageView(R.mipmap.main_icon_search_close)
+        imageView.setOnClickListener { initShrinkView(list, twoLineViewCount) }
+        viewList.add(imageView)
+
+        mBindingView.flHistory.setChildren(viewList)
+
+        mBindingView.flHistory.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBindingView.flHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val lineCount: Int = mBindingView.flHistory.lineCount
+                val viewCount: Int = mBindingView.flHistory.twoLineViewCount
+                if (lineCount > 2) {
+                    initShrinkView(list, viewCount - 1)
+                }
+            }
+        })
+    }
+
+    /**
+     * 点击收缩
+     */
+    private fun initShrinkView(list: List<History>, twoLineViewCount: Int) {
+        val viewList = mutableListOf<View>()
+        for (history in list) {
+            val textView = LayoutInflater.from(mContext).inflate(R.layout.main_view_history_tag, mBindingView.flHistory, false) as TextView
+            textView.text = history.name
+            viewList.add(textView)
+        }
+
+        val imageView = getMoreImageView(R.mipmap.main_icon_search_close)
+        imageView.setOnClickListener { initExpandView(list, twoLineViewCount) }
+        viewList.add(imageView)
+
+        mBindingView.flHistory.setChildren(viewList)
+    }
+
+    /**
+     * 获取伸缩图标
+     */
+    private fun getMoreImageView(resId: Int): ImageView {
+        val imageView = LayoutInflater.from(mContext).inflate(R.layout.main_view_more_img, mBindingView.flHistory, false) as ImageView
+        imageView.setImageResource(resId)
+        return imageView
     }
 
     override fun addListeners() {
@@ -129,20 +192,6 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
                 EventManager.sendEvent(MessageEvent(EventCode.CODE_HIDE_KEYBOARD, null))
                 showClearHistoryDialog()
             }
-
-            R.id.tv_expanded -> {
-                if (mBindingView.flHistory.maxLines == Int.MAX_VALUE) {
-                    mBindingView.flHistory.maxLines = 2
-                    mBindingView.tvExpanded.text = "展开"
-                    val drawableLeft = ContextCompat.getDrawable(requireContext(), R.mipmap.main_icon_arrow_down)
-                    mBindingView.tvExpanded.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
-                } else {
-                    mBindingView.flHistory.maxLines = Int.MAX_VALUE
-                    mBindingView.tvExpanded.text = "收起"
-                    val drawableLeft = ContextCompat.getDrawable(requireContext(), R.mipmap.main_icon_arrow_up)
-                    mBindingView.tvExpanded.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
-                }
-            }
         }
     }
 
@@ -153,7 +202,6 @@ class SearchHistoryFragment : BaseFragment<MainFragmentSearchHistoryBinding, Sea
         builder.setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
             mViewModel?.clearHistoryData()
             mBindingView.clHistory.visibility = View.GONE
-            mBindingView.tvExpanded.visibility = View.GONE
             dialog.dismiss()
         }
         builder.setNegativeButton(

@@ -1,19 +1,17 @@
-package com.hjc.library_widget
+package com.hjc.library_widget.flow
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import java.lang.IllegalArgumentException
-import kotlin.collections.ArrayList
+import com.hjc.library_widget.R
 
 /**
- * create by WangPing
- * on 2020/6/23
- * 宽度只能是个精确的宽度
- * 高度只能是自适应高度
- */
-class FlowLayout(
+ * @Author: HJC
+ * @Date: 2021/7/29 23:12
+ * @Description: 自定义流式布局
+ */ 
+class SmartFlowLayout(
     context: Context,
     attrs: AttributeSet?
 ) : ViewGroup(context, attrs, 0, 0) {
@@ -45,13 +43,13 @@ class FlowLayout(
     private var perLineViews: MutableList<View> = ArrayList()  //临时记录每行的view
 
     init {
-        val obtainStyledAttributes = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout)
+        val obtainStyledAttributes = context.obtainStyledAttributes(attrs, R.styleable.SmartFlowLayout)
         obtainStyledAttributes.let {
-            childVerticalMargin = it.getDimension(R.styleable.FlowLayout_childVerticalMargin, 0f)
+            childVerticalMargin = it.getDimension(R.styleable.SmartFlowLayout_childVerticalMargin, 0f)
             childHorizontalMargin =
-                it.getDimension(R.styleable.FlowLayout_childHorizontalMargin, 0f)
-            maxLines = it.getInt(R.styleable.FlowLayout_maxLines, 5)
-            layoutGravity = if (it.getInt(R.styleable.FlowLayout_gravity, 1) == 0) {
+                it.getDimension(R.styleable.SmartFlowLayout_childHorizontalMargin, 0f)
+            maxLines = it.getInt(R.styleable.SmartFlowLayout_maxLines, 5)
+            layoutGravity = if (it.getInt(R.styleable.SmartFlowLayout_gravity, 1) == 0) {
                 FlowLayoutGravity.LEFT
             } else {
                 FlowLayoutGravity.RIGHT

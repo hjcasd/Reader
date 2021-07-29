@@ -11,7 +11,7 @@ import com.hjc.learn.wan.databinding.WanItemNavigationContentBinding
 import com.hjc.library_common.router.RouteManager.jumpToWeb
 import com.hjc.library_net.entity.WanArticleBean
 import com.hjc.library_net.entity.WanNavigationBean
-import com.hjc.library_widget.FlowLayout
+import com.hjc.library_widget.flow.SmartFlowLayout
 
 /**
  * @Author: HJC
@@ -40,7 +40,7 @@ class NavigationContentAdapter(data: MutableList<WanNavigationBean>?) :
      * @param tagList  标签集合
      * @param flLabels 流式布局控件
      */
-    private fun initTags(tagList: List<WanArticleBean>, flLabels: FlowLayout) {
+    private fun initTags(tagList: List<WanArticleBean>, flLabels: SmartFlowLayout) {
         flLabels.removeAllViews()
         for (bean in tagList) {
             val view = View.inflate(context, R.layout.wan_view_navigation_tag, null)

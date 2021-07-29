@@ -13,7 +13,7 @@ import com.hjc.library_common.router.RouteManager
 import com.hjc.library_common.router.path.RouteWanPath
 import com.hjc.library_net.entity.WanClassifyBean
 import com.hjc.library_net.entity.WanSystemBean
-import com.hjc.library_widget.FlowLayout
+import com.hjc.library_widget.flow.SmartFlowLayout
 
 /**
  * @Author: HJC
@@ -42,7 +42,7 @@ class TreeAdapter(data: MutableList<WanSystemBean>?) :
      * @param tagList  标签集合
      * @param flLabels 流式布局控件
      */
-    private fun initTags(tagList: List<WanClassifyBean>, flLabels: FlowLayout) {
+    private fun initTags(tagList: List<WanClassifyBean>, flLabels: SmartFlowLayout) {
         flLabels.removeAllViews()
         for (bean in tagList) {
             val view = View.inflate(context, R.layout.wan_view_tree_tag, null)

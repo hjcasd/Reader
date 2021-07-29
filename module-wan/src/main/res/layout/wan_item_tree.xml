@@ -37,7 +37,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <com.hjc.library_widget.FlowLayout
+            <com.hjc.library_widget.flow.SmartFlowLayout
                 android:id="@+id/flow_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_title">
 
-            </com.hjc.library_widget.FlowLayout>
+            </com.hjc.library_widget.flow.SmartFlowLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

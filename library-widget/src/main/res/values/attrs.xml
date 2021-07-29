@@ -15,7 +15,7 @@
     </declare-styleable>
 
     <!--流式布局标签-->
-    <declare-styleable name="FlowLayout">
+    <declare-styleable name="SmartFlowLayout">
         <attr name="maxLines" format="integer" />
         <attr name="childHorizontalMargin" format="dimension" />
         <attr name="childVerticalMargin" format="dimension" />

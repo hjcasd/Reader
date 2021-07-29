@@ -34,7 +34,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.hjc.library_widget.FlowLayout
+            <com.hjc.library_widget.flow.SmartFlowLayout
                 android:id="@+id/fl_hot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_hot_tip">
 
-            </com.hjc.library_widget.FlowLayout>
+            </com.hjc.library_widget.flow.SmartFlowLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -73,40 +73,22 @@
                 android:id="@+id/iv_clear_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/main_icon_delete"
                 android:onClick="@{onClickListener}"
+                android:src="@mipmap/main_icon_delete"
                 app:layout_constraintBottom_toBottomOf="@id/tv_history_tip"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.hjc.library_widget.FlowLayout
+            <com.hjc.library_widget.flow.TagFlowLayout
                 android:id="@+id/fl_history"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:childHorizontalMargin="10dp"
-                app:childVerticalMargin="10dp"
-                app:gravity="left"
-                app:maxLines="2"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_history_tip">
 
-            </com.hjc.library_widget.FlowLayout>
-
-            <TextView
-                android:id="@+id/tv_expanded"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:drawablePadding="5dp"
-                android:drawableLeft="@mipmap/main_icon_arrow_down"
-                android:text="展开"
-                android:visibility="gone"
-                android:onClick="@{onClickListener}"
-                app:layout_constraintTop_toBottomOf="@id/fl_history"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+            </com.hjc.library_widget.flow.TagFlowLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
