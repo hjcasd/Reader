@@ -81,8 +81,15 @@ class SearchActivity : BaseFragmentActivity<MainActivitySearchBinding, SearchVie
             window.decorView.getWindowVisibleDisplayFrame(rect)
             //获取屏幕的高度
             val screenHeight: Int = window.decorView.rootView.height
-            //此处就是用来获取键盘的高度的， 在键盘没有弹出的时候 此高度为0 键盘弹出的时候为一个正数
-            val heightDifference = screenHeight - rect.bottom
+            // 判断NavigationBar是否存在,并获取键盘的高度
+            val heightDifference = if (BarUtils.isNavBarVisible(this@SearchActivity)) {
+                screenHeight - rect.bottom - BarUtils.getNavBarHeight()
+            } else {
+                screenHeight - rect.bottom
+            }
+
+            LogUtils.e("screenHeight: $screenHeight")
+            LogUtils.e("heightDifference: $heightDifference")
 
             if (heightDifference > screenHeight * 0.3) {
                 mBindingView.tvRecord.visibility = View.VISIBLE
